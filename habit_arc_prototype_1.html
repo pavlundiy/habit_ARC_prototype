@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Habit Arc · Прототип</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark: #1E1C18;
+  --green: #1D9E75;
+  --green-light: #E1F5EE;
+  --green-mid: #085041;
+  --green-border: #9FE1CB;
+  --amber: #EF9F27;
+  --amber-light: #FAF4E8;
+  --amber-mid: #633806;
+  --amber-border: #E8D9A8;
+  --coral: #D85A30;
+  --bg: #FAF9F6;
+  --white: #FFFFFF;
+  --border: #E0DDD8;
+  --border-mid: #E8E5E0;
+  --muted: #8A8880;
+  --hint: #B0ADA8;
+  --gray: #F5F4F2;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: #E8E4DC;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--sans);
+  padding: 20px;
+}
+
+/* ── PHONE SHELL ── */
+.phone-shell {
+  width: 375px;
+  height: 812px;
+  background: var(--bg);
+  border-radius: 44px;
+  border: 8px solid var(--dark);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 40px 80px rgba(30,28,24,.25), 0 0 0 1px rgba(30,28,24,.08);
+}
+
+.notch {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 28px;
+  background: var(--dark);
+  border-radius: 0 0 18px 18px;
+  z-index: 100;
+}
+
+.screen {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 36px;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active { display: flex; }
+.screen::-webkit-scrollbar { display: none; }
+
+/* ── TAB BAR ── */
+.tabbar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(250,249,246,.96);
+  backdrop-filter: blur(12px);
+  border-top: 0.5px solid var(--border-mid);
+  display: flex;
+  padding: 10px 0 20px;
+  z-index: 50;
+}
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.tab-item:active { opacity: .6; }
+.tab-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tab-label { font-size: 10px; color: var(--hint); }
+.tab-item.active .tab-label { color: var(--green); font-weight: 500; }
+.tab-item.active .tab-icon svg { stroke: var(--green); }
+.tab-item .tab-icon svg { stroke: var(--hint); }
+.tab-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  padding: 16px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+.t-time { font-size: 11px; color: var(--hint); }
+.t-title { font-family: var(--serif); font-size: 26px; color: var(--dark); margin-top: 2px; line-height: 1.2; }
+.t-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── ARC INDICATOR ── */
+.arc-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--green-light);
+  border-radius: 20px;
+  padding: 5px 10px;
+  flex-shrink: 0;
+}
+.arc-d { width: 6px; height: 6px; border-radius: 50%; }
+.arc-l { flex: 1; height: 2px; min-width: 10px; }
+.arc-label { font-size: 10px; color: var(--green-mid); font-weight: 500; margin-left: 2px; }
+
+/* ── CARDS ── */
+.card {
+  margin: 12px 20px 0;
+  background: var(--white);
+  border: 0.5px solid var(--border-mid);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.card-label {
+  font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 5px;
+}
+.card-text { font-size: 13px; color: var(--dark); line-height: 1.6; }
+.card-muted { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── SIGNAL ── */
+.signal {
+  margin: 12px 20px 0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  border-left: 3px solid;
+}
+.signal-green { background: var(--green-light); border-color: var(--green); }
+.signal-amber { background: var(--amber-light); border-color: var(--amber); }
+.signal-text { font-size: 12px; line-height: 1.6; }
+
+/* ── ORIENT FIELD ── */
+.orient-wrap { margin: 12px 20px 0; }
+.orient-label { font-size: 11px; color: var(--muted); margin-bottom: 7px; }
+.orient-field {
+  background: var(--white);
+  border: 1.5px solid var(--dark);
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 72px;
+  font-size: 13px;
+  font-family: var(--sans);
+  color: var(--dark);
+  line-height: 1.6;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.orient-field.placeholder { color: var(--hint); font-style: italic; }
+.orient-field.filled { color: var(--dark); font-style: normal; background: #F0FDF8; border-color: var(--green); }
+
+/* ── CHIPS ── */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 20px 0; }
+.chip {
+  padding: 6px 12px; border-radius: 20px;
+  font-size: 11px; border: 0.5px solid var(--border);
+  color: #555; background: var(--white); cursor: pointer;
+  transition: all .15s;
+}
+.chip:hover, .chip.sel { border-color: var(--green); color: var(--green-mid); background: var(--green-light); }
+
+/* ── MEMORY BLOCK ── */
+.memory { margin: 12px 20px 0; }
+.memory-label {
+  font-size: 10px; font-weight: 500; color: var(--hint);
+  text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px;
+}
+.mem-item { display: flex; gap: 9px; margin-bottom: 8px; align-items: flex-start; }
+.mem-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.mem-text { font-size: 12px; color: #333; line-height: 1.5; flex: 1; }
+.mem-src { font-size: 10px; color: var(--hint); margin-top: 1px; }
+
+/* ── CTA ── */
+.cta-wrap { margin: 14px 20px; }
+.cta-btn {
+  width: 100%; background: var(--dark);
+  border: none; border-radius: 14px;
+  padding: 15px; font-size: 14px; font-weight: 500;
+  color: var(--bg); cursor: pointer;
+  font-family: var(--sans);
+  transition: opacity .15s, transform .1s;
+}
+.cta-btn:active { transform: scale(.98); opacity: .85; }
+.cta-btn.disabled { opacity: .35; pointer-events: none; }
+.cta-btn.green { background: var(--green); color: var(--green-light); }
+.cta-hint { font-size: 11px; color: var(--hint); text-align: center; margin-top: 7px; }
+
+/* ── ORIENT STRIP (day screen) ── */
+.orient-strip {
+  margin: 12px 20px 0;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 13px;
+  padding: 11px 14px;
+  display: flex; gap: 10px;
+}
+.os-bar { width: 3px; background: var(--green); border-radius: 2px; flex-shrink: 0; align-self: stretch; }
+.os-content { flex: 1; }
+.os-label { font-size: 10px; color: var(--hint); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+.os-text { font-size: 13px; color: var(--dark); font-weight: 500; line-height: 1.4; }
+.os-time { font-size: 10px; color: var(--hint); margin-top: 2px; }
+
+/* ── LOG ── */
+.log-block { margin: 12px 20px 0; }
+.log-label { font-size: 10px; color: var(--hint); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 7px; }
+.log-item {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--white); border: 0.5px solid var(--border-mid);
+  border-radius: 11px; padding: 9px 12px; margin-bottom: 6px;
+}
+.log-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.log-text { flex: 1; font-size: 12px; color: #444; }
+.log-time { font-size: 10px; color: var(--hint); }
+
+/* ── RECORD BTN ── */
+.record-btn {
+  margin: 12px 20px 0;
+  background: var(--dark);
+  border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: opacity .15s;
+}
+.record-btn:active { opacity: .8; }
+.rb-icon {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.rb-text { flex: 1; }
+.rb-title { font-size: 13px; font-weight: 500; color: var(--bg); }
+.rb-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* ── QUESTION OPTS ── */
+.q-label { font-size: 14px; color: var(--dark); font-weight: 500; line-height: 1.5; margin: 12px 20px 10px; }
+.q-opts { margin: 0 20px; display: flex; flex-direction: column; gap: 7px; }
+.q-opt {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 13px; padding: 13px 15px;
+  cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; gap: 10px;
+}
+.q-opt:active { opacity: .75; }
+.q-opt.sel-yes { border-color: var(--green); background: var(--green-light); }
+.q-opt.sel-part { border-color: var(--amber); background: var(--amber-light); }
+.q-opt.sel-no { border-color: #B4B2A9; background: var(--gray); }
+.qo-circle {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+}
+.q-opt.sel-yes .qo-circle { background: var(--green); border-color: var(--green); }
+.q-opt.sel-part .qo-circle { background: var(--amber); border-color: var(--amber); }
+.q-opt.sel-no .qo-circle { background: #888780; border-color: #888780; }
+.qo-label { font-size: 13px; color: var(--dark); flex: 1; }
+.qo-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* ── TRIGGER GRID ── */
+.trig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 20px; }
+.trig-btn {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 11px 12px;
+  cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; gap: 8px;
+}
+.trig-btn:active { opacity: .7; }
+.trig-btn.sel { border-color: var(--dark); background: var(--gray); }
+.trig-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.trig-label { font-size: 12px; color: var(--dark); font-weight: 500; }
+.trig-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+/* ── INTENSITY ── */
+.int-row { display: flex; gap: 7px; margin: 0 20px; }
+.int-btn {
+  flex: 1; border-radius: 10px; padding: 9px 4px;
+  text-align: center; cursor: pointer;
+  border: 0.5px solid var(--border); background: var(--white);
+  transition: all .18s;
+}
+.int-btn:active { opacity: .7; }
+.int-btn.sel-1 { border-color: var(--green); background: var(--green-light); }
+.int-btn.sel-2 { border-color: var(--amber); background: var(--amber-light); }
+.int-btn.sel-3 { border-color: var(--coral); background: #FAECE7; }
+.int-dot { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 4px; }
+.int-label { font-size: 10px; color: #666; line-height: 1.3; }
+
+/* ── HEATMAP ── */
+.hm-wrap { margin: 12px 20px 0; }
+.hm-days { display: flex; justify-content: space-between; padding: 0 32px 0 0; margin-bottom: 4px; }
+.hm-day { font-size: 9px; color: var(--hint); text-align: center; flex: 1; }
+.hm-grid { display: flex; flex-direction: column; gap: 3px; }
+.hm-row { display: flex; align-items: center; gap: 3px; }
+.hm-time { font-size: 8px; color: var(--hint); width: 28px; text-align: right; flex-shrink: 0; }
+.hm-cells { display: flex; gap: 3px; flex: 1; }
+.hm-cell { flex: 1; height: 14px; border-radius: 3px; }
+
+/* ── COMPOSE ── */
+.compose {
+  margin: 12px 20px 0; background: var(--white);
+  border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.compose-top { padding: 12px 14px 8px; border-bottom: 0.5px solid #F0EDE8; }
+.compose-ph { font-size: 13px; color: var(--hint); font-style: italic; line-height: 1.6; min-height: 50px; }
+.compose-bot {
+  padding: 8px 12px; display: flex; align-items: center; gap: 7px;
+}
+.tag-chips-row { display: flex; gap: 5px; flex: 1; flex-wrap: wrap; }
+.tag-chip-s {
+  padding: 4px 10px; border-radius: 20px; font-size: 11px;
+  border: 0.5px solid var(--border); color: #666; background: var(--bg);
+  cursor: pointer; transition: all .15s;
+}
+.tag-chip-s.sel { background: var(--dark); color: var(--bg); border-color: var(--dark); }
+.send-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gray); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .15s; flex-shrink: 0;
+}
+.send-btn.active { background: var(--green); }
+
+/* ── DIARY ENTRY ── */
+.d-entry {
+  margin: 0 20px 8px; background: var(--white);
+  border: 0.5px solid var(--border-mid);
+  border-radius: 14px; padding: 12px 14px;
+  transition: background .4s;
+}
+.d-entry.new { background: var(--green-light); border-color: var(--green-border); }
+.de-head { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.de-tag { font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 500; }
+.de-time { font-size: 10px; color: var(--hint); margin-left: auto; }
+.de-text { font-size: 12px; color: #333; line-height: 1.6; margin-bottom: 7px; }
+.de-ref {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg); border-radius: 7px; padding: 5px 9px;
+}
+.de-bar { width: 2px; align-self: stretch; background: var(--green); border-radius: 1px; flex-shrink: 0; }
+.de-ref-text { font-size: 10px; color: var(--muted); }
+
+/* ── ONBOARDING ── */
+.ob-progress { padding: 16px 20px 0; display: flex; gap: 5px; align-items: center; }
+.ob-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--border); transition: all .3s; }
+.ob-dot.done { background: var(--green); }
+.ob-dot.active { background: var(--dark); }
+.ob-skip { font-size: 11px; color: var(--hint); cursor: pointer; margin-left: 8px; flex-shrink: 0; }
+.ob-body { flex: 1; padding: 24px 24px 0; display: flex; flex-direction: column; }
+.ob-icon {
+  width: 52px; height: 52px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+}
+.ob-title { font-family: var(--serif); font-size: 28px; color: var(--dark); line-height: 1.25; margin-bottom: 12px; }
+.ob-text { font-size: 13px; color: #555; line-height: 1.7; flex: 1; }
+
+.ob-opts { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; }
+.ob-opt {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 13px; padding: 12px 14px; cursor: pointer;
+  display: flex; align-items: center; gap: 10px; transition: all .18s;
+}
+.ob-opt:active { opacity: .7; }
+.ob-opt.sel { border-color: var(--dark); background: var(--gray); }
+.ob-opt-icon { width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ob-opt-label { font-size: 13px; color: var(--dark); font-weight: 500; }
+.ob-opt-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.ob-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--border); margin-left: auto; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.ob-opt.sel .ob-check { background: var(--dark); border-color: var(--dark); }
+
+.goal-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+.goal-chip {
+  padding: 8px 14px; border-radius: 20px; font-size: 12px;
+  border: 0.5px solid var(--border); color: #555; background: var(--white);
+  cursor: pointer; transition: all .15s;
+}
+.goal-chip.sel { background: var(--dark); color: var(--bg); border-color: var(--dark); }
+.goal-hint { font-size: 12px; color: var(--green-mid); margin-top: 10px; min-height: 20px; font-style: italic; }
+
+/* ── FINAL SCREEN ── */
+.final-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 32px 24px;
+}
+.final-icon {
+  width: 72px; height: 72px; border-radius: 24px;
+  background: var(--green-light); border: 0.5px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+}
+.final-title { font-family: var(--serif); font-size: 30px; color: var(--dark); text-align: center; margin-bottom: 10px; line-height: 1.2; }
+.final-sub { font-size: 13px; color: #555; text-align: center; line-height: 1.7; margin-bottom: 20px; }
+.final-orient {
+  width: 100%; background: var(--white);
+  border: 0.5px solid var(--green-border);
+  border-left: 3px solid var(--green);
+  border-radius: 14px; padding: 12px 16px; margin-bottom: 20px;
+}
+.fo-label { font-size: 10px; color: var(--green); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.fo-text { font-size: 14px; color: var(--dark); font-weight: 500; font-style: italic; line-height: 1.5; font-family: var(--serif); }
+
+/* ── CLOSED OVERLAY ── */
+.closed-wrap { padding: 20px 20px 0; }
+.closed-arc { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.ca-node { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ca-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.ca-lbl { font-size: 9px; color: var(--hint); }
+.ca-line { flex: 1; height: 2px; background: var(--green); }
+.closed-msg { background: var(--green-light); border: 0.5px solid var(--green-border); border-radius: 14px; padding: 14px 15px; }
+.cm-title { font-size: 14px; font-weight: 500; color: var(--green-mid); margin-bottom: 4px; }
+.cm-sub { font-size: 12px; color: #0F6E56; line-height: 1.6; }
+.cm-orient { font-size: 12px; color: var(--green-mid); font-style: italic; margin-top: 8px; padding: 7px 10px; background: var(--white); border-radius: 8px; font-family: var(--serif); }
+.tomorrow-note { font-size: 11px; color: var(--hint); text-align: center; margin-top: 10px; line-height: 1.5; padding: 0 10px; }
+
+/* ── SAVED SCREEN ── */
+.saved-wrap { padding: 28px 24px 20px; display: flex; flex-direction: column; align-items: center; }
+.saved-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--green-light); border: 0.5px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+}
+.saved-title { font-family: var(--serif); font-size: 22px; color: var(--dark); margin-bottom: 6px; }
+.saved-sub { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; margin-bottom: 16px; }
+.saved-insight { width: 100%; background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+.si-lbl { font-size: 10px; color: var(--hint); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.si-text { font-size: 12px; color: #333; line-height: 1.6; }
+
+/* ── INSIGHTS ── */
+.period-toggle { display: flex; gap: 4px; background: #F0EDE8; border-radius: 20px; padding: 4px; }
+.pt-btn { padding: 5px 12px; border-radius: 16px; font-size: 11px; color: var(--muted); cursor: pointer; transition: all .15s; }
+.pt-btn.active { background: var(--dark); color: var(--bg); }
+.trg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.trg-name { font-size: 12px; color: #333; width: 90px; flex-shrink: 0; }
+.trg-track { flex: 1; height: 7px; background: #F0EDE8; border-radius: 4px; overflow: hidden; }
+.trg-fill { height: 100%; border-radius: 4px; }
+.trg-val { font-size: 11px; font-weight: 500; color: #333; width: 22px; text-align: right; }
+
+/* ── SPACER ── */
+.spacer { height: 90px; flex-shrink: 0; }
+.spacer-sm { height: 16px; flex-shrink: 0; }
+
+/* ── SECTION LABEL ── */
+.sec-label { font-size: 10px; font-weight: 500; color: var(--hint); text-transform: uppercase; letter-spacing: .4px; margin: 14px 20px 7px; }
+
+/* ── BACK BTN ── */
+.back-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #F0EDE8; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp .35s ease forwards; }
+
+@keyframes pop {
+  0%   { transform: scale(.95); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.pop-in { animation: pop .25s ease forwards; }
+
+/* ── MISC ── */
+.divider { height: 0.5px; background: var(--border-mid); margin: 12px 20px; }
+.open-thread {
+  margin: 12px 20px 0; background: var(--amber-light);
+  border: 0.5px solid var(--amber-border); border-left: 3px solid var(--amber);
+  border-radius: 14px; padding: 13px 15px;
+}
+.ot-lbl { font-size: 10px; color: #854F0B; font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; }
+.ot-text { font-family: var(--serif); font-size: 15px; color: var(--dark); line-height: 1.4; font-style: italic; }
+.ot-status { font-size: 11px; color: var(--muted); margin-top: 5px; }
+.notice-card {
+  margin: 10px 20px 0; background: var(--green-light);
+  border: 0.5px solid var(--green-border); border-radius: 12px; padding: 11px 13px;
+}
+.nc-lbl { font-size: 10px; color: var(--green); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.nc-text { font-size: 12px; color: var(--green-mid); line-height: 1.6; }
+.nc-src { font-size: 10px; color: var(--hint); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<div class="phone-shell">
+  <div class="notch"></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 1: ОНБОРДИНГ
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-onboarding">
+    <div id="ob-step-1" style="display:flex;flex-direction:column;height:100%;">
+      <div class="ob-progress">
+        <div class="ob-dot active" id="obd1"></div>
+        <div class="ob-dot" id="obd2"></div>
+        <div class="ob-dot" id="obd3"></div>
+        <div class="ob-dot" id="obd4"></div>
+        <div class="ob-skip" onclick="obSkip()">пропустить</div>
+      </div>
+      <div class="ob-body">
+        <div class="ob-icon" style="background:var(--green-light);">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3C13 3 17 9 17 13.5C17 15.99 15.21 18 13 18C10.79 18 9 15.99 9 13.5C9 9 13 3 13 3Z" fill="#1D9E75" opacity=".35"/><circle cx="13" cy="13" r="3" fill="#085041"/><path d="M13 18V23" stroke="#085041" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ob-title">Это не трекер.<br>Это дневник<br>с памятью.</div>
+        <div class="ob-text" style="margin-top:12px;">Твои слова. Твои паттерны. Твои рабочие ходы — возвращённые в нужный момент.<br><br>Без судей. Без наград. Только ты и честность с собой.</div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn" onclick="obStep(2)">Понятно, продолжим</button>
+        <div class="cta-hint">шаг 1 из 4 · займёт 2 минуты</div>
+      </div>
+    </div>
+
+    <div id="ob-step-2" style="display:none;flex-direction:column;height:100%;">
+      <div class="ob-progress">
+        <div class="ob-dot done"></div><div class="ob-dot active"></div>
+        <div class="ob-dot"></div><div class="ob-dot"></div>
+        <div class="ob-skip" onclick="obSkip()">пропустить</div>
+      </div>
+      <div class="ob-body">
+        <div class="ob-icon" style="background:var(--amber-light);">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3C10 6 8 9.5 8 13c0 2.76 2.24 5 5 5s5-2.24 5-5c0-3.5-2-7-5-10z" fill="#EF9F27" opacity=".4"/><path d="M10.5 18v3m5-3v3M9 23h8" stroke="#854F0B" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ob-title">С какой привычкой работаем?</div>
+        <div class="ob-opts" style="margin-top:16px;">
+          <div class="ob-opt" onclick="obSelHabit(this)" id="h-smoke">
+            <div class="ob-opt-icon" style="background:var(--amber-light);">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="9" width="10" height="3" rx="1.5" fill="#854F0B"/><rect x="12" y="9" width="3" height="3" rx="1" fill="#854F0B"/><path d="M10 7c0-2.5 2.5-2.5 2.5-5" stroke="#854F0B" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div><div class="ob-opt-label">Курение</div><div class="ob-opt-sub">сигареты, вейп</div></div>
+            <div class="ob-check" id="hc-smoke"></div>
+          </div>
+          <div class="ob-opt" onclick="obSelHabit(this)" id="h-alcohol">
+            <div class="ob-opt-icon" style="background:#E6F1FB;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 2h6l1.5 5H3.5L5 2z" fill="#185FA5" opacity=".3"/><path d="M3.5 7v6a1 1 0 001 1h7a1 1 0 001-1V7" stroke="#185FA5" stroke-width="1.3"/></svg>
+            </div>
+            <div><div class="ob-opt-label">Алкоголь</div><div class="ob-opt-sub">пиво, вино, крепкое</div></div>
+            <div class="ob-check" id="hc-alcohol"></div>
+          </div>
+          <div class="ob-opt" onclick="obSelHabit(this)" id="h-phone">
+            <div class="ob-opt-icon" style="background:var(--green-light);">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="1" width="8" height="14" rx="2" stroke="#1D9E75" stroke-width="1.3"/><circle cx="8" cy="12.5" r="1" fill="#1D9E75"/></svg>
+            </div>
+            <div><div class="ob-opt-label">Телефон</div><div class="ob-opt-sub">соцсети, скроллинг</div></div>
+            <div class="ob-check" id="hc-phone"></div>
+          </div>
+          <div class="ob-opt" onclick="obSelHabit(this)" id="h-other">
+            <div class="ob-opt-icon" style="background:var(--gray);">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="1.5" fill="#5F5E5A"/><circle cx="8" cy="8" r="1.5" fill="#5F5E5A"/><circle cx="12" cy="8" r="1.5" fill="#5F5E5A"/></svg>
+            </div>
+            <div><div class="ob-opt-label">Другое</div><div class="ob-opt-sub">еда, азартные игры...</div></div>
+            <div class="ob-check" id="hc-other"></div>
+          </div>
+        </div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn disabled" id="ob-next-2" onclick="obStep(3)">Продолжить</button>
+      </div>
+    </div>
+
+    <div id="ob-step-3" style="display:none;flex-direction:column;height:100%;">
+      <div class="ob-progress">
+        <div class="ob-dot done"></div><div class="ob-dot done"></div>
+        <div class="ob-dot active"></div><div class="ob-dot"></div>
+        <div class="ob-skip" onclick="obSkip()">пропустить</div>
+      </div>
+      <div class="ob-body">
+        <div class="ob-icon" style="background:var(--green-light);">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="9" stroke="#1D9E75" stroke-width="1.5"/><path d="M13 8v5.5l3.5 2" stroke="#085041" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ob-title">Какая цель на первый месяц?</div>
+        <div class="ob-text" style="margin-top:10px;">Не нужно сразу бросать. Начни с малого.</div>
+        <div class="goal-chips">
+          <div class="goal-chip" onclick="obSelGoal(this,'Хороший старт. Понимание — это уже половина пути.')">Понять свои триггеры</div>
+          <div class="goal-chip" onclick="obSelGoal(this,'Реалистично и достижимо. Начнём с малого.')">Снизить количество</div>
+          <div class="goal-chip" onclick="obSelGoal(this,'Контроль важнее числа. Это правильный фрейм.')">Взять под контроль</div>
+          <div class="goal-chip" onclick="obSelGoal(this,'Амбициозно. Начнём честно — шаг за шагом.')">Бросить совсем</div>
+          <div class="goal-chip" onclick="obSelGoal(this,'Это и есть основа. Всё остальное придёт само.')">Просто быть честным с собой</div>
+        </div>
+        <div class="goal-hint" id="goal-hint"></div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn disabled" id="ob-next-3" onclick="obStep(4)">Продолжить</button>
+      </div>
+    </div>
+
+    <div id="ob-step-4" style="display:none;flex-direction:column;height:100%;">
+      <div class="ob-progress">
+        <div class="ob-dot done"></div><div class="ob-dot done"></div>
+        <div class="ob-dot done"></div><div class="ob-dot active"></div>
+        <div style="width:60px;"></div>
+      </div>
+      <div class="ob-body">
+        <div class="ob-icon" style="background:var(--gray);border:0.5px solid var(--border);">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 4v8M9 8l4-4 4 4" stroke="#1e1c18" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 15c0 3.87 3.13 7 7 7s7-3.13 7-7" stroke="#1e1c18" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ob-title">Первый ориентир.</div>
+        <div class="ob-text" style="margin-top:10px;flex:0;">Что важно сохранить уже сегодня?</div>
+        <div class="orient-wrap" style="margin:14px 0 0;">
+          <div class="orient-field placeholder" id="ob-orient" onclick="obActivateOrient()">Напиши или выбери ниже...</div>
+          <div class="chips" style="margin:8px 0 0;">
+            <div class="chip" onclick="obSelOrient(this,'Просто замечать себя в моменте')">Замечать себя</div>
+            <div class="chip" onclick="obSelOrient(this,'Пауза перед первым порывом')">Пауза перед порывом</div>
+            <div class="chip" onclick="obSelOrient(this,'Не реагировать автоматически')">Не на автопилоте</div>
+          </div>
+        </div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn disabled" id="ob-next-4" onclick="obFinish()">Начать с этим ориентиром</button>
+        <div class="cta-hint">Его можно изменить в любой момент</div>
+      </div>
+    </div>
+
+    <div id="ob-final" style="display:none;flex:1;flex-direction:column;">
+      <div class="final-wrap">
+        <div class="final-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 16l7 7 13-13" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="final-title">Всё готово.<br>Начинаем.</div>
+        <div class="final-sub">Ориентир поставлен. Вечером вернёмся к нему и закроем первую дугу.</div>
+        <div class="final-orient" style="margin-bottom:20px;">
+          <div class="fo-label">Твой ориентир сегодня</div>
+          <div class="fo-text" id="final-orient-text"></div>
+        </div>
+        <button class="cta-btn green" style="width:100%;" onclick="goScreen('morning')">Открыть приложение →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 2: УТРО
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-morning">
+    <div class="topbar">
+      <div>
+        <div class="t-time" id="morning-time">08:14 · пятница</div>
+        <div class="t-title">Доброе утро</div>
+        <div class="t-sub">задай ориентир дня</div>
+      </div>
+      <div style="background:var(--gray);border-radius:10px;padding:6px 10px;text-align:center;">
+        <div style="font-size:15px;font-weight:500;color:var(--dark);">12</div>
+        <div style="font-size:9px;color:var(--muted);">дней</div>
+      </div>
+    </div>
+
+    <div class="signal signal-green fade-up" style="animation-delay:.1s;">
+      <div class="signal-text" style="color:var(--green-mid);">Последние три дня фон стал мягче. Сегодня хорошее утро для ориентира.</div>
+    </div>
+
+    <div class="orient-wrap fade-up" style="animation-delay:.2s;">
+      <div class="orient-label">Что важно сохранить сегодня?</div>
+      <div class="orient-field placeholder" id="morning-field" onclick="morningActivate()">Напиши своими словами — одно предложение...</div>
+    </div>
+
+    <div class="chips fade-up" style="animation-delay:.25s;" id="morning-chips">
+      <div class="chip" onclick="morningChip(this,'Спокойствие после обеда')">Спокойствие после обеда</div>
+      <div class="chip" onclick="morningChip(this,'Пауза перед первым порывом')">Пауза перед порывом</div>
+      <div class="chip" onclick="morningChip(this,'Не реагировать на стресс')">Не реагировать на стресс</div>
+    </div>
+
+    <div class="divider fade-up" style="animation-delay:.3s;"></div>
+
+    <div class="memory fade-up" style="animation-delay:.35s;">
+      <div class="memory-label">Приложение помнит</div>
+      <div class="mem-item">
+        <div class="mem-dot" style="background:var(--green);"></div>
+        <div>
+          <div class="mem-text">Тебе уже помогало — выйти на улицу перед обедом</div>
+          <div class="mem-src">ты писал об этом 3 раза · работало</div>
+        </div>
+      </div>
+      <div class="mem-item">
+        <div class="mem-dot" style="background:var(--green);"></div>
+        <div>
+          <div class="mem-text">Дни с ориентиром — в среднем на 2 срыва меньше</div>
+          <div class="mem-src">из 12 дней наблюдений</div>
+        </div>
+      </div>
+      <div class="mem-item">
+        <div class="mem-dot" style="background:var(--amber);"></div>
+        <div>
+          <div class="mem-text">Обычно лучше работает — стакан воды вместо первого порыва</div>
+          <div class="mem-src">повторяется в дневнике · пятница особенно</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-wrap fade-up" style="animation-delay:.4s;">
+      <button class="cta-btn disabled" id="morning-cta" onclick="morningSave()">Это мой ориентир на сегодня</button>
+    </div>
+
+    <!-- After save -->
+    <div id="morning-saved" style="display:none;padding:0 20px 0;" class="pop-in">
+      <div style="background:var(--green-light);border:0.5px solid var(--green-border);border-radius:16px;padding:16px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="#E1F5EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font-family:var(--serif);font-size:16px;color:var(--green-mid);text-align:center;margin-bottom:4px;">Ориентир сохранён</div>
+        <div style="font-size:12px;color:#0F6E56;text-align:center;line-height:1.5;margin-bottom:10px;">Он будет с тобой весь день. Вечером вернёмся к нему.</div>
+        <div style="font-family:var(--serif);font-size:14px;color:var(--green-mid);font-style:italic;text-align:center;background:var(--white);border-radius:10px;padding:10px 14px;" id="morning-saved-text"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item active" onclick="goScreen('morning')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab-item" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+      </div>
+      <div class="tab-item" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 3: ДЕНЬ
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-day">
+    <div class="topbar">
+      <div>
+        <div class="t-time" id="day-time">13:52 · пятница</div>
+        <div class="t-title">Сейчас</div>
+      </div>
+      <div class="arc-pill">
+        <div class="arc-d" style="background:var(--green);"></div>
+        <div class="arc-l" style="background:var(--green);"></div>
+        <div class="arc-d" style="background:var(--green);"></div>
+        <div class="arc-l" style="background:var(--border);"></div>
+        <div class="arc-d" style="background:var(--border);"></div>
+        <div class="arc-label">в процессе</div>
+      </div>
+    </div>
+
+    <div class="orient-strip fade-up">
+      <div class="os-bar"></div>
+      <div class="os-content">
+        <div class="os-label">Ориентир сегодня</div>
+        <div class="os-text">Спокойствие после обеда — не реагировать на первый порыв</div>
+        <div class="os-time">поставил утром в 08:14</div>
+      </div>
+    </div>
+
+    <div class="signal signal-amber fade-up" style="animation-delay:.1s;">
+      <div class="signal-text" style="color:var(--amber-mid);">Сейчас 13:52 — твой привычный пик. Ориентир утром был про спокойствие. Держись ещё 40 минут.</div>
+    </div>
+
+    <div class="log-block fade-up" style="animation-delay:.15s;">
+      <div class="log-label">Сегодня</div>
+      <div class="log-item" id="day-log-new" style="display:none;background:#FFF7F0;">
+        <div class="log-dot" style="background:var(--coral);"></div>
+        <div class="log-text" id="day-log-text">Только что</div>
+        <div class="log-time" id="day-log-time"></div>
+      </div>
+      <div class="log-item">
+        <div class="log-dot" style="background:var(--amber);"></div>
+        <div class="log-text">Утром · скука</div>
+        <div class="log-time">09:10</div>
+      </div>
+    </div>
+
+    <div class="record-btn fade-up" style="animation-delay:.2s;" onclick="goScreen('slip')">
+      <div class="rb-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 4v8M4 8h8" stroke="#faf9f6" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="rb-text">
+        <div class="rb-title">Зафиксировать срыв</div>
+        <div class="rb-sub">быстро · два касания</div>
+      </div>
+      <div style="font-size:18px;color:var(--muted);">›</div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item active" onclick="goScreen('day')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab-item" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+      </div>
+      <div class="tab-item" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 4: ВЕЧЕР
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-evening">
+    <div class="topbar">
+      <div>
+        <div class="t-time">21:08 · пятница</div>
+        <div class="t-title">Добрый вечер</div>
+        <div class="t-sub">время вернуться</div>
+      </div>
+      <div class="arc-pill">
+        <div class="arc-d" style="background:var(--green);"></div>
+        <div class="arc-l" style="background:var(--green);"></div>
+        <div class="arc-d" style="background:var(--green);"></div>
+        <div class="arc-l" style="background:var(--border);"></div>
+        <div class="arc-d" style="background:var(--border);"></div>
+        <div class="arc-label">дуга</div>
+      </div>
+    </div>
+
+    <div class="card fade-up">
+      <div class="card-label" style="color:var(--hint);">Утром ты написал</div>
+      <div style="font-family:var(--serif);font-size:16px;color:var(--dark);line-height:1.4;font-style:italic;margin-bottom:4px;">«Спокойствие после обеда — не реагировать на первый порыв»</div>
+      <div style="font-size:10px;color:var(--hint);">08:14 · 12 часов назад</div>
+    </div>
+
+    <div class="q-label fade-up" style="animation-delay:.1s;">Получилось сохранить это хотя бы частично?</div>
+
+    <div class="q-opts fade-up" style="animation-delay:.15s;" id="eve-opts">
+      <div class="q-opt" onclick="eveSelect(this,'yes')">
+        <div class="qo-circle" id="eqc-yes"></div>
+        <div><div class="qo-label">Да, получилось</div><div class="qo-sub">держался весь день или большую часть</div></div>
+      </div>
+      <div class="q-opt" onclick="eveSelect(this,'part')">
+        <div class="qo-circle" id="eqc-part"></div>
+        <div><div class="qo-label">Частично</div><div class="qo-sub">были моменты и там и там</div></div>
+      </div>
+      <div class="q-opt" onclick="eveSelect(this,'no')">
+        <div class="qo-circle" id="eqc-no"></div>
+        <div><div class="qo-label">Не очень — но я здесь</div><div class="qo-sub">это тоже честный ответ</div></div>
+      </div>
+    </div>
+
+    <div id="eve-response" style="display:none;" class="pop-in">
+      <div class="signal" id="eve-resp-block" style="margin-top:12px;">
+        <div class="signal-text" id="eve-resp-text"></div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn" onclick="eveClose()">Закрыть день</button>
+      </div>
+    </div>
+
+    <!-- Closed state -->
+    <div id="eve-closed" style="display:none;" class="pop-in">
+      <div class="closed-wrap">
+        <div class="closed-arc">
+          <div class="ca-node">
+            <div class="ca-dot" style="background:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#E1F5EE" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="ca-lbl">Утро</div>
+          </div>
+          <div class="ca-line"></div>
+          <div class="ca-node">
+            <div class="ca-dot" style="background:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#E1F5EE" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="ca-lbl">День</div>
+          </div>
+          <div class="ca-line"></div>
+          <div class="ca-node">
+            <div class="ca-dot" id="eve-node" style="background:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#E1F5EE" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="ca-lbl">Вечер</div>
+          </div>
+        </div>
+        <div class="closed-msg" id="eve-closed-msg">
+          <div class="cm-title" id="eve-closed-title">Дуга замкнулась</div>
+          <div class="cm-sub" id="eve-closed-sub">Ты вернулся вечером — это важнее результата. День завершён.</div>
+          <div class="cm-orient">«Спокойствие после обеда — не реагировать на первый порыв»</div>
+        </div>
+        <div class="tomorrow-note" id="eve-tomorrow">Завтра утром снова спросим: что важно сохранить?</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item active" onclick="goScreen('evening')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab-item" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+      </div>
+      <div class="tab-item" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 5: НЕЗАКРЫТАЯ ДУГА
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-arc">
+    <div class="topbar">
+      <div>
+        <div class="t-time">08:09 · суббота</div>
+        <div class="t-title">Доброе утро</div>
+        <div class="t-sub" style="color:var(--amber);">сначала — вчера</div>
+      </div>
+      <div style="background:var(--gray);border-radius:10px;padding:6px 10px;text-align:center;">
+        <div style="font-size:15px;font-weight:500;color:var(--dark);">12</div>
+        <div style="font-size:9px;color:var(--muted);">дней</div>
+      </div>
+    </div>
+
+    <div class="open-thread fade-up">
+      <div class="ot-lbl">Вчера осталась открытая нить</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">пятница · ты не вернулся вечером</div>
+      <div class="ot-text">«Спокойствие после обеда — не реагировать на первый порыв»</div>
+      <div class="ot-status">один вопрос — и вчера закроется</div>
+    </div>
+
+    <div class="notice-card fade-up" style="animation-delay:.1s;">
+      <div class="nc-lbl">Приложение заметило</div>
+      <div class="nc-text">В пятницу у тебя <strong>исторически лучшие дни</strong> — ты сдерживаешь себя чаще чем в любой другой день. Вчера ты не вернулся — но это не значит что день был плохим.</div>
+      <div class="nc-src">из 12 пятниц наблюдений</div>
+    </div>
+
+    <div class="q-label fade-up" style="animation-delay:.15s;">Как вчера прошло с ориентиром?</div>
+    <div class="q-opts fade-up" style="animation-delay:.2s;" id="arc-opts">
+      <div class="q-opt" onclick="arcSelect(this,'yes')">
+        <div class="qo-circle" id="aqc-yes"></div>
+        <div><div class="qo-label">Да, удержал</div></div>
+      </div>
+      <div class="q-opt" onclick="arcSelect(this,'part')">
+        <div class="qo-circle" id="aqc-part"></div>
+        <div><div class="qo-label">Частично</div><div class="qo-sub">были моменты</div></div>
+      </div>
+      <div class="q-opt" onclick="arcSelect(this,'no')">
+        <div class="qo-circle" id="aqc-no"></div>
+        <div><div class="qo-label">Нет, я здесь</div></div>
+      </div>
+    </div>
+
+    <div id="arc-after" style="display:none;" class="pop-in">
+      <div class="signal" id="arc-resp" style="margin:10px 20px 0;">
+        <div class="signal-text" id="arc-resp-text"></div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn" onclick="arcNewDay()">Теперь — сегодня →</button>
+      </div>
+    </div>
+
+    <!-- New day orient -->
+    <div id="arc-new-day" style="display:none;" class="pop-in">
+      <div class="divider"></div>
+      <div class="orient-wrap">
+        <div class="orient-label">Что важно сохранить сегодня?</div>
+        <div class="orient-field placeholder" id="arc-orient" onclick="arcActivateOrient()">Твой ориентир на сегодня...</div>
+        <div class="chips" style="margin:8px 0 0;">
+          <div class="chip" onclick="arcSelOrient(this,'Спокойствие с утра')">Спокойствие с утра</div>
+          <div class="chip" onclick="arcSelOrient(this,'Пауза перед порывом')">Пауза перед порывом</div>
+        </div>
+      </div>
+      <div class="cta-wrap">
+        <button class="cta-btn disabled" id="arc-save-btn" onclick="goScreen('day')">Это мой ориентир на сегодня</button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item active" onclick="goScreen('arc')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab-item" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+      </div>
+      <div class="tab-item" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 6: ДНЕВНИК
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-diary">
+    <div class="topbar">
+      <div>
+        <div class="t-title">Дневник</div>
+        <div class="t-sub">твои мысли — только для тебя</div>
+      </div>
+    </div>
+
+    <div class="compose fade-up" style="margin-top:14px;">
+      <div class="compose-top">
+        <div class="compose-ph" id="diary-ph" onclick="diaryActivate()">Почему это произошло? Что чувствовал?<br>Пиши свободно...</div>
+      </div>
+      <div class="compose-bot">
+        <div class="tag-chips-row">
+          <div class="tag-chip-s" onclick="diaryTag(this,'стресс')">стресс</div>
+          <div class="tag-chip-s" onclick="diaryTag(this,'скука')">скука</div>
+          <div class="tag-chip-s" onclick="diaryTag(this,'удержался')">удержался</div>
+          <div class="tag-chip-s" onclick="diaryTag(this,'компания')">компания</div>
+        </div>
+        <button class="send-btn" id="diary-send" onclick="diarySave()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="chips fade-up" style="animation-delay:.1s;margin-top:8px;">
+      <div class="chip" onclick="diaryPrompt('После планёрки — не мог иначе отпустить напряжение')">После планёрки</div>
+      <div class="chip" onclick="diaryPrompt('Скучно было — руки сами потянулись')">Скука</div>
+      <div class="chip" onclick="diaryPrompt('Вышел подышать вместо этого — помогло')">Удержался ✓</div>
+    </div>
+
+    <div class="divider fade-up" style="animation-delay:.15s;"></div>
+    <div class="sec-label fade-up" style="animation-delay:.2s;">Сегодня</div>
+
+    <div id="diary-new-entry" style="display:none;" class="pop-in"></div>
+
+    <div class="d-entry fade-up" style="animation-delay:.25s;">
+      <div class="de-head">
+        <div class="de-tag" style="background:var(--amber-light);color:var(--amber-mid);">стресс</div>
+        <div class="de-time">14:35</div>
+      </div>
+      <div class="de-text">Закурил после совещания. Начальник давил по срокам — чувствовал что задыхаюсь. Понял что сигарета для меня это «пауза», а не удовольствие. Надо найти другую паузу.</div>
+      <div class="de-ref">
+        <div class="de-bar"></div>
+        <div class="de-ref-text">Ориентир дня: «Спокойствие после обеда»</div>
+      </div>
+    </div>
+
+    <div class="d-entry fade-up" style="animation-delay:.3s;">
+      <div class="de-head">
+        <div class="de-tag" style="background:#E6F1FB;color:#0C447C;">скука</div>
+        <div class="de-time">09:12</div>
+      </div>
+      <div class="de-text">Утром пока варился кофе — автоматически потянулся. Даже не хотел особо. Просто привычка рук.</div>
+      <div class="de-ref">
+        <div class="de-bar"></div>
+        <div class="de-ref-text">Ориентир дня: «Спокойствие после обеда»</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Вчера</div>
+    <div class="d-entry fade-up" style="animation-delay:.35s;">
+      <div class="de-head">
+        <div class="de-tag" style="background:var(--green-light);color:var(--green-mid);">удержался</div>
+        <div class="de-time">19:40</div>
+      </div>
+      <div class="de-text">Вышел на 5 минут перед обедом — и не сорвался. Работает. Надо запомнить этот ход.</div>
+      <div class="de-ref">
+        <div class="de-bar"></div>
+        <div class="de-ref-text">Ориентир дня: «Выйти перед обедом»</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item" onclick="goScreen('day')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+      </div>
+      <div class="tab-item active" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab-item" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 7: ФИКСАЦИЯ СРЫВА
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-slip">
+    <div class="topbar">
+      <div class="back-btn" onclick="goScreen('day')">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="var(--dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="flex:1;padding-left:10px;">
+        <div class="t-title" style="font-size:18px;">Что произошло?</div>
+      </div>
+      <div style="font-size:11px;color:var(--hint);">сегодня: 2</div>
+    </div>
+
+    <div class="orient-strip fade-up" style="margin-top:14px;">
+      <div class="os-bar"></div>
+      <div class="os-content">
+        <div class="os-label">Ориентир сегодня</div>
+        <div class="os-text">«Спокойствие после обеда»</div>
+      </div>
+    </div>
+
+    <div class="sec-label fade-up" style="animation-delay:.1s;">Что спровоцировало?</div>
+    <div class="trig-grid fade-up" style="animation-delay:.15s;">
+      <div class="trig-btn" onclick="slipTrig(this,'stress')" id="st-stress">
+        <div class="trig-icon" style="background:var(--amber-light);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v5M7 9v.5" stroke="#854F0B" stroke-width="1.8" stroke-linecap="round"/><circle cx="7" cy="7" r="5.5" stroke="#854F0B" stroke-width="1.2"/></svg>
+        </div>
+        <div><div class="trig-label">Стресс</div><div class="trig-sub">давление, тревога</div></div>
+      </div>
+      <div class="trig-btn" onclick="slipTrig(this,'boredom')" id="st-boredom">
+        <div class="trig-icon" style="background:#E6F1FB;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#0C447C" stroke-width="1.2"/><path d="M5 8.5h4" stroke="#0C447C" stroke-width="1.2" stroke-linecap="round"/><circle cx="5.5" cy="6" r=".7" fill="#0C447C"/><circle cx="8.5" cy="6" r=".7" fill="#0C447C"/></svg>
+        </div>
+        <div><div class="trig-label">Скука</div><div class="trig-sub">пустота</div></div>
+      </div>
+      <div class="trig-btn" onclick="slipTrig(this,'auto')" id="st-auto">
+        <div class="trig-icon" style="background:var(--gray);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="2.5" stroke="#5F5E5A" stroke-width="1.2"/><path d="M3 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#5F5E5A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div><div class="trig-label">Автоматически</div><div class="trig-sub">не заметил</div></div>
+      </div>
+      <div class="trig-btn" onclick="slipTrig(this,'tired')" id="st-tired">
+        <div class="trig-icon" style="background:var(--amber-light);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="#854F0B" stroke-width="1.3" stroke-linecap="round"/><path d="M3 9c1.5 2 6.5 2 8 0" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div><div class="trig-label">Усталость</div><div class="trig-sub">сил не было</div></div>
+      </div>
+      <div class="trig-btn" onclick="slipTrig(this,'eat')" id="st-eat">
+        <div class="trig-icon" style="background:var(--green-light);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2v4M9 2v4M3 6h8l-1 6H4L3 6z" stroke="#0F6E56" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><div class="trig-label">После еды</div><div class="trig-sub">ритуал</div></div>
+      </div>
+      <div class="trig-btn" onclick="slipTrig(this,'company')" id="st-company">
+        <div class="trig-icon" style="background:#EEEDFE;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="5" r="2" stroke="#534AB7" stroke-width="1.2"/><circle cx="9" cy="5" r="2" stroke="#534AB7" stroke-width="1.2"/><path d="M1 12c0-2.2 1.8-4 4-4M9 8c2.2 0 4 1.8 4 4" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div><div class="trig-label">Компания</div><div class="trig-sub">окружение</div></div>
+      </div>
+    </div>
+
+    <div class="sec-label fade-up" style="animation-delay:.2s;">Как сильно тянуло?</div>
+    <div class="int-row fade-up" style="animation-delay:.25s;">
+      <div class="int-btn" onclick="slipInt(this,1)" id="si-1">
+        <div class="int-dot" style="background:var(--green);"></div>
+        <div class="int-label">Слабо —<br>просто сделал</div>
+      </div>
+      <div class="int-btn" onclick="slipInt(this,2)" id="si-2">
+        <div class="int-dot" style="background:var(--amber);"></div>
+        <div class="int-label">Ощутимо —<br>боролся</div>
+      </div>
+      <div class="int-btn" onclick="slipInt(this,3)" id="si-3">
+        <div class="int-dot" style="background:var(--coral);"></div>
+        <div class="int-label">Очень сильно —<br>не смог</div>
+      </div>
+    </div>
+
+    <div id="slip-support" style="display:none;" class="pop-in">
+      <div class="signal signal-green" style="margin-top:10px;">
+        <div class="card-label" style="color:var(--green);margin-bottom:4px;">Приложение помнит</div>
+        <div class="signal-text" style="color:var(--green-mid);" id="slip-support-text"></div>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta-btn disabled" id="slip-save" onclick="slipSave()">Сохранить</button>
+    </div>
+
+    <!-- Saved state -->
+    <div id="slip-saved" style="display:none;" class="pop-in">
+      <div class="saved-wrap">
+        <div class="saved-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12l6 6 10-10" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="saved-title">Зафиксировано</div>
+        <div class="saved-sub">Каждая запись — это честность с собой. Это важнее результата.</div>
+        <div class="saved-insight">
+          <div class="si-lbl">Приложение заметило</div>
+          <div class="si-text" id="slip-insight-text">Ты фиксируешь — значит замечаешь себя. Это уже другой уровень.</div>
+        </div>
+        <button class="cta-btn" style="width:100%;" onclick="slipBack()">← Вернуться</button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCREEN 8: ИНСАЙТЫ
+  ═══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-insights">
+    <div class="topbar">
+      <div>
+        <div class="t-title">Инсайты</div>
+        <div class="t-sub">что стоит за паттерном</div>
+      </div>
+      <div class="period-toggle">
+        <div class="pt-btn" onclick="insightsPeriod(this,'7')">7д</div>
+        <div class="pt-btn active" onclick="insightsPeriod(this,'30')">30д</div>
+        <div class="pt-btn" onclick="insightsPeriod(this,'90')">3м</div>
+      </div>
+    </div>
+
+    <div class="card fade-up" style="border-left:3px solid var(--green);border-radius:0 16px 16px 0;margin-top:14px;">
+      <div class="card-label" style="color:var(--green);">Главное наблюдение</div>
+      <div style="font-family:var(--serif);font-size:17px;color:var(--dark);line-height:1.35;margin-bottom:6px;" id="ins-title">Дни с ориентиром — на 2.1 срыва меньше</div>
+      <div class="card-muted" id="ins-text">Когда утром есть ориентир — день выходит заметно ровнее. Это твой самый рабочий инструмент.</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:5px;" id="ins-src">из 28 дней · 19 с ориентиром, 9 без</div>
+    </div>
+
+    <div class="hm-wrap fade-up" style="animation-delay:.1s;">
+      <div class="card-label" style="margin:0 0 7px;">По часам и дням</div>
+      <div class="hm-days">
+        <div class="hm-day">пн</div><div class="hm-day">вт</div><div class="hm-day">ср</div>
+        <div class="hm-day">чт</div><div class="hm-day">пт</div><div class="hm-day">сб</div><div class="hm-day">вс</div>
+      </div>
+      <div class="hm-grid" id="heatmap"></div>
+    </div>
+
+    <div class="sec-label fade-up" style="animation-delay:.15s;">Триггеры периода</div>
+    <div style="margin:0 20px;" class="fade-up" style="animation-delay:.2s;">
+      <div class="trg-row"><div class="trg-name">Стресс</div><div class="trg-track"><div class="trg-fill" style="width:74%;background:var(--coral);"></div></div><div class="trg-val">18</div></div>
+      <div class="trg-row"><div class="trg-name">Скука</div><div class="trg-track"><div class="trg-fill" style="width:44%;background:var(--amber);"></div></div><div class="trg-val">11</div></div>
+      <div class="trg-row"><div class="trg-name">Автоматически</div><div class="trg-track"><div class="trg-fill" style="width:28%;background:#B4B2A9;"></div></div><div class="trg-val">7</div></div>
+      <div class="trg-row"><div class="trg-name">После еды</div><div class="trg-track"><div class="trg-fill" style="width:20%;background:var(--green);"></div></div><div class="trg-val">5</div></div>
+    </div>
+
+    <div class="sec-label" style="margin-top:14px;">Что работало</div>
+    <div class="card fade-up" style="animation-delay:.25s;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div style="flex:1;font-size:12px;color:#333;">Выйти перед обедом</div>
+        <div style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--green-light);color:var(--green-mid);font-weight:500;">работало</div>
+        <div style="font-size:10px;color:var(--hint);">3×</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div style="flex:1;font-size:12px;color:#333;">Стакан воды вместо первого порыва</div>
+        <div style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--green-light);color:var(--green-mid);font-weight:500;">работало</div>
+        <div style="font-size:10px;color:var(--hint);">2×</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;font-size:12px;color:#333;">Пауза перед порывом</div>
+        <div style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--amber-light);color:var(--amber-mid);font-weight:500;">иногда</div>
+        <div style="font-size:10px;color:var(--hint);">4×</div>
+      </div>
+    </div>
+
+    <div class="signal signal-amber fade-up" style="animation-delay:.3s;margin-bottom:0;">
+      <div class="card-label" style="color:#854F0B;margin-bottom:4px;">Паттерн риска</div>
+      <div class="signal-text" style="color:var(--amber-mid);" id="ins-pattern">Вторник 13–16 часов — твой пик. В этот слот происходит 31% всех срывов за месяц.</div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="tabbar">
+      <div class="tab-item" onclick="goScreen('day')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.5l2.5 1.5"/></svg></div>
+        <div class="tab-label">Сегодня</div>
+      </div>
+      <div class="tab-item" onclick="goScreen('diary')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="3" width="12" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <div class="tab-label">Дневник</div>
+      </div>
+      <div class="tab-item active" onclick="goScreen('insights')">
+        <div class="tab-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 14l4-5 3 3 3-6 4 7"/></svg></div>
+        <div class="tab-label">Инсайты</div>
+        <div class="tab-dot"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /phone-shell -->
+
+<!-- NAV OUTSIDE PHONE -->
+<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:200;">
+  <button onclick="goScreen('onboarding')" style="background:rgba(30,28,24,.85);color:#faf9f6;border:none;border-radius:20px;padding:8px 14px;font-size:11px;font-family:var(--sans);cursor:pointer;backdrop-filter:blur(8px);">Онбординг</button>
+  <button onclick="goScreen('morning')" style="background:rgba(30,28,24,.85);color:#faf9f6;border:none;border-radius:20px;padding:8px 14px;font-size:11px;font-family:var(--sans);cursor:pointer;backdrop-filter:blur(8px);">Утро</button>
+  <button onclick="goScreen('day')" style="background:rgba(30,28,24,.85);color:#faf9f6;border:none;border-radius:20px;padding:8px 14px;font-size:11px;font-family:var(--sans);cursor:pointer;backdrop-filter:blur(8px);">День</button>
+  <button onclick="goScreen('evening')" style="background:rgba(30,28,24,.85);color:#faf9f6;border:none;border-radius:20px;padding:8px 14px;font-size:11px;font-family:var(--sans);cursor:pointer;backdrop-filter:blur(8px);">Вечер</button>
+  <button onclick="goScreen('arc')" style="background:rgba(30,28,24,.85);color:#faf9f6;border:none;border-radius:20px;padding:8px 14px;font-size:11px;font-family:var(--sans);cursor:pointer;backdrop-filter:blur(8px);">Дуга</button>
+</div>
+
+<script>
+// ── NAVIGATION ────────────────────────────────────────
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+}
+
+// ── TIME ──────────────────────────────────────────────
+const days = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+const now = new Date();
+const h = String(now.getHours()).padStart(2,'0');
+const m = String(now.getMinutes()).padStart(2,'0');
+const timeStr = `${h}:${m} · ${days[now.getDay()]}`;
+document.getElementById('morning-time').textContent = timeStr;
+document.getElementById('day-time') && (document.getElementById('day-time').textContent = timeStr);
+
+// ── ONBOARDING ────────────────────────────────────────
+let obOrientText = '';
+
+function obStep(n) {
+  for (let i=1; i<=4; i++) {
+    const el = document.getElementById(`ob-step-${i}`);
+    if (el) el.style.display = i===n ? 'flex' : 'none';
+  }
+  document.getElementById('ob-final').style.display = 'none';
+}
+
+function obSkip() {
+  obOrientText = 'Просто замечать себя в моменте';
+  document.getElementById('final-orient-text').textContent = `«${obOrientText}»`;
+  for (let i=1; i<=4; i++) {
+    const el = document.getElementById(`ob-step-${i}`);
+    if (el) el.style.display = 'none';
+  }
+  document.getElementById('ob-final').style.display = 'flex';
+}
+
+function obSelHabit(el) {
+  document.querySelectorAll('.ob-opt').forEach(o => {
+    o.classList.remove('sel');
+    const id = 'hc-' + o.id.replace('h-','');
+    const chk = document.getElementById(id);
+    if (chk) { chk.innerHTML = ''; chk.style.background=''; }
+  });
+  el.classList.add('sel');
+  const id = 'hc-' + el.id.replace('h-','');
+  const chk = document.getElementById(id);
+  if (chk) {
+    chk.style.background = 'var(--dark)';
+    chk.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#faf9f6" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  }
+  const btn = document.getElementById('ob-next-2');
+  btn.classList.remove('disabled');
+}
+
+function obSelGoal(el, hint) {
+  document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('goal-hint').textContent = hint;
+  const btn = document.getElementById('ob-next-3');
+  btn.classList.remove('disabled');
+}
+
+function obActivateOrient() {
+  const f = document.getElementById('ob-orient');
+  if (!f.classList.contains('filled')) {
+    f.classList.remove('placeholder');
+    f.classList.add('filled');
+    f.textContent = '';
+    obTypeText('Просто замечать себя в моменте', f);
+  }
+}
+
+function obTypeText(text, el) {
+  let i=0;
+  obOrientText = '';
+  const t = setInterval(()=>{
+    if (i < text.length) {
+      obOrientText += text[i]; i++;
+      el.textContent = obOrientText;
+    } else {
+      clearInterval(t);
+      document.getElementById('ob-next-4').classList.remove('disabled');
+    }
+  }, 35);
+}
+
+function obSelOrient(el, text) {
+  document.querySelectorAll('.orient-chip, .ob-body .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  obOrientText = text;
+  const f = document.getElementById('ob-orient');
+  f.classList.remove('placeholder');
+  f.classList.add('filled');
+  f.textContent = text;
+  document.getElementById('ob-next-4').classList.remove('disabled');
+}
+
+function obFinish() {
+  document.getElementById('final-orient-text').textContent = `«${obOrientText || 'Просто замечать себя в моменте'}»`;
+  for (let i=1; i<=4; i++) {
+    const el = document.getElementById(`ob-step-${i}`);
+    if (el) el.style.display = 'none';
+  }
+  document.getElementById('ob-final').style.display = 'flex';
+}
+
+// ── MORNING ───────────────────────────────────────────
+let morningText = '';
+let morningTyping = false;
+
+function morningActivate() {
+  if (morningTyping) return;
+  morningTyping = true;
+  const f = document.getElementById('morning-field');
+  f.classList.remove('placeholder'); f.textContent = '';
+  const sample = 'Спокойствие после обеда — не реагировать на первый порыв';
+  let i=0; morningText='';
+  const t = setInterval(()=>{
+    if (i<sample.length){ morningText+=sample[i]; i++; f.textContent=morningText; }
+    else {
+      clearInterval(t);
+      document.getElementById('morning-cta').classList.remove('disabled');
+    }
+  }, 35);
+}
+
+function morningChip(el, text) {
+  document.querySelectorAll('#morning-chips .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  morningText = text;
+  const f = document.getElementById('morning-field');
+  f.classList.remove('placeholder'); f.classList.add('filled');
+  f.textContent = text;
+  document.getElementById('morning-cta').classList.remove('disabled');
+}
+
+function morningSave() {
+  if (!morningText) return;
+  document.getElementById('morning-cta').closest('.cta-wrap').style.display='none';
+  document.getElementById('morning-chips').style.display='none';
+  document.getElementById('morning-field').closest('.orient-wrap').querySelector('.orient-field').classList.add('filled');
+  document.getElementById('morning-saved-text').textContent = `«${morningText}»`;
+  document.getElementById('morning-saved').style.display='block';
+}
+
+// ── EVENING ───────────────────────────────────────────
+let eveChosen = null;
+const eveResponses = {
+  yes: { text:'Дни с ориентиром у тебя выходят лучше — сегодня это подтвердилось.', cls:'signal-green', tc:'var(--green-mid)', closedTitle:'Дуга замкнулась', closedSub:'Получилось. Ты задал ориентир утром и сдержал его. Это уже паттерн.', tomorrow:'Завтра утром попробуем похожий ориентир.' },
+  part: { text:'«Частично» — это не мало. Ты замечал себя в моменте — это уже работа.', cls:'signal-amber', tc:'var(--amber-mid)', closedTitle:'Дуга замкнулась', closedSub:'Частично — честно. Дни «частично» у тебя часто лучше чем кажутся по ощущению.', tomorrow:'Завтра — новый ориентир. Без груза сегодняшнего.' },
+  no:  { text:'Ты здесь — и уже ответил честно. Это главное. Завтра — новый отсчёт.', cls:'signal-green', tc:'#555', closedTitle:'День закрыт', closedSub:'Не получилось сегодня — и это нормально. Ты вернулся вечером. Это тоже считается.', tomorrow:'После трудных дней у тебя часто бывает хорошее утро.' }
+};
+
+function eveSelect(el, type) {
+  if (document.getElementById('eve-closed').style.display==='block') return;
+  eveChosen = type;
+  document.querySelectorAll('#eve-opts .q-opt').forEach(o => {
+    o.classList.remove('sel-yes','sel-part','sel-no');
+    ['eqc-yes','eqc-part','eqc-no'].forEach(id => { const c=document.getElementById(id); if(c){c.innerHTML='';c.style.background='';} });
+  });
+  el.classList.add(`sel-${type}`);
+  const circ = document.getElementById(`eqc-${type}`);
+  const bg = type==='yes'?'var(--green)':type==='part'?'var(--amber)':'#888780';
+  circ.style.background=bg; circ.style.borderColor=bg;
+  circ.innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  const r=eveResponses[type];
+  const rb=document.getElementById('eve-resp-block');
+  rb.className=`signal ${r.cls}`;
+  document.getElementById('eve-resp-text').style.color=r.tc;
+  document.getElementById('eve-resp-text').textContent=r.text;
+  document.getElementById('eve-response').style.display='block';
+}
+
+function eveClose() {
+  if (!eveChosen) return;
+  const r=eveResponses[eveChosen];
+  document.getElementById('eve-response').style.display='none';
+  document.getElementById('eve-opts').style.display='none';
+  document.getElementById('eve-closed-title').textContent=r.closedTitle;
+  document.getElementById('eve-closed-sub').textContent=r.closedSub;
+  document.getElementById('eve-tomorrow').textContent=r.tomorrow;
+  if (eveChosen==='no') {
+    document.getElementById('eve-node').style.background='#888780';
+    document.getElementById('eve-closed-msg').style.background=document.getElementById('eve-closed-msg').style.background='#F5F4F2';
+    document.getElementById('eve-closed-msg').style.border='0.5px solid #D3D1C7';
+    document.getElementById('eve-closed-title').style.color='#444';
+    document.getElementById('eve-closed-sub').style.color='#555';
+  }
+  document.getElementById('eve-closed').style.display='block';
+}
+
+// ── UNCLOSED ARC ──────────────────────────────────────
+const arcResponses = {
+  yes: { text:'Вчера держался — дуга закрывается с этим. Приложение запомнит.', cls:'signal-green', tc:'var(--green-mid)' },
+  part:{ text:'«Частично» — честно. Дни «частично» у тебя часто лучше чем кажутся.', cls:'signal-amber', tc:'var(--amber-mid)' },
+  no:  { text:'Вчера не получилось — вчера закрыто. Сегодня — новый ориентир, без груза.', cls:'signal-green', tc:'#555' }
+};
+
+function arcSelect(el, type) {
+  document.querySelectorAll('#arc-opts .q-opt').forEach(o=>o.classList.remove('sel-yes','sel-part','sel-no'));
+  ['aqc-yes','aqc-part','aqc-no'].forEach(id=>{const c=document.getElementById(id);if(c){c.innerHTML='';c.style.background='';}});
+  el.classList.add(`sel-${type}`);
+  const circ=document.getElementById(`aqc-${type}`);
+  const bg=type==='yes'?'var(--green)':type==='part'?'var(--amber)':'#888780';
+  circ.style.background=bg; circ.style.borderColor=bg;
+  circ.innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  const r=arcResponses[type];
+  const rb=document.getElementById('arc-resp');
+  rb.className=`signal ${r.cls}`;
+  document.getElementById('arc-resp-text').style.color=r.tc;
+  document.getElementById('arc-resp-text').textContent=r.text;
+  document.getElementById('arc-after').style.display='block';
+}
+
+function arcNewDay() {
+  document.getElementById('arc-after').style.display='none';
+  document.getElementById('arc-new-day').style.display='block';
+}
+
+function arcActivateOrient() {
+  const f=document.getElementById('arc-orient');
+  f.classList.remove('placeholder'); f.classList.add('filled'); f.textContent='';
+  document.getElementById('arc-save-btn').classList.remove('disabled');
+}
+
+function arcSelOrient(el, text) {
+  document.querySelectorAll('#arc-new-day .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  const f=document.getElementById('arc-orient');
+  f.classList.remove('placeholder'); f.classList.add('filled'); f.textContent=text;
+  document.getElementById('arc-save-btn').classList.remove('disabled');
+}
+
+// ── DIARY ─────────────────────────────────────────────
+let diaryText=''; let diaryTags=[];
+
+function diaryActivate() {
+  const ph=document.getElementById('diary-ph');
+  if (ph.style.color==='rgb(51,51,51)') return;
+  ph.style.color='#333'; ph.style.fontStyle='normal';
+  ph.textContent='';
+  const sample='Закурил после совещания. Не мог иначе отпустить напряжение.';
+  let i=0; diaryText='';
+  const t=setInterval(()=>{
+    if(i<sample.length){diaryText+=sample[i];i++;ph.textContent=diaryText;}
+    else{clearInterval(t);document.getElementById('diary-send').classList.add('active');}
+  },30);
+}
+
+function diaryPrompt(text) {
+  const ph=document.getElementById('diary-ph');
+  ph.style.color='#333'; ph.style.fontStyle='normal'; ph.textContent=text;
+  diaryText=text;
+  document.getElementById('diary-send').classList.add('active');
+}
+
+function diaryTag(el, tag) {
+  el.classList.toggle('sel');
+  if(el.classList.contains('sel')){ if(!diaryTags.includes(tag)) diaryTags.push(tag); }
+  else { diaryTags=diaryTags.filter(t=>t!==tag); }
+}
+
+function diarySave() {
+  if (!diaryText.trim()) return;
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0'), m=String(now.getMinutes()).padStart(2,'0');
+  const tag=diaryTags[0]||'мысль';
+  const tagColors={стресс:{bg:var_('--amber-light'),c:var_('--amber-mid')},скука:{bg:'#E6F1FB',c:'#0C447C'},удержался:{bg:var_('--green-light'),c:var_('--green-mid')},компания:{bg:'#EEEDFE',c:'#3C3489'},мысль:{bg:var_('--green-light'),c:var_('--green-mid')}};
+  const tc=tagColors[tag]||tagColors['мысль'];
+  const entry=document.createElement('div');
+  entry.className='d-entry new pop-in';
+  entry.innerHTML=`<div class="de-head"><div class="de-tag" style="background:${tc.bg};color:${tc.c};">${tag}</div><div class="de-time">${h}:${m}</div></div><div class="de-text">${diaryText}</div><div class="de-ref"><div class="de-bar"></div><div class="de-ref-text">Ориентир дня: «Спокойствие после обеда»</div></div>`;
+  document.getElementById('diary-new-entry').appendChild(entry);
+  document.getElementById('diary-new-entry').style.display='block';
+  setTimeout(()=>entry.classList.remove('new'),1200);
+  const ph=document.getElementById('diary-ph');
+  ph.style.color=''; ph.style.fontStyle='';
+  ph.innerHTML='Почему это произошло? Что чувствовал?<br>Пиши свободно...';
+  diaryText=''; diaryTags=[];
+  document.querySelectorAll('.tag-chip-s').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('diary-send').classList.remove('active');
+}
+
+function var_(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+// ── SLIP ──────────────────────────────────────────────
+let slipTrigSel=null, slipIntSel=null;
+const slipSupports = {
+  stress:{1:'Стресс был лёгким — ты зафиксировал. Следующий раз попробуй выйти на 5 минут.',2:'Боролся со стрессом — это честная запись. Тебе раньше помогало выйти перед обедом.',3:'Очень сильный стресс — понятно. После трудных пятниц у тебя часто хорошие субботы.'},
+  boredom:{1:'Скука — самый автоматический триггер. Попробуй стакан воды.',2:'Скука с борьбой — значит ты замечал себя. Уже прогресс.',3:'Скуку перебороть сложно. Смени место — контекст влияет.'},
+  auto:{1:'Автоматически — самый коварный вид. Ты даже не успел заметить.',2:'Заметил автоматику — это другой уровень осознанности.',3:'Автоматика сильнее воли. Попробуй изменить физический маршрут.'},
+  tired:{1:'Усталость снижает порог. Ничего удивительного.',2:'Боролся несмотря на усталость. Это требует сил.',3:'Очень устал — и не смог. Завтра будет легче.'},
+  eat:{1:'После еды — почти ритуал. Попробуй другой: чай, прогулка.',2:'Боролся с едой-триггером. Тебе раньше помогало сразу выйти после обеда.',3:'После еды тяга особенно сильная — это физиология.'},
+  company:{1:'Компания как триггер — нормально. Социальное давление реально.',2:'Боролся в компании — это особенно трудно.',3:'Заготовь фразу заранее: «я сейчас не курю».'}
+};
+
+function slipTrig(el, type) {
+  document.querySelectorAll('.trig-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); slipTrigSel=type;
+  updateSlipSupport();
+}
+
+function slipInt(el, level) {
+  document.querySelectorAll('.int-btn').forEach(b=>b.classList.remove('sel-1','sel-2','sel-3'));
+  el.classList.add(`sel-${level}`); slipIntSel=level;
+  updateSlipSupport();
+}
+
+function updateSlipSupport() {
+  if (!slipTrigSel||!slipIntSel) return;
+  const text=slipSupports[slipTrigSel]?.[slipIntSel];
+  if (text) {
+    document.getElementById('slip-support-text').textContent=text;
+    document.getElementById('slip-support').style.display='block';
+  }
+  document.getElementById('slip-save').classList.remove('disabled');
+}
+
+function slipSave() {
+  if (!slipTrigSel||!slipIntSel) return;
+  const insights={1:'Фиксируешь лёгкие моменты — это помогает увидеть паттерн раньше.',2:'Ты боролся — и честно записал. Это важнее результата.',3:'Сильная тяга победила сегодня. Но ты здесь — это уже следующий шаг.'};
+  document.getElementById('slip-insight-text').textContent=insights[slipIntSel];
+  document.querySelector('#screen-slip .topbar').style.display='none';
+  document.querySelector('#screen-slip .orient-strip').style.display='none';
+  document.querySelectorAll('#screen-slip .sec-label').forEach(el=>el.style.display='none');
+  document.querySelector('.trig-grid').style.display='none';
+  document.querySelector('.int-row').style.display='none';
+  document.getElementById('slip-support').style.display='none';
+  document.querySelector('#screen-slip .cta-wrap').style.display='none';
+  document.getElementById('slip-saved').style.display='block';
+  // Add to day log
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0'), m=String(now.getMinutes()).padStart(2,'0');
+  const trigs={stress:'Стресс',boredom:'Скука',auto:'Автоматически',tired:'Усталость',eat:'После еды',company:'Компания'};
+  document.getElementById('day-log-text').textContent=`Только что · ${trigs[slipTrigSel]}`;
+  document.getElementById('day-log-time').textContent=`${h}:${m}`;
+  document.getElementById('day-log-new').style.display='flex';
+}
+
+function slipBack() {
+  slipTrigSel=null; slipIntSel=null;
+  document.querySelector('#screen-slip .topbar').style.display='flex';
+  document.querySelector('#screen-slip .orient-strip').style.display='flex';
+  document.querySelectorAll('#screen-slip .sec-label').forEach(el=>el.style.display='block');
+  document.querySelector('.trig-grid').style.display='grid';
+  document.querySelector('.int-row').style.display='flex';
+  document.getElementById('slip-support').style.display='none';
+  document.querySelector('#screen-slip .cta-wrap').style.display='block';
+  document.getElementById('slip-saved').style.display='none';
+  document.querySelectorAll('.trig-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.int-btn').forEach(b=>b.classList.remove('sel-1','sel-2','sel-3'));
+  document.getElementById('slip-save').classList.add('disabled');
+  goScreen('day');
+}
+
+// ── INSIGHTS ──────────────────────────────────────────
+const insData = {
+  '7': [[0,0,1,0,0,0,0],[1,1,0,1,0,0,0],[0,1,1,0,1,0,0],[1,2,1,2,1,0,0],[2,3,2,3,2,0,0],[1,2,1,2,1,0,0],[0,1,0,1,0,0,0],[0,0,1,0,0,0,0]],
+  '30':[[1,0,2,1,0,0,0],[2,3,1,2,1,0,0],[1,2,2,1,2,1,0],[3,5,2,4,2,0,0],[4,7,3,6,4,1,0],[3,6,3,5,4,1,1],[2,3,2,3,2,0,0],[1,2,1,2,1,0,0]],
+  '90':[[2,1,3,2,1,0,0],[3,4,2,3,2,1,0],[2,3,3,2,3,1,0],[4,6,3,5,3,1,0],[5,8,4,7,5,1,1],[4,7,4,6,5,2,1],[3,4,3,4,3,1,0],[2,3,2,3,2,0,0]]
+};
+const insTexts = {
+  '7': { title:'Эта неделя — лучше предыдущей', text:'Среднее снизилось с 5.2 до 3.8 в день. Три дня подряд ты держался ниже цели.', src:'из 7 дней · цель: меньше 4 в день', pattern:'Пик — вторник 14:00. 40% срывов за неделю именно тогда.' },
+  '30':{ title:'Дни с ориентиром — на 2.1 срыва меньше', text:'Когда утром есть ориентир — день выходит заметно ровнее. Это твой самый рабочий инструмент.', src:'из 28 дней · 19 с ориентиром, 9 без', pattern:'Вторник 13–16 часов — твой пик. В этот слот происходит 31% всех срывов за месяц.' },
+  '90':{ title:'За 3 месяца — снижение на 34%', text:'В январе среднее было 6.1 в день. Сейчас — 4.0. Ты движешься, даже если не всегда это чувствуешь.', src:'январь–март · 90 дней наблюдений', pattern:'Пятница — лучший день недели. Среднее 2.8 — вдвое меньше чем в понедельник.' }
+};
+const hmHours=['07','09','11','13','15','17','19','21'];
+function hmColor(v){ if(!v)return'#F0EDE8'; if(v<=1)return'#9FE1CB'; if(v<=3)return'#EF9F27'; return'#D85A30'; }
+function buildHeatmap(period) {
+  const grid=document.getElementById('heatmap'); grid.innerHTML='';
+  insData[period].forEach((row,ri)=>{
+    const rowEl=document.createElement('div'); rowEl.className='hm-row';
+    const tl=document.createElement('div'); tl.className='hm-time'; tl.textContent=hmHours[ri];
+    rowEl.appendChild(tl);
+    const cells=document.createElement('div'); cells.className='hm-cells';
+    row.forEach(v=>{ const c=document.createElement('div'); c.className='hm-cell'; c.style.background=hmColor(v); cells.appendChild(c); });
+    rowEl.appendChild(cells); grid.appendChild(rowEl);
+  });
+}
+function insightsPeriod(el, p) {
+  document.querySelectorAll('.pt-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const d=insTexts[p];
+  document.getElementById('ins-title').textContent=d.title;
+  document.getElementById('ins-text').textContent=d.text;
+  document.getElementById('ins-src').textContent=d.src;
+  document.getElementById('ins-pattern').textContent=d.pattern;
+  buildHeatmap(p);
+}
+buildHeatmap('30');
+</script>
+</body>
+</html>
