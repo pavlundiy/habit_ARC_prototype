@@ -1,0 +1,757 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Инсайты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  color-scheme: light;
+  --font-sans:"DM Sans","Segoe UI",sans-serif;
+  --font-display:var(--font-sans);
+  --tracking-display:-0.03em;
+  --tracking-tight:-0.02em;
+  --tracking-caps:0.1em;
+  --bg:#ece7dd;
+  --surface:#faf9f6;
+  --surface-elevated:#ffffff;
+  --surface-soft:#f3efe7;
+  --color-border-tertiary:#e6ded2;
+  --color-text:#1e1c18;
+  --color-text-secondary:#8a8880;
+  --color-text-muted:#b0ada8;
+  --color-body:#4f4a43;
+  --accent:#1D9E75;
+  --accent-soft:#E1F5EE;
+  --accent-text:#085041;
+  --tab-bg:#faf9f6;
+  --heat-empty:#f0ede8;
+  --tooltip-bg:#1e1c18;
+  --tooltip-text:#faf9f6;
+  --shadow-card:0 14px 28px rgba(34, 29, 23, 0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0f1412;
+    --surface:#171c1a;
+    --surface-elevated:#1d2421;
+    --surface-soft:#202825;
+    --color-border-tertiary:#29312d;
+    --color-text:#f3efe8;
+    --color-text-secondary:#b2aba0;
+    --color-text-muted:#8c867c;
+    --color-body:#d6d0c7;
+    --accent:#33b887;
+    --accent-soft:#123328;
+    --accent-text:#b8f0db;
+    --tab-bg:#161b19;
+    --heat-empty:#202825;
+    --tooltip-bg:#f3efe8;
+    --tooltip-text:#171c1a;
+    --shadow-card:none;
+  }
+}
+html,body{min-height:100%;background:var(--bg);}
+body{padding:12px;font-family:var(--font-sans);color:var(--color-text);}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:var(--surface);border-radius:30px;border:1px solid var(--color-border-tertiary);overflow:hidden;box-shadow:var(--shadow-card);padding-bottom:112px;min-height:calc(100dvh - 24px);}
+html.embedded-shell .sticky-bottom{display:none;}
+.topbar{padding:18px 20px 6px;display:flex;justify-content:space-between;align-items:flex-start;}
+.topbar-title{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.topbar-sub{font-size:11.5px;color:var(--color-text-secondary);line-height:1.45;margin-top:2px;}
+.period-pills{display:flex;gap:5px;padding:12px 20px 14px;}
+.pp{padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--color-border-tertiary);color:var(--color-text-secondary);background:var(--surface-elevated);transition:all .15s;}
+.pp.active{background:var(--color-text);color:var(--surface);border-color:var(--color-text);}
+.setup-card{margin:0 16px 12px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);display:none;}
+.setup-card.open{display:block;}
+.setup-kicker{font-size:9px;font-weight:700;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--accent);}
+.setup-title{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-top:7px;}
+.setup-copy{font-size:12.5px;color:var(--color-body);line-height:1.6;margin-top:6px;}
+.setup-progress{height:7px;border-radius:999px;background:var(--surface-soft);overflow:hidden;border:1px solid var(--color-border-tertiary);margin-top:12px;}
+.setup-progress-fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #79d9b8 100%);}
+.setup-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;}
+.setup-meta{font-size:11px;color:var(--color-text-secondary);}
+.setup-btn{border:none;border-radius:12px;background:var(--color-text);color:var(--surface);padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-sans);}
+.week-note{margin:0 16px 12px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);display:none;overflow:hidden;}
+.week-note.open{display:block;}
+.week-note-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.week-note-kicker{font-size:9px;font-weight:700;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--accent);}
+.week-note-badge{font-size:10px;padding:4px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text);font-weight:600;}
+.week-note-title{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-top:8px;}
+.week-note-copy{font-size:12.5px;color:var(--color-body);line-height:1.6;margin-top:6px;}
+.week-note-progress{height:7px;border-radius:999px;background:var(--surface-soft);overflow:hidden;border:1px solid var(--color-border-tertiary);margin-top:12px;}
+.week-note-progress-fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #79d9b8 100%);}
+.week-note-meta{font-size:11px;color:var(--color-text-secondary);margin-top:8px;}
+.week-note-review{margin-top:10px;padding:11px 12px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.week-note-review-title{font-size:12px;font-weight:700;color:var(--color-text);}
+.week-note-review-copy{font-size:11px;color:var(--color-body);line-height:1.55;margin-top:5px;}
+.section-lbl{font-size:9px;font-weight:700;color:var(--color-text-secondary);letter-spacing:var(--tracking-caps);text-transform:uppercase;padding:0 20px 8px;}
+.insight-card{margin:0 16px 12px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);overflow:hidden;}
+.insight-card.observation{position:relative;padding-left:18px;}
+.insight-card.observation::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:999px;background:var(--accent);}
+.ic-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ic-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ic-title{font-size:13px;font-weight:600;color:var(--color-text);flex:1;}
+.ic-badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:500;}
+.ic-text{font-size:12px;color:var(--color-body);line-height:1.6;margin-bottom:10px;}
+.ic-meta{font-size:11px;color:var(--color-text-secondary);line-height:1.45;margin-top:8px;}
+.ic-highlight{position:relative;background:var(--surface-soft);border-radius:12px;padding:10px 12px 10px 14px;overflow:hidden;}
+.ic-highlight::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:999px;background:var(--accent);}
+.ic-hl-text{font-size:12px;color:var(--accent-text);line-height:1.5;}
+.panel-card{margin:0 16px 12px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);overflow:hidden;}
+.subscore-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px;}
+.subscore-card{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px;box-shadow:var(--shadow-card);}
+.subscore-card.wide{grid-column:1 / -1;}
+.subscore-head{display:flex;justify-content:space-between;gap:8px;align-items:center;}
+.subscore-name{font-size:11.5px;font-weight:600;color:var(--color-text);}
+.subscore-value{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:var(--tracking-display);color:var(--color-text);}
+.subscore-track{height:7px;background:var(--surface-soft);border-radius:999px;overflow:hidden;margin-top:10px;}
+.subscore-fill{height:100%;border-radius:999px;}
+.subscore-copy{font-size:11.5px;color:var(--color-body);line-height:1.55;margin-top:8px;}
+.heatmap-grid{display:grid;grid-template-columns:36px repeat(7,1fr);gap:4px;padding:0;}
+.hm-label{font-size:10px;color:var(--color-text-secondary);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;}
+.hm-cell{height:20px;border-radius:6px;cursor:pointer;transition:opacity .1s;position:relative;}
+.hm-cell:hover{opacity:.75;}
+.hm-col-label{font-size:10px;color:var(--color-text-secondary);text-align:center;}
+.trigger-bars{padding:0;}
+.tbar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.tbar-label{font-size:12px;color:var(--color-body);width:92px;flex-shrink:0;}
+.tbar-track{flex:1;height:10px;background:var(--surface-soft);border-radius:999px;overflow:hidden;}
+.tbar-fill{height:100%;border-radius:999px;}
+.tbar-val{font-size:12px;font-weight:600;color:var(--color-body);width:24px;text-align:right;}
+.supports-list{display:flex;flex-direction:column;gap:10px;}
+.support-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:2px 0;}
+.support-copy{min-width:0;flex:1;}
+.support-text{font-size:13px;line-height:1.45;color:var(--color-text);}
+.support-detail{font-size:11px;line-height:1.4;color:var(--color-text-secondary);margin-top:4px;}
+.support-meta{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding-top:2px;}
+.support-badge{font-size:10px;padding:5px 10px;border-radius:999px;font-weight:700;}
+.support-badge.worked{background:var(--accent-soft);color:var(--accent-text);}
+.support-badge.sometimes{background:#FAEEDA;color:#8A5208;}
+.support-count{font-size:11px;color:var(--color-text-secondary);font-weight:600;}
+.supports-empty{font-size:12px;color:var(--color-body);line-height:1.55;}
+.stat-row{display:flex;gap:8px;padding:0 16px 14px;}
+.stat-card{flex:1;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow-card);}
+.stat-num{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:var(--tracking-display);color:var(--color-text);line-height:0.98;}
+.stat-sub{font-size:10.5px;color:var(--color-text-secondary);margin-top:3px;line-height:1.35;}
+.stat-trend{font-size:11px;margin-top:4px;}
+.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px;}
+.meta-card{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px;box-shadow:var(--shadow-card);overflow:hidden;}
+.meta-card.wide{grid-column:1 / -1;}
+.meta-title{font-size:9px;font-weight:700;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:var(--tracking-caps);}
+.meta-value{font-family:var(--font-display);font-size:19px;font-weight:800;letter-spacing:var(--tracking-display);color:var(--color-text);line-height:1.06;margin-top:8px;}
+.meta-copy{font-size:11.5px;color:var(--color-body);line-height:1.55;margin-top:6px;}
+.detail-card{margin:0 16px 12px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;}
+.detail-toggle{width:100%;border:none;background:transparent;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-family:var(--font-sans);text-align:left;}
+.detail-copy{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.detail-title{font-size:13px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.detail-sub{font-size:11.5px;color:var(--color-body);line-height:1.5;}
+.detail-arrow{font-size:14px;color:var(--color-text-secondary);flex:0 0 auto;transition:transform .15s ease;}
+.detail-card.open .detail-arrow{transform:rotate(180deg);}
+.detail-body{display:none;padding:0 0 2px;}
+.detail-card.open .detail-body{display:block;}
+.detail-body .section-lbl{padding-top:2px;}
+.sticky-bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:296px;max-width:calc(100% - 32px);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid var(--color-border-tertiary);border-radius:24px;background:var(--tab-bg);backdrop-filter:blur(20px);box-shadow:0 18px 36px rgba(34,29,23,0.12);z-index:15;}
+.tab{display:flex;align-items:center;justify-content:center;min-width:0;color:var(--color-text-muted);cursor:pointer;}
+.tab-chip{width:100%;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:18px;transition:background .16s ease,color .16s ease,transform .16s ease;}
+.tab:active .tab-chip{transform:translateY(1px);}
+.tab.active{color:var(--accent);}
+.tab.active .tab-chip{background:var(--surface-elevated);box-shadow:var(--shadow-card);}
+.tab-icon{width:17px;height:17px;display:block;}
+.tab-label{font-size:10px;font-weight:600;line-height:1.1;white-space:nowrap;}
+.tooltip-box{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);background:var(--tooltip-bg);color:var(--tooltip-text);font-size:10px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;display:none;z-index:5;}
+.hm-cell:hover .tooltip-box{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="screen">
+  <div class="topbar">
+    <div><div class="topbar-title">Инсайты</div><div class="topbar-sub" id="insights-subtitle">Что стоит за твоей привычкой</div></div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.05 5.05l1.41 1.41M13.54 13.54l1.41 1.41M5.05 14.95l1.41-1.41M13.54 6.46l1.41-1.41" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="period-pills">
+    <div class="pp" data-period="7d">7 дней</div>
+    <div class="pp active" data-period="30d">30 дней</div>
+    <div class="pp" data-period="90d">3 месяца</div>
+  </div>
+
+  <div class="setup-card" id="setup-card">
+    <div class="setup-kicker">Следующий шаг</div>
+    <div class="setup-title" id="setup-title">Инсайтам нужны первые сигналы</div>
+    <div class="setup-copy" id="setup-copy">Когда появятся первые записи и события, приложение сможет показать окна риска, триггеры и рабочие закономерности.</div>
+    <div class="setup-progress"><div class="setup-progress-fill" id="setup-progress-fill" style="width:0%;"></div></div>
+    <div class="setup-footer">
+      <div class="setup-meta" id="setup-meta">Готово 0 из 3 шагов</div>
+      <button class="setup-btn" id="setup-btn" type="button">Продолжить</button>
+    </div>
+  </div>
+
+  <div class="week-note" id="first-week-note">
+    <div class="week-note-top">
+      <div class="week-note-kicker" id="first-week-kicker">Ранний период · день 1</div>
+      <div class="week-note-badge" id="first-week-badge">первые сигналы</div>
+    </div>
+    <div class="week-note-title" id="first-week-title">Первая неделя ещё собирает основу</div>
+    <div class="week-note-copy" id="first-week-copy">Первые выводы уже полезны, но пока особенно важно смотреть на повторяющиеся окна и триггеры, а не на отдельные эпизоды.</div>
+    <div class="week-note-progress"><div class="week-note-progress-fill" id="first-week-progress" style="width:0%;"></div></div>
+    <div class="week-note-meta" id="first-week-meta">0 из 4 опор первой недели уже есть</div>
+    <div class="week-note-review">
+      <div class="week-note-review-title" id="first-week-review-title">Неделя только собирает основу</div>
+      <div class="week-note-review-copy" id="first-week-review-copy">Сейчас важнее не идеальные дни, а несколько честных сигналов в разных состояниях.</div>
+    </div>
+  </div>
+
+  <div class="section-lbl" id="summary-section-label">Главный инсайт</div>
+  <div class="insight-card observation" id="summary-card">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#FAEEDA;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4M6 14h4" stroke="#854F0B" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <div class="ic-title" id="summary-title"></div>
+      <div class="ic-badge" id="summary-badge"></div>
+    </div>
+    <div class="ic-text" id="summary-text"></div>
+    <div class="ic-highlight"><div class="ic-hl-text" id="summary-recommendation"></div></div>
+    <div class="ic-meta" id="summary-meta"></div>
+  </div>
+
+  <div class="section-lbl" id="wellbeing-section-label" style="display:none;">Что происходит с тобой перед сложными днями</div>
+  <div class="insight-card" id="wellbeing-card" style="display:none;">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#E6F1FB;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 14s-4.5-2.8-4.5-7A2.5 2.5 0 018 5.2 2.5 2.5 0 0112.5 7c0 4.2-4.5 7-4.5 7z" stroke="#0C447C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h4" stroke="#0C447C" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="ic-title" id="wellbeing-title"></div>
+      <div class="ic-badge" id="wellbeing-badge"></div>
+    </div>
+    <div class="ic-text" id="wellbeing-text"></div>
+    <div class="ic-text" id="wellbeing-trend" style="color:var(--color-text-secondary);margin-top:-2px;"></div>
+    <div class="ic-highlight"><div class="ic-hl-text" id="wellbeing-highlight"></div></div>
+  </div>
+
+  <div class="section-lbl" id="heatmap-section-label">По часам и дням</div>
+  <div class="panel-card" id="heatmap-card">
+    <div class="heatmap-grid" id="heatmap"></div>
+  </div>
+
+  <div class="section-lbl" id="triggers-section-label">Триггеры этого периода</div>
+  <div class="panel-card" id="triggers-card">
+    <div class="trigger-bars" id="trigger-bars"></div>
+  </div>
+
+  <div class="section-lbl" id="supports-section-label">Что работало</div>
+  <div class="panel-card" id="supports-card">
+    <div class="supports-list" id="supports-list"></div>
+  </div>
+
+  <div class="section-lbl" id="stats-caption" style="display:none;">За 30 дней</div>
+  <div class="stat-row" id="stat-row" style="display:none;"></div>
+
+  <div class="detail-card" id="index-detail-card" style="display:none;">
+    <button class="detail-toggle" type="button" data-detail-card="index-detail-card">
+      <span class="detail-copy">
+        <span class="detail-title">Состав индекса</span>
+        <span class="detail-sub" id="index-detail-summary">Показать, из чего складывается текущая нагрузка.</span>
+      </span>
+      <span class="detail-arrow">⌄</span>
+    </button>
+    <div class="detail-body">
+      <div class="subscore-grid" id="subscore-grid"></div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="finance-detail-card" style="display:none;">
+    <button class="detail-toggle" type="button" data-detail-card="finance-detail-card">
+      <span class="detail-copy">
+        <span class="detail-title">Финансы и здоровье</span>
+        <span class="detail-sub" id="finance-detail-summary">Показать, сколько привычка стоит и что происходит с личными маркерами.</span>
+      </span>
+      <span class="detail-arrow">⌄</span>
+    </button>
+    <div class="detail-body">
+      <div class="meta-row" id="meta-row"></div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="period-detail-card" style="display:none;">
+    <button class="detail-toggle" type="button" data-detail-card="period-detail-card">
+      <span class="detail-copy">
+        <span class="detail-title">Детали периода</span>
+        <span class="detail-sub" id="period-detail-summary">Показать часы риска и топ-триггеры этого периода.</span>
+      </span>
+      <span class="detail-arrow">⌄</span>
+    </button>
+    <div class="detail-body">
+      <div class="section-lbl">Тепловая карта по часам</div>
+      <div class="heatmap-grid"></div>
+      <div class="section-lbl">Триггеры этого периода</div>
+      <div class="trigger-bars"></div>
+    </div>
+  </div>
+
+  <div class="section-lbl" id="daypattern-section-label">Паттерн недели</div>
+  <div class="insight-card" id="daypattern-card" style="margin-bottom:14px;">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#E1F5EE;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="#0F6E56" stroke-width="1.3"/><path d="M5 3V2M11 3V2M2 7h12" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <div class="ic-title" id="daypattern-title"></div>
+      <div class="ic-badge" id="daypattern-badge"></div>
+    </div>
+    <div class="ic-text" id="daypattern-text"></div>
+    <div class="ic-highlight"><div class="ic-hl-text" id="daypattern-highlight"></div></div>
+  </div>
+
+  <div class="sticky-bottom">
+    <div class="tab" data-route="main"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg><span class="tab-label">Главная</span></div></div>
+    <div class="tab active" data-route="insights"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><span class="tab-label">Инсайты</span></div></div>
+    <div class="tab" data-route="diary"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="tab-label">Дневник</span></div></div>
+    <div class="tab" data-route="profile"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-label">Профиль</span></div></div>
+  </div>
+</div>
+</div>
+
+<script src="../analytics/store.js"></script>
+<script src="../analytics/app-core.js"></script>
+<script src="../analytics/ui-flow.js"></script>
+<script src="../analytics/narrative-engine.js"></script>
+<script src="../analytics/screen-view-models.js"></script>
+<script src="../analytics/screen-dom.js"></script>
+<script src="../analytics/advice-library.js"></script>
+<script src="../analytics/runtime-browser-v2.js"></script>
+<script src="../analytics/navigation.js"></script>
+<script>
+if (window.self !== window.top) {
+  document.documentElement.classList.add("embedded-shell");
+}
+var currentPeriod = "30d";
+var heatmapRoot = document.getElementById("heatmap");
+var triggerBarsRoot = document.getElementById("trigger-bars");
+var statRowRoot = document.getElementById("stat-row");
+var statsCaption = document.getElementById("stats-caption");
+var subscoreGridRoot = document.getElementById("subscore-grid");
+var metaRowRoot = document.getElementById("meta-row");
+var detailState = {
+  "index-detail-card": false,
+  "finance-detail-card": false,
+  "period-detail-card": false
+};
+
+function getSetupModel(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getSetupModel) {
+    return window.HabitUiFlow.getSetupModel(state);
+  }
+  return { completed: 0, total: 3, progress: 0, nextStep: null };
+}
+
+function openSetupNextStep(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.openSetupNextStep) {
+    return window.HabitUiFlow.openSetupNextStep({
+      state: state || window.HabitStore.getState(),
+      firstEventRoute: "main",
+      intentRoute: "profile"
+    });
+  }
+}
+
+function setInsightsVisibility(showAnalytics) {
+  document.getElementById("summary-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("summary-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("wellbeing-section-label").style.display = "none";
+  document.getElementById("wellbeing-card").style.display = "none";
+  document.getElementById("heatmap-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("heatmap-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("triggers-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("triggers-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("supports-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("supports-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("stats-caption").style.display = "none";
+  document.getElementById("stat-row").style.display = "none";
+  document.getElementById("index-detail-card").style.display = "none";
+  document.getElementById("finance-detail-card").style.display = "none";
+  document.getElementById("period-detail-card").style.display = "none";
+  document.getElementById("daypattern-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("daypattern-card").style.display = showAnalytics ? "" : "none";
+}
+
+function renderSetupCard(state, hasBehaviorData) {
+  var setup = getSetupModel(state);
+  var root = document.getElementById("setup-card");
+  if (!setup.nextStep) {
+    root.classList.remove("open");
+    return;
+  }
+
+  root.classList.add("open");
+  document.getElementById("setup-progress-fill").style.width = setup.progress + "%";
+  document.getElementById("setup-meta").textContent = "Готово " + setup.completed + " из " + setup.total + " шагов";
+
+  if (!hasBehaviorData) {
+    document.getElementById("setup-title").textContent = "Инсайтам нужны первые сигналы";
+    document.getElementById("setup-copy").textContent = "Когда появятся первые записи и события, приложение сможет показать окна риска, триггеры и рабочие закономерности.";
+    document.getElementById("setup-btn").textContent = "Сделать первый шаг";
+    return;
+  }
+
+  if (setup.nextStep.id === "assessment") {
+    document.getElementById("setup-title").textContent = "Теперь уточни стартовую нагрузку";
+    document.getElementById("setup-copy").textContent = "Первые сигналы уже есть. Следом опрос поможет сделать выводы точнее и спокойнее.";
+    document.getElementById("setup-btn").textContent = "Открыть опрос";
+  } else {
+    document.getElementById("setup-title").textContent = "Добавь личный контекст";
+    document.getElementById("setup-copy").textContent = "Финансы, время и health markers дадут инсайтам больше веса и связи с реальной жизнью.";
+    document.getElementById("setup-btn").textContent = "Открыть настройку";
+  }
+}
+
+function getFirstWeekModel(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getFirstWeekModel) {
+    return window.HabitUiFlow.getFirstWeekModel(state);
+  }
+  return { active: false, completed: 0, total: 4, progress: 0 };
+}
+
+function getFirstWeekSupport(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getFirstWeekSupport) {
+    return window.HabitUiFlow.getFirstWeekSupport(state);
+  }
+  return { review: null };
+}
+
+function renderFirstWeekNote(state, hasBehaviorData) {
+  var model = getFirstWeekModel(state);
+  var support = getFirstWeekSupport(state);
+  var root = document.getElementById("first-week-note");
+  if (!hasBehaviorData || !model.active) {
+    root.classList.remove("open");
+    return;
+  }
+
+  root.classList.add("open");
+  document.getElementById("first-week-kicker").textContent = "Ранний период · день " + model.dayNumber;
+  document.getElementById("first-week-badge").textContent = model.stageLabel;
+  document.getElementById("first-week-title").textContent = model.headline;
+  document.getElementById("first-week-copy").textContent = "Инсайты уже начинают собирать твой ритм. " + model.narrative;
+  document.getElementById("first-week-progress").style.width = model.progress + "%";
+  document.getElementById("first-week-meta").textContent = model.completed + " из " + model.total + " опор первой недели уже есть";
+  if (support.review) {
+    document.getElementById("first-week-review-title").textContent = support.review.headline;
+    document.getElementById("first-week-review-copy").textContent = support.review.text;
+  }
+}
+
+function getAdviceTimeSegmentFromHour(hour) {
+  if (hour >= 5 && hour < 11) return "morning";
+  if (hour >= 11 && hour < 17) return "afternoon";
+  if (hour >= 17 && hour < 22) return "evening";
+  return "night";
+}
+
+function getRiskHour(model) {
+  var raw = (model.summary.riskWindow || "").split(":")[0];
+  return Number(raw) || 13;
+}
+
+function getInsightAdvice(model, state) {
+  if (!window.HabitAdviceLibrary || !window.HabitAdviceLibrary.buildAdviceBundle) {
+    return null;
+  }
+
+  var triggerTags = (model.triggers || []).slice(0, 3).map(function (item) {
+    return item.key || "other";
+  });
+
+  return window.HabitAdviceLibrary.buildAdviceBundle({
+    habitId: state.currentHabit.id,
+    triggerTags: triggerTags,
+    riskLevel: model.summary.riskLevel,
+    timeSegment: getAdviceTimeSegmentFromHour(getRiskHour(model)),
+    includeUnreviewed: true
+  });
+}
+
+function getColor(value, maxValue) {
+  if (value === 0) return getComputedStyle(document.documentElement).getPropertyValue("--heat-empty").trim() || "#f0ede8";
+  var t = value / Math.max(maxValue, 1);
+  if (t < 0.3) return "#9FE1CB";
+  if (t < 0.6) return "#EF9F27";
+  return "#D85A30";
+}
+
+function renderHeatmap(model) {
+  var maxValue = Math.max.apply(null, model.heatmap.values.flat());
+  heatmapRoot.innerHTML = "";
+  heatmapRoot.appendChild(document.createElement("div"));
+  model.heatmap.days.forEach(function (day) {
+    var label = document.createElement("div");
+    label.className = "hm-col-label";
+    label.textContent = day;
+    heatmapRoot.appendChild(label);
+  });
+  model.heatmap.values.forEach(function (row, rowIndex) {
+    var rowLabel = document.createElement("div");
+    rowLabel.className = "hm-label";
+    rowLabel.textContent = model.heatmap.hours[rowIndex];
+    heatmapRoot.appendChild(rowLabel);
+    row.forEach(function (value, colIndex) {
+      var cell = document.createElement("div");
+      cell.className = "hm-cell";
+      cell.style.background = getColor(value, maxValue);
+      var tooltip = document.createElement("div");
+      tooltip.className = "tooltip-box";
+      tooltip.textContent = model.heatmap.days[colIndex] + " " + model.heatmap.hours[rowIndex] + ": " + value + " раза";
+      cell.appendChild(tooltip);
+      heatmapRoot.appendChild(cell);
+    });
+  });
+}
+
+function renderSummary(model, state) {
+  var summaryVm = model.summaryView || model.summary || {};
+  var adviceBundle = getInsightAdvice(model, state);
+  var primaryAdvice = adviceBundle && adviceBundle.primary ? adviceBundle.primary.advice : null;
+  var recommendationNode = document.getElementById("summary-recommendation");
+  var recommendationCard = recommendationNode.closest(".ic-highlight");
+  var metaNode = document.getElementById("summary-meta");
+  document.getElementById("summary-title").textContent = summaryVm.headline;
+  document.getElementById("summary-badge").textContent = "наблюдение";
+  document.getElementById("summary-badge").style.background = "#E1F5EE";
+  document.getElementById("summary-badge").style.color = "#085041";
+  document.getElementById("summary-text").textContent = summaryVm.narrative;
+  recommendationNode.textContent = [
+    primaryAdvice ? primaryAdvice.body : "",
+    summaryVm.recommendation || ""
+  ].filter(Boolean).join(" ");
+  recommendationCard.style.display = recommendationNode.textContent ? "" : "none";
+  if (metaNode) {
+    metaNode.textContent = summaryVm.meta || ("За " + model.daysLabel.toLowerCase());
+  }
+}
+
+function renderWellbeing(model) {
+  var insight = model.wellbeing && model.wellbeing.insight;
+  var trend = model.wellbeing && model.wellbeing.trend;
+  var section = document.getElementById("wellbeing-section-label");
+  var card = document.getElementById("wellbeing-card");
+  if (!insight) {
+    section.style.display = "none";
+    card.style.display = "none";
+    return;
+  }
+  section.style.display = "";
+  card.style.display = "";
+  document.getElementById("wellbeing-title").textContent = insight.title;
+  document.getElementById("wellbeing-badge").textContent = insight.badge;
+  document.getElementById("wellbeing-badge").style.background = insight.badgeBg;
+  document.getElementById("wellbeing-badge").style.color = insight.badgeColor;
+  document.getElementById("wellbeing-text").textContent = insight.text;
+  document.getElementById("wellbeing-trend").textContent = trend ? trend.text : "";
+  document.getElementById("wellbeing-trend").style.display = trend ? "" : "none";
+  document.getElementById("wellbeing-highlight").textContent = insight.highlight;
+}
+
+function renderTriggers(model) {
+  triggerBarsRoot.innerHTML = model.triggers.map(function (item) {
+    return '<div class="tbar-row"><div class="tbar-label">' + item.label + '</div><div class="tbar-track"><div class="tbar-fill" style="width:' + Math.round(item.share * 100) + '%;background:' + item.color + ';"></div></div><div class="tbar-val">' + item.count + '</div></div>';
+  }).join("");
+}
+
+function renderSupports(vm) {
+  var root = document.getElementById("supports-list");
+  var supports = vm && vm.workedSupports && vm.workedSupports.items ? vm.workedSupports.items : [];
+  if (!supports.length) {
+    root.innerHTML = '<div class="supports-empty">Когда начнут повторяться рабочие ориентиры, здесь появятся твои личные опоры из собственных записей и ритма дня.</div>';
+    return;
+  }
+  root.innerHTML = supports.map(function (item) {
+    return '<div class="support-item">' +
+      '<div class="support-copy"><div class="support-text">' + item.text + '</div>' +
+      (item.detail ? '<div class="support-detail">' + item.detail + '</div>' : '') +
+      '</div>' +
+      '<div class="support-meta"><div class="support-badge ' + item.tone + '">' + item.toneLabel + '</div><div class="support-count">' + item.countLabel + '</div></div>' +
+      '</div>';
+  }).join("");
+}
+
+function getSubscoreItems(model) {
+  var subscores = model.summary.subscores || {};
+  return [
+    {
+      key: "craving",
+      label: "Тяга",
+      value: subscores.cravingScore || 0,
+      color: "#D85A30",
+      text: "Как часто и насколько сильно сейчас поднимается тяга."
+    },
+    {
+      key: "automaticity",
+      label: "Автоматизм",
+      value: subscores.automaticityScore || 0,
+      color: "#0C447C",
+      text: "Насколько привычка срабатывает по одному и тому же сценарию."
+    },
+    {
+      key: "control",
+      label: "Контроль",
+      value: subscores.lossOfControlScore || 0,
+      color: "#EF9F27",
+      text: "Насколько трудно остановиться и не выйти за свой лимит."
+    },
+    {
+      key: "emotional",
+      label: "Эмоции",
+      value: subscores.emotionalRelianceScore || 0,
+      color: "#7F77DD",
+      text: "Насколько сильно привычка сейчас привязана к стрессу и состоянию."
+    },
+    {
+      key: "recovery",
+      label: "Восстановление",
+      value: subscores.recoveryScore || 0,
+      color: "#1D9E75",
+      text: "Как быстро удаётся вернуться в опору после трудных дней."
+    }
+  ].sort(function (left, right) {
+    return right.value - left.value;
+  });
+}
+
+function renderSubscores(model) {
+  var items = getSubscoreItems(model);
+  subscoreGridRoot.innerHTML = items.map(function (item, index) {
+    return '<div class="subscore-card ' + (index === 0 ? "wide" : "") + '"><div class="subscore-head"><div class="subscore-name">' + item.label + '</div><div class="subscore-value">' + Math.round(item.value) + '</div></div><div class="subscore-track"><div class="subscore-fill" style="width:' + Math.round(item.value) + '%;background:' + item.color + ';"></div></div><div class="subscore-copy">' + item.text + (index === 0 ? ' Сейчас это самый сильный драйвер индекса.' : '') + '</div></div>';
+  }).join("");
+}
+
+function updateDetailCard(cardId, open) {
+  var card = document.getElementById(cardId);
+  if (!card) return;
+  card.classList.toggle("open", !!open);
+}
+
+function setDetailSummaries(model) {
+  var topSubscore = getSubscoreItems(model)[0];
+  var financialLoad = model.financialLoad || { label: "низкая", trend: { direction: "stable", delta: 0 } };
+  var financeTrend = financialLoad.trend || { direction: "stable", delta: 0 };
+  var financeTrendText = financeTrend.direction === "up"
+    ? "растёт"
+    : financeTrend.direction === "down"
+      ? "снижается"
+      : "стабильна";
+
+  document.getElementById("index-detail-summary").textContent = topSubscore.label + " сейчас сильнее всего влияет на индекс: " + Math.round(topSubscore.value) + "/100.";
+  document.getElementById("finance-detail-summary").textContent = "Нагрузка " + financialLoad.label + " и " + financeTrendText + "; маркеров заполнено " + ((model.health && model.health.filledCount) || 0) + "/" + ((model.health && model.health.totalCount) || 7) + ".";
+  document.getElementById("period-detail-summary").textContent = "Окно риска: " + model.summary.riskWindow + ". Главный триггер: " + model.summary.mainTrigger.toLowerCase() + ".";
+}
+
+function renderStats(model) {
+  statsCaption.textContent = "За " + model.daysLabel.toLowerCase();
+  statRowRoot.innerHTML = model.stats.map(function (item) {
+    return '<div class="stat-card"><div class="stat-num">' + item.value + '</div><div class="stat-sub">' + item.label + '</div><div class="stat-trend" style="color:' + item.trendColor + ';">' + item.trend + '</div></div>';
+  }).join("");
+}
+
+function formatMoney(value, symbol) {
+  return new Intl.NumberFormat("ru-RU", {
+    maximumFractionDigits: value % 1 === 0 ? 0 : 2
+  }).format(Number(value) || 0) + " " + (symbol || "₽");
+}
+
+function renderMeta(model) {
+  var finance = model.finance || {};
+  var financialLoad = model.financialLoad || { score: 0, label: "низкая", color: "#1D9E75", bg: "#E1F5EE", headline: "Финансовая нагрузка низкая", narrative: "", driver: "частота эпизодов" };
+  var trend = financialLoad.trend || { direction: "stable", delta: 0, text: "Почти без изменений к прошлому периоду." };
+  var health = model.health || { filledCount: 0, totalCount: 7, markers: {} };
+  var markers = health.markers || {};
+  var bp = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null
+    ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic)
+    : "не заполнено";
+  var trendMark = trend.direction === "up" ? "↑ +" + Math.abs(Math.round(trend.delta)) : trend.direction === "down" ? "↓ -" + Math.abs(Math.round(trend.delta)) : "≈ 0";
+  var healthTrendMark = health.trendDirection === "up" ? "↑" : health.trendDirection === "down" ? "↓" : health.trendDirection === "stable" ? "≈" : "•";
+
+  metaRowRoot.innerHTML = [
+    '<div class="meta-card wide"><div class="meta-title">Финансовая нагрузка</div><div class="meta-value" style="color:' + financialLoad.color + ';">' + Math.round(financialLoad.score) + ' · ' + financialLoad.label + ' ' + trendMark + '</div><div class="meta-copy">' + financialLoad.headline + '. Главный драйвер: ' + financialLoad.driver + '. ' + trend.text + ' ' + financialLoad.narrative + '</div></div>',
+    '<div class="meta-card"><div class="meta-title">Расход за период</div><div class="meta-value">' + formatMoney(finance.monthSpent || finance.weekSpent || 0, finance.currencySymbol || "₽") + '</div><div class="meta-copy">Прогноз на месяц: ' + formatMoney(finance.monthProjection || 0, finance.currencySymbol || "₽") + '. Время: ' + (finance.monthHours || 0) + ' ч.</div></div>',
+    '<div class="meta-card"><div class="meta-title">Health markers</div><div class="meta-value">' + health.filledCount + '/' + health.totalCount + ' ' + healthTrendMark + '</div><div class="meta-copy">Сон: ' + (markers.sleepHours != null ? markers.sleepHours + ' ч' : 'не заполнено') + '. Давление: ' + bp + '. ' + (health.trendSummary || 'Пока нет прошлого замера для сравнения.') + '</div></div>',
+    '<div class="meta-card wide"><div class="meta-title">Телесные сигналы</div><div class="meta-value">' + ((model.meta && model.meta.physicalValue) || 'Пока не отмечены') + '</div><div class="meta-copy">' + ((model.meta && model.meta.physicalText) || 'Когда появятся телесные сигналы, здесь начнёт собираться телесный паттерн привычки.') + '</div></div>'
+  ].join("");
+}
+
+function renderDayPattern(model) {
+  document.getElementById("daypattern-title").textContent = model.dayPattern.title;
+  document.getElementById("daypattern-badge").textContent = model.dayPattern.badge;
+  document.getElementById("daypattern-badge").style.background = model.dayPattern.badgeBg;
+  document.getElementById("daypattern-badge").style.color = model.dayPattern.badgeColor;
+  document.getElementById("daypattern-text").textContent = model.dayPattern.text;
+  document.getElementById("daypattern-highlight").textContent = model.dayPattern.highlight;
+}
+
+function render() {
+  var state = window.HabitStore.getState();
+  var vm = window.HabitScreenModels && window.HabitScreenModels.buildInsightsScreenModel
+    ? window.HabitScreenModels.buildInsightsScreenModel(state, currentPeriod)
+    : null;
+  var model = vm && vm.raw ? vm.raw : window.HabitAnalytics.getInsightViewModel(currentPeriod);
+  if (vm && vm.summaryView) {
+    model.summaryView = vm.summaryView;
+  }
+  var hasBehaviorData = vm ? vm.hasBehaviorData : (state.slips.length + state.resisted.length + state.diaryEntries.length) > 0;
+
+  if (vm && window.HabitScreenDom && window.HabitScreenDom.applyInsightsScreenViewModel) {
+    window.HabitScreenDom.applyInsightsScreenViewModel(vm);
+  } else {
+    document.getElementById("insights-subtitle").textContent = "Что стоит за привычкой: " + state.currentHabit.name;
+  }
+  renderSetupCard(state, hasBehaviorData);
+  renderFirstWeekNote(state, hasBehaviorData);
+  setInsightsVisibility(hasBehaviorData);
+  if (!hasBehaviorData) {
+    return;
+  }
+  renderSummary(model, state);
+  renderWellbeing(model);
+  renderSupports(vm || {});
+  if (!vm) {
+    setDetailSummaries(model);
+  }
+  renderHeatmap(model);
+  renderTriggers(model);
+  renderSubscores(model);
+  renderStats(model);
+  renderMeta(model);
+  if (vm && window.HabitScreenDom && window.HabitScreenDom.patchInsightsMeta) {
+    window.HabitScreenDom.patchInsightsMeta(vm, metaRowRoot);
+  }
+  renderDayPattern(model);
+  Object.keys(detailState).forEach(function (cardId) {
+    updateDetailCard(cardId, detailState[cardId]);
+  });
+}
+
+document.querySelectorAll(".pp").forEach(function (button) {
+  button.addEventListener("click", function () {
+    document.querySelectorAll(".pp").forEach(function (item) { item.classList.remove("active"); });
+    button.classList.add("active");
+    currentPeriod = button.dataset.period;
+    render();
+  });
+});
+
+document.querySelectorAll("[data-detail-card]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    var cardId = button.getAttribute("data-detail-card");
+    detailState[cardId] = !detailState[cardId];
+    updateDetailCard(cardId, detailState[cardId]);
+  });
+});
+document.getElementById("setup-btn").addEventListener("click", function () {
+  openSetupNextStep(window.HabitStore.getState());
+});
+
+window.HabitStore.subscribe(render);
+window.DemoNavigation.initBottomTabs();
+render();
+</script>
+</body>
+</html>

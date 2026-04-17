@@ -1,0 +1,836 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Дневник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  color-scheme: light;
+  --font-sans:"DM Sans","Segoe UI",sans-serif;
+  --font-display:var(--font-sans);
+  --tracking-display:-0.03em;
+  --tracking-tight:-0.02em;
+  --tracking-caps:0.1em;
+  --bg:#ece7dd;
+  --surface:#faf9f6;
+  --surface-elevated:#ffffff;
+  --surface-soft:#f3efe7;
+  --color-border-tertiary:#e6ded2;
+  --color-border-strong:#d6cfc2;
+  --color-text:#1e1c18;
+  --color-text-secondary:#8a8880;
+  --color-text-muted:#b0ada8;
+  --color-body:#4f4a43;
+  --accent:#1D9E75;
+  --accent-soft:#E1F5EE;
+  --accent-text:#085041;
+  --tab-bg:#faf9f6;
+  --shadow-card:0 14px 28px rgba(34, 29, 23, 0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0f1412;
+    --surface:#171c1a;
+    --surface-elevated:#1d2421;
+    --surface-soft:#202825;
+    --color-border-tertiary:#29312d;
+    --color-border-strong:#35403a;
+    --color-text:#f3efe8;
+    --color-text-secondary:#b2aba0;
+    --color-text-muted:#8c867c;
+    --color-body:#d6d0c7;
+    --accent:#33b887;
+    --accent-soft:#123328;
+    --accent-text:#b8f0db;
+    --tab-bg:#161b19;
+    --shadow-card:none;
+  }
+}
+html,body{min-height:100%;background:var(--bg);}
+body{padding:12px;font-family:var(--font-sans);color:var(--color-text);}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:var(--surface);border-radius:30px;border:1px solid var(--color-border-tertiary);overflow:hidden;position:relative;box-shadow:var(--shadow-card);padding-bottom:112px;min-height:calc(100dvh - 24px);}
+html.embedded-shell .sticky-bottom{display:none;}
+.topbar{padding:18px 20px 12px;display:flex;justify-content:space-between;align-items:center;}
+.topbar-title{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.topbar-sub{font-size:11.5px;color:var(--color-text-secondary);line-height:1.45;margin-top:2px;}
+.tab-pills{display:flex;gap:6px;padding:0 20px 14px;}
+.pill{padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--color-border-tertiary);color:var(--color-text-secondary);background:var(--surface-elevated);transition:all .15s;}
+.pill.active{background:var(--color-text);color:var(--surface);border-color:var(--color-text);}
+.filter-pills{display:flex;gap:6px;padding:0 16px 12px;}
+.filter-pill{padding:6px 12px;border-radius:999px;font-size:11px;cursor:pointer;border:1px solid var(--color-border-tertiary);color:var(--color-body);background:var(--surface-elevated);transition:all .15s;}
+.filter-pill.active{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);}
+.filter-summary{padding:0 16px 10px;font-size:11px;color:var(--color-text-secondary);line-height:1.5;}
+.panel{display:none;padding:0 16px 90px;}
+.panel.active{display:block;}
+.entry-compose{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow-card);}
+.compose-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.compose-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#E1F5EE;flex-shrink:0;}
+.compose-meta{flex:1;}
+.compose-name{font-size:12.5px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.compose-time{font-size:11px;color:var(--color-text-secondary);}
+.compose-modes{display:flex;gap:8px;margin-bottom:10px;}
+.compose-mode{border:1px solid var(--color-border-tertiary);border-radius:999px;background:var(--surface-soft);color:var(--color-body);padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
+.compose-mode.active{background:var(--color-text);color:var(--surface);border-color:var(--color-text);}
+.compose-hint{font-size:11.5px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:10px;}
+.compose-anchor{display:none;position:relative;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:10px 12px 10px 14px;margin-bottom:10px;overflow:hidden;}
+.compose-anchor.open{display:block;}
+.compose-anchor::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:999px;background:var(--accent);}
+.compose-anchor-kicker{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--color-text-secondary);}
+.compose-anchor-text{font-size:12.5px;line-height:1.58;color:var(--color-body);margin-top:4px;}
+.compose-textarea{width:100%;border:1px solid var(--color-border-tertiary);outline:none;font-size:13.5px;color:var(--color-text);line-height:1.62;resize:none;background:var(--surface-soft);font-family:var(--font-sans);min-height:96px;border-radius:14px;padding:12px 13px;}
+.compose-textarea::placeholder{color:var(--color-text-secondary);}
+.compose-section-label{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--color-text-secondary);margin-top:10px;margin-bottom:8px;}
+.compose-bottom{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface-soft);}
+.compose-bottom.wrap{flex-wrap:wrap;align-items:flex-start;}
+.tag-chip{padding:5px 12px;border-radius:20px;font-size:11px;border:1px solid var(--color-border-tertiary);color:var(--color-body);background:var(--surface-soft);cursor:pointer;transition:all .15s;}
+.tag-chip.sel{background:var(--color-text);color:var(--surface);border-color:var(--color-text);}
+.state-controls{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--surface-soft);}
+.state-controls.open{display:block;}
+.state-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.state-field{display:flex;flex-direction:column;gap:5px;}
+.state-label{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;}
+.state-select{width:100%;border:1px solid var(--color-border-tertiary);border-radius:10px;padding:8px 10px;font-size:12px;background:var(--surface-soft);color:var(--color-text);font-family:var(--font-sans);outline:none;}
+.state-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.signal-label{font-size:9px;font-weight:700;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:var(--tracking-caps);margin-top:10px;}
+.compose-actions{display:flex;justify-content:flex-end;margin-top:12px;}
+.starter-card{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow-card);}
+.starter-title{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.starter-copy{font-size:12.5px;color:var(--color-body);line-height:1.6;margin-top:6px;}
+.starter-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.starter-item{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:11px 12px;}
+.starter-label{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--color-text-secondary);}
+.starter-text{font-size:11px;color:var(--color-body);line-height:1.5;margin-top:6px;}
+.starter-chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.starter-chip{padding:6px 10px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);font-size:11px;color:var(--color-body);}
+.entry-kind{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;background:var(--surface-soft);color:var(--color-body);border:1px solid var(--color-border-tertiary);}
+  .entry-kind.state{background:#E6F1FB;color:#0C447C;border-color:#C3DCF7;}
+  .entry-kind.resisted{background:#E1F5EE;color:#085041;border-color:rgba(29,158,117,0.24);}
+  .habit-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+  .habit-tag-chip{font-size:11px;padding:4px 8px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);border:1px solid rgba(29,158,117,0.18);}
+  .state-summary{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.state-chip{font-size:11px;padding:4px 8px;border-radius:10px;background:var(--surface-soft);color:var(--color-body);border:1px solid var(--color-border-tertiary);}
+.compose-send{margin-left:auto;background:var(--accent);color:#E1F5EE;border:none;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
+.diary-entry{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow-card);}
+.de-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.de-avatar{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#E1F5EE;flex-shrink:0;}
+.de-meta{flex:1;}
+.de-name{font-size:12.5px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.de-time{font-size:10px;color:var(--color-text-secondary);}
+.de-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.de-text{font-size:13.5px;color:var(--color-body);line-height:1.62;margin-bottom:8px;}
+.de-habit-ref{position:relative;display:flex;align-items:center;gap:6px;background:var(--surface-soft);border-radius:10px;padding:7px 10px 7px 12px;overflow:hidden;}
+.de-habit-ref::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:999px;background:var(--accent);}
+.de-habit-label{font-size:11px;color:var(--color-body);}
+.de-habit-count{font-size:11px;font-weight:600;color:var(--accent-text);}
+.de-anchor{margin-top:8px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:10px;padding:9px 10px;}
+.de-anchor-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.de-anchor-label{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--color-text-secondary);}
+.de-anchor-repeat{font-size:10px;font-weight:700;color:var(--accent-text);background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.18);border-radius:999px;padding:2px 7px;white-space:nowrap;}
+.de-anchor-text{font-size:12px;line-height:1.52;color:var(--color-body);margin-top:4px;}
+.de-footer{display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--surface-soft);}
+.de-reaction{font-size:11px;color:var(--color-text-secondary);}
+.log-item{background:var(--surface-elevated);border-radius:14px;padding:11px 14px;margin-bottom:8px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);}
+.log-row{display:flex;align-items:center;gap:10px;}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.log-text{flex:1;font-size:12.5px;line-height:1.52;color:var(--color-body);}
+.log-time{font-size:11px;color:var(--color-text-muted);}
+.log-note-btn{font-size:11px;color:var(--accent);cursor:pointer;padding:4px 0;margin-top:6px;display:flex;align-items:center;gap:4px;}
+.log-note-area{margin-top:8px;display:none;}
+.log-note-area.open{display:block;}
+.log-note-input{width:100%;border:1px solid var(--color-border-tertiary);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--color-text);background:var(--surface-soft);font-family:var(--font-sans);resize:none;outline:none;line-height:1.5;}
+.log-note-save{margin-top:6px;font-size:11px;color:#fff;background:var(--accent);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:var(--font-sans);}
+.log-note-saved{margin-top:6px;font-size:11px;color:var(--accent);padding:4px 0;line-height:1.5;}
+.setup-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px;box-shadow:var(--shadow-card);display:none;}
+.setup-card.open{display:block;}
+.setup-kicker{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);}
+.setup-title{font-size:14px;font-weight:700;color:var(--color-text);margin-top:7px;}
+.setup-copy{font-size:12px;color:var(--color-body);line-height:1.55;margin-top:6px;}
+.setup-progress{height:7px;border-radius:999px;background:var(--surface-soft);overflow:hidden;border:1px solid var(--color-border-tertiary);margin-top:12px;}
+.setup-progress-fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #79d9b8 100%);}
+.setup-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;}
+.setup-meta{font-size:11px;color:var(--color-text-secondary);}
+.setup-btn{border:none;border-radius:12px;background:var(--color-text);color:var(--surface);padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-sans);}
+.sticky-bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:296px;max-width:calc(100% - 32px);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid var(--color-border-tertiary);border-radius:24px;background:var(--tab-bg);backdrop-filter:blur(20px);box-shadow:0 18px 36px rgba(34,29,23,0.12);z-index:15;}
+.tab{display:flex;align-items:center;justify-content:center;min-width:0;color:var(--color-text-muted);cursor:pointer;}
+.tab-chip{width:100%;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:18px;transition:background .16s ease,color .16s ease,transform .16s ease;}
+.tab:active .tab-chip{transform:translateY(1px);}
+.tab.active{color:var(--accent);}
+.tab.active .tab-chip{background:var(--surface-elevated);box-shadow:var(--shadow-card);}
+.tab-icon{width:17px;height:17px;display:block;}
+.tab-label{font-size:10px;font-weight:600;line-height:1.1;white-space:nowrap;}
+.empty{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:18px 16px;color:var(--color-body);font-size:13px;line-height:1.65;box-shadow:var(--shadow-card);}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="screen">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="diary-title">Дневник</div>
+      <div class="topbar-sub" id="diary-subtitle">Твои мысли и записи о привычке</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#1D9E75" stroke-width="1.5"/><path d="M10 6v5M10 13v1" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="tab-pills">
+    <div class="pill active" data-tab="diary" id="diary-pill-label">Мысли</div>
+    <div class="pill" data-tab="log" id="log-pill-label">Записи срывов</div>
+  </div>
+
+  <div class="setup-card" id="setup-card">
+    <div class="setup-kicker" id="setup-kicker">Следующий шаг</div>
+    <div class="setup-title" id="setup-title">Сделай первую запись</div>
+    <div class="setup-copy" id="setup-copy">Одна мысль или первое событие уже превратят дневник в живую опору, а не в пустой экран.</div>
+    <div class="setup-progress"><div class="setup-progress-fill" id="setup-progress-fill" style="width:0%;"></div></div>
+    <div class="setup-footer">
+      <div class="setup-meta" id="setup-meta">Готово 0 из 3 шагов</div>
+      <button class="setup-btn" id="setup-btn" type="button">Продолжить</button>
+    </div>
+  </div>
+
+  <div class="panel active" id="panel-diary">
+    <div class="filter-summary" id="entry-filter-summary">О привычке: 0 · Состояние: 0 · Всего: 0</div>
+    <div class="filter-pills" id="entry-filter-pills">
+      <button class="filter-pill active" type="button" data-entry-filter="all" id="entry-filter-all-label">Все</button>
+      <button class="filter-pill" type="button" data-entry-filter="habit" id="entry-filter-habit-label">Привычка</button>
+      <button class="filter-pill" type="button" data-entry-filter="state" id="entry-filter-state-label">Состояние</button>
+    </div>
+    <div class="entry-compose">
+      <div class="compose-top">
+        <div class="compose-avatar" id="compose-avatar">ИВ</div>
+        <div class="compose-meta">
+          <div class="compose-name" id="compose-name">Иван</div>
+          <div class="compose-time" id="compose-time">сейчас</div>
+        </div>
+      </div>
+      <div class="compose-modes">
+        <button class="compose-mode active" id="mode-habit-btn" type="button" data-compose-mode="habit">Мысль</button>
+        <button class="compose-mode" id="mode-state-btn" type="button" data-compose-mode="state">Состояние дня</button>
+      </div>
+      <div class="compose-hint" id="compose-hint">Короткая честная запись полезнее, чем попытка написать идеально.</div>
+      <div class="compose-anchor" id="compose-anchor">
+        <div class="compose-anchor-kicker" id="compose-anchor-kicker">Ориентир сегодня</div>
+        <div class="compose-anchor-text" id="compose-anchor-text">Здесь появится утренняя мысль дня.</div>
+      </div>
+      <textarea class="compose-textarea" id="compose-text" placeholder="Почему сорвался? Что чувствовал? Что хочешь изменить?&#10;Пиши свободно — это только для тебя..."></textarea>
+      <div class="compose-section-label" id="habit-tags-label">Теги по желанию</div>
+      <div class="compose-bottom wrap" id="habit-tags-row">
+        <div class="tag-chip" data-tag="stress">стресс</div>
+        <div class="tag-chip" data-tag="boredom">скука</div>
+        <div class="tag-chip" data-tag="company">компания</div>
+        <div class="tag-chip" data-tag="fatigue">усталость</div>
+      </div>
+      <div class="signal-label" id="body-signals-label">Телесные сигналы, если были</div>
+      <div class="state-tags" id="body-signals-row">
+        <div class="tag-chip body-signal-chip" data-body-signal="headache">Головная боль</div>
+        <div class="tag-chip body-signal-chip" data-body-signal="heaviness">Тяжесть</div>
+        <div class="tag-chip body-signal-chip" data-body-signal="nausea">Тошнота</div>
+        <div class="tag-chip body-signal-chip" data-body-signal="palpitations">Сердцебиение</div>
+        <div class="tag-chip body-signal-chip" data-body-signal="dizziness">Слабость</div>
+        <div class="tag-chip body-signal-chip" data-body-signal="breath">Тяжело дышать</div>
+      </div>
+      <div class="state-controls" id="state-controls">
+        <div class="state-grid">
+          <label class="state-field">
+            <span class="state-label">Настроение</span>
+            <select class="state-select" id="state-mood">
+              <option value="3">3 — нейтрально</option>
+              <option value="1">1 — очень тяжело</option>
+              <option value="2">2 — тяжело</option>
+              <option value="4">4 — спокойно</option>
+              <option value="5">5 — очень хорошо</option>
+            </select>
+          </label>
+          <label class="state-field">
+            <span class="state-label">Энергия</span>
+            <select class="state-select" id="state-energy">
+              <option value="3">3 — средне</option>
+              <option value="1">1 — совсем нет</option>
+              <option value="2">2 — мало</option>
+              <option value="4">4 — нормально</option>
+              <option value="5">5 — много</option>
+            </select>
+          </label>
+          <label class="state-field">
+            <span class="state-label">Стресс</span>
+            <select class="state-select" id="state-stress">
+              <option value="3">3 — умеренно</option>
+              <option value="1">1 — спокойно</option>
+              <option value="2">2 — слегка</option>
+              <option value="4">4 — заметно</option>
+              <option value="5">5 — очень сильно</option>
+            </select>
+          </label>
+        </div>
+        <div class="state-tags" id="state-tags-row">
+          <div class="tag-chip state-tag-chip" data-state-tag="sleep">сон</div>
+          <div class="tag-chip state-tag-chip" data-state-tag="work">работа</div>
+          <div class="tag-chip state-tag-chip" data-state-tag="conflict">конфликт</div>
+          <div class="tag-chip state-tag-chip" data-state-tag="loneliness">одиночество</div>
+          <div class="tag-chip state-tag-chip" data-state-tag="fatigue">усталость</div>
+          <div class="tag-chip state-tag-chip" data-state-tag="calm">спокойно</div>
+        </div>
+      </div>
+      <div class="compose-actions">
+        <button class="compose-send" id="save-entry-btn">Добавить запись</button>
+      </div>
+    </div>
+    <div class="starter-card" id="starter-card">
+      <div class="starter-title">С чего начать</div>
+      <div class="starter-copy">Дневник становится полезным, когда рядом живут и мысли о привычке, и фон дня. Не нужно писать много: 1–2 честные фразы уже достаточно.</div>
+      <div class="starter-grid">
+        <div class="starter-item">
+          <div class="starter-label">О привычке</div>
+          <div class="starter-text">"После встречи снова потянуло. Похоже, мне нужна не сигарета, а короткая пауза."</div>
+        </div>
+        <div class="starter-item">
+          <div class="starter-label">Состояние</div>
+          <div class="starter-text">"Сегодня мало сна и много напряжения. На таких днях привычка включается быстрее."</div>
+        </div>
+      </div>
+      <div class="starter-chip-row">
+        <div class="starter-chip">что запустило момент</div>
+        <div class="starter-chip">что ты почувствовал</div>
+        <div class="starter-chip">что можно попробовать в следующий раз</div>
+      </div>
+    </div>
+    <div id="diary-entries">
+      <div class="empty">Пока здесь тихо. Начни с одной короткой мысли — и дневник сразу перестанет быть пустым экраном.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-log">
+    <div id="log-entries"></div>
+  </div>
+
+  <div class="sticky-bottom">
+    <div class="tab" data-route="main"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg><span class="tab-label">Главная</span></div></div>
+    <div class="tab" data-route="insights"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><span class="tab-label">Инсайты</span></div></div>
+    <div class="tab active" data-route="diary"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="tab-label">Дневник</span></div></div>
+    <div class="tab" data-route="profile"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-label">Профиль</span></div></div>
+  </div>
+</div>
+</div>
+
+<script src="../analytics/store.js"></script>
+<script src="../analytics/app-core.js"></script>
+<script src="../analytics/ui-flow.js"></script>
+<script src="../analytics/screen-view-models.js"></script>
+<script src="../analytics/screen-dom.js"></script>
+<script src="../analytics/navigation.js"></script>
+<script>
+if (window.self !== window.top) {
+  document.documentElement.classList.add("embedded-shell");
+}
+var composeMode = "habit";
+var entryFilter = "all";
+
+function switchTab(tab) {
+  document.querySelectorAll(".pill").forEach(function (pill) {
+    pill.classList.toggle("active", pill.dataset.tab === tab);
+  });
+  document.querySelectorAll(".panel").forEach(function (panel) {
+    panel.classList.toggle("active", panel.id === "panel-" + tab);
+  });
+}
+
+document.querySelectorAll(".pill").forEach(function (pill) {
+  pill.addEventListener("click", function () { switchTab(pill.dataset.tab); });
+});
+
+document.querySelectorAll(".tag-chip").forEach(function (chip) {
+  chip.addEventListener("click", function () { chip.classList.toggle("sel"); });
+});
+
+document.querySelectorAll("[data-compose-mode]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    setComposeMode(button.getAttribute("data-compose-mode"), window.HabitStore.getState());
+  });
+});
+
+document.querySelectorAll("[data-entry-filter]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    entryFilter = button.getAttribute("data-entry-filter") || "all";
+    updateEntryFilterUI();
+    renderDiaryEntries(window.HabitStore.getState());
+  });
+});
+
+function getSetupModel(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getSetupModel) {
+    return window.HabitUiFlow.getSetupModel(state);
+  }
+  return { completed: 0, total: 3, progress: 0, nextStep: null };
+}
+
+function openSetupNextStep(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.openSetupNextStep) {
+    return window.HabitUiFlow.openSetupNextStep({
+      state: state || window.HabitStore.getState(),
+      firstEventRoute: "main",
+      intentRoute: "profile"
+    });
+  }
+}
+
+function renderSetupCard(state) {
+  var setup = getSetupModel(state);
+  var root = document.getElementById("setup-card");
+  if (!setup.nextStep) {
+    root.classList.remove("open");
+    return;
+  }
+
+  root.classList.add("open");
+  document.getElementById("setup-progress-fill").style.width = setup.progress + "%";
+  document.getElementById("setup-meta").textContent = "Готово " + setup.completed + " из " + setup.total + " шагов";
+
+  if (setup.nextStep.id === "first_event") {
+    document.getElementById("setup-title").textContent = "Начни с первой записи";
+    document.getElementById("setup-copy").textContent = "Одна мысль, один срыв или одно удержание уже дадут дневнику контекст и сделают записи осмысленными.";
+    document.getElementById("setup-btn").textContent = "Перейти на главную";
+  } else if (setup.nextStep.id === "assessment") {
+    document.getElementById("setup-title").textContent = "Теперь полезно пройти опрос";
+    document.getElementById("setup-copy").textContent = "Дневник уже оживает. Следом стоит уточнить стартовую нагрузку, чтобы инсайты были точнее.";
+    document.getElementById("setup-btn").textContent = "Открыть опрос";
+  } else {
+    document.getElementById("setup-title").textContent = "Добавь личный контекст";
+    document.getElementById("setup-copy").textContent = "Цена эпизода, время и health markers помогут связать записи с реальной жизнью, а не только с эмоциями.";
+    document.getElementById("setup-btn").textContent = "Открыть настройку";
+  }
+}
+
+function renderCompose(state) {
+  document.getElementById("compose-name").textContent = state.profile.userName;
+  document.getElementById("compose-avatar").textContent = state.profile.initials;
+  document.getElementById("compose-time").textContent = window.HabitStore.helpers.formatTime(new Date());
+  document.getElementById("diary-subtitle").textContent = "Мысли и состояние рядом с привычкой: " + state.currentHabit.name;
+  document.getElementById("log-pill-label").textContent = getDiaryLogCopy(state.currentHabit.id).tabLabel;
+  document.getElementById("mode-habit-btn").textContent = "Мысль";
+  document.getElementById("mode-state-btn").textContent = "Состояние дня";
+  document.getElementById("habit-tags-label").textContent = "Теги по желанию";
+  document.getElementById("body-signals-label").textContent = "Телесные сигналы, если были";
+  document.getElementById("save-entry-btn").textContent = "Добавить запись";
+  applyComposeMode(state);
+}
+
+function getDiaryPlaceholder(habitId, habitName) {
+  if (habitId === "smoking") return "Что случилось перед сигаретой? Что важно заметить?";
+  if (habitId === "alcohol") return "Что подтолкнуло к алкоголю именно сейчас?";
+  if (habitId === "sweets") return "Что стояло за тягой к сладкому?";
+  if (habitId === "social") return "Что было перед тем, как ты снова открыл ленту?";
+  if (habitId === "overeating") return "Это был голод, усталость или автоматический сценарий?";
+  return "Что происходило вокруг привычки \"" + habitName + "\"?";
+}
+
+function getStatePlaceholder() {
+  return "Как ты сейчас? Что сильнее всего влияет на день?";
+}
+
+function setComposeMode(mode, state) {
+  composeMode = mode === "state" ? "state" : "habit";
+  applyComposeMode(state || window.HabitStore.getState());
+}
+
+function applyComposeMode(state) {
+  var ritualAnchor = getCurrentRitualAnchor(state);
+  document.querySelectorAll("[data-compose-mode]").forEach(function (button) {
+    button.classList.toggle("active", button.getAttribute("data-compose-mode") === composeMode);
+  });
+  document.getElementById("habit-tags-row").style.display = composeMode === "habit" ? "flex" : "none";
+  document.getElementById("habit-tags-label").style.display = composeMode === "habit" ? "block" : "none";
+  document.getElementById("state-controls").classList.toggle("open", composeMode === "state");
+  document.getElementById("compose-anchor").classList.toggle("open", composeMode === "habit" && !!(ritualAnchor && ritualAnchor.text));
+  document.getElementById("compose-anchor-text").textContent = ritualAnchor && ritualAnchor.text
+    ? "«" + ritualAnchor.text + "»"
+    : "";
+  document.getElementById("compose-hint").textContent = composeMode === "state"
+    ? "Можно коротко: как спалось, сколько было сил, что происходило с напряжением или телом."
+    : "Пиши своими словами. Одной честной мысли уже достаточно, чтобы потом увидеть паттерн.";
+  document.getElementById("compose-text").placeholder = composeMode === "state"
+    ? getStatePlaceholder()
+    : getDiaryPlaceholder(state.currentHabit.id, state.currentHabit.name);
+}
+
+function renderStarterCard(state) {
+  var root = document.getElementById("starter-card");
+  if (!root) return;
+  var summary = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.getDiarySummary
+    ? window.HabitStore.helpers.getDiarySummary(state)
+    : { hasEntries: Array.isArray(state.diaryEntries) && state.diaryEntries.length > 0 };
+  var hasEntries = !!summary.hasEntries;
+  root.style.display = hasEntries ? "none" : "block";
+}
+
+function getDiaryLogCopy(habitId) {
+  if (habitId === "smoking") {
+    return {
+      tabLabel: "Записи срывов",
+      notePlaceholder: "Что произошло перед сигаретой? Почему именно сейчас?",
+      noteButton: "Добавить мысль к этому моменту"
+    };
+  }
+  if (habitId === "social") {
+    return {
+      tabLabel: "Записи эпизодов",
+      notePlaceholder: "Что было перед этим заходом в ленту? Что можно изменить в следующий раз?",
+      noteButton: "Добавить мысль к этому моменту"
+    };
+  }
+  return {
+    tabLabel: "Записи эпизодов",
+    notePlaceholder: "Что происходило в этот момент? Почему именно сейчас?",
+    noteButton: "Добавить мысль к этому моменту"
+  };
+}
+
+function getDiaryEmptyText(state) {
+  if (entryFilter === "habit") {
+    return 'Пока нет записей о привычке. Здесь будут мысли рядом с эпизодами, тягой и удержанием по привычке "' + state.currentHabit.name + '".';
+  }
+  if (entryFilter === "state") {
+    return "Пока нет записей о состоянии. Здесь будут короткие заметки про сон, стресс, энергию и фон дня.";
+  }
+  return "Пока здесь тихо. Здесь можно вести и заметки о привычке, и короткие записи о состоянии дня — именно вместе они потом лучше объясняют паттерн.";
+}
+
+function updateEntryFilterUI() {
+  document.querySelectorAll("[data-entry-filter]").forEach(function (button) {
+    button.classList.toggle("active", button.getAttribute("data-entry-filter") === entryFilter);
+  });
+}
+
+function renderEntrySummary(state) {
+  var habitCount = state.diaryEntries.filter(function (entry) {
+    return entry.entryScope !== "state";
+  }).length;
+  var stateCount = state.diaryEntries.filter(function (entry) {
+    return entry.entryScope === "state";
+  }).length;
+  document.getElementById("entry-filter-summary").textContent =
+    "О привычке: " + habitCount + " · Состояние: " + stateCount + " · Всего: " + state.diaryEntries.length;
+}
+
+function getStateTagLabel(tag) {
+  var labels = {
+    sleep: "сон",
+    work: "работа",
+    conflict: "конфликт",
+    loneliness: "одиночество",
+    fatigue: "усталость",
+    calm: "спокойно"
+  };
+  return labels[tag] || tag;
+}
+
+function renderEntrySummary(state) {
+  var summary = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.getDiarySummary
+    ? window.HabitStore.helpers.getDiarySummary(state)
+    : {
+        habitCount: state.diaryEntries.filter(function (entry) {
+          return entry.entryScope !== "state";
+        }).length,
+        stateCount: state.diaryEntries.filter(function (entry) {
+          return entry.entryScope === "state";
+        }).length,
+        totalCount: state.diaryEntries.length
+      };
+  document.getElementById("entry-filter-summary").textContent =
+    "О привычке: " + (summary.habitCount || 0) + " · Состояние: " + (summary.stateCount || 0) + " · Всего: " + (summary.totalCount || 0);
+}
+
+function saveEntry() {
+  var input = document.getElementById("compose-text");
+  var text = input.value.trim();
+  var state = window.HabitStore.getState();
+  var ritualAnchor = getCurrentRitualAnchor(state);
+  var selectedBodySignals = Array.prototype.slice.call(document.querySelectorAll(".body-signal-chip.sel")).map(function (chip) {
+    return chip.dataset.bodySignal;
+  });
+  if (!text) return;
+  if (composeMode === "state") {
+    window.HabitStore.addDiaryEntry({
+      entryType: "state_note",
+      entryScope: "state",
+      text: text,
+      bodySignals: selectedBodySignals,
+      contextTags: Array.prototype.slice.call(document.querySelectorAll(".state-tag-chip.sel")).map(function (chip) {
+        return chip.dataset.stateTag;
+      }),
+      ritualAnchorText: ritualAnchor ? ritualAnchor.text : "",
+      ritualAnchorDate: ritualAnchor ? ritualAnchor.localDate : "",
+      moodScore: document.getElementById("state-mood").value,
+      energyScore: document.getElementById("state-energy").value,
+      stressScore: document.getElementById("state-stress").value
+    });
+  } else {
+    var selectedTags = Array.prototype.slice.call(document.querySelectorAll("#habit-tags-row .tag-chip.sel")).map(function (chip) {
+      return chip.dataset.tag;
+    });
+    window.HabitStore.addDiaryEntry({
+      entryType: "free_note",
+      entryScope: "habit",
+      text: text,
+      tag: selectedTags[0] || null,
+      triggerTags: selectedTags,
+      bodySignals: selectedBodySignals,
+      ritualAnchorText: ritualAnchor ? ritualAnchor.text : "",
+      ritualAnchorDate: ritualAnchor ? ritualAnchor.localDate : ""
+    });
+  }
+  input.value = "";
+  document.querySelectorAll(".tag-chip.sel").forEach(function (chip) { chip.classList.remove("sel"); });
+  document.getElementById("state-mood").value = "3";
+  document.getElementById("state-energy").value = "3";
+  document.getElementById("state-stress").value = "3";
+}
+
+function getCurrentRitualAnchor(state) {
+  state = state || window.HabitStore.getState();
+  var entries = Array.isArray(state.ritualEntries) ? state.ritualEntries : [];
+  var todayKey = window.HabitStore.helpers.formatDateKey(new Date());
+  var todayMorning = entries.find(function (entry) {
+    return entry && entry.type === "morning" && entry.localDate === todayKey && entry.text;
+  });
+  if (todayMorning) return todayMorning;
+  return entries.find(function (entry) {
+    return entry && entry.type === "morning" && entry.text;
+  }) || null;
+}
+
+function toggleNote(btn) {
+  var area = btn.nextElementSibling;
+  area.classList.toggle("open");
+  btn.textContent = area.classList.contains("open") ? "Скрыть" : btn.dataset.defaultLabel;
+}
+
+function saveNote(btn) {
+  var item = btn.closest(".log-item");
+  var input = item.querySelector(".log-note-input");
+  var text = input.value.trim();
+  if (!text) return;
+  window.HabitStore.addSlipNote(item.dataset.slipId, text);
+}
+
+function renderSlipLog(state) {
+  var root = document.getElementById("log-entries");
+  var slips = state.slips.slice().sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); }).slice(0, 12);
+  var logCopy = getDiaryLogCopy(state.currentHabit.id);
+  if (!slips.length) {
+    root.innerHTML = '<div class="empty">Записей эпизодов пока нет. Когда появится первый срыв или первый зафиксированный момент, здесь можно будет добавить мысль именно к нему.</div>';
+    return;
+  }
+  root.innerHTML = slips.map(function (slip) {
+    var noteBlock = slip.slipNote
+      ? '<div class="log-note-saved">✓ Сохранено: «' + slip.slipNote.replace(/</g, "&lt;") + '»</div>'
+      : '';
+    return '<div class="log-item" data-slip-id="' + slip.id + '"><div class="log-row"><div class="log-dot" style="background:' + window.HabitStore.helpers.triggerColor(slip.triggerTag) + ';"></div><div class="log-text">' + window.HabitStore.helpers.triggerLabel(slip.triggerTag) + ' · ' + (slip.note || "Без комментария") + '</div><div class="log-time">' + window.HabitStore.helpers.formatTime(new Date(slip.timestamp)) + '</div></div><button class="log-note-btn" type="button" data-default-label="' + logCopy.noteButton + '" data-action="toggle-slip-note">' + logCopy.noteButton + '</button><div class="log-note-area"><textarea class="log-note-input" rows="3" placeholder="' + logCopy.notePlaceholder + '"></textarea><button class="log-note-save" type="button" data-action="save-slip-note">Сохранить</button></div>' + noteBlock + '</div>';
+  }).join("");
+}
+
+document.getElementById("log-entries").addEventListener("click", function (event) {
+  var toggleButton = event.target.closest('[data-action="toggle-slip-note"]');
+  if (toggleButton) {
+    toggleNote(toggleButton);
+    return;
+  }
+
+  var saveButton = event.target.closest('[data-action="save-slip-note"]');
+  if (saveButton) {
+    saveNote(saveButton);
+  }
+});
+
+function render(state) {
+  var vm = window.HabitScreenModels && window.HabitScreenModels.buildDiaryScreenModel
+    ? window.HabitScreenModels.buildDiaryScreenModel(state, { composeMode: composeMode, entryFilter: entryFilter })
+    : null;
+  updateEntryFilterUI();
+  if (vm && window.HabitScreenDom && window.HabitScreenDom.applyDiaryScreenViewModel) {
+    window.HabitScreenDom.applyDiaryScreenViewModel(vm);
+  } else {
+    renderCompose(state);
+    renderEntrySummary(state);
+    renderStarterCard(state);
+  }
+  renderSetupCard(state);
+  renderDiaryEntries(state);
+  renderSlipLog(state);
+}
+
+function padDiaryNumber(value) {
+  return String(value).padStart(2, "0");
+}
+
+function getDiaryDateKey(date) {
+  return date.getFullYear() + "-" + padDiaryNumber(date.getMonth() + 1) + "-" + padDiaryNumber(date.getDate());
+}
+
+function getRitualAnchorForTimestamp(state, timestamp, fallbackText, fallbackDate) {
+  if (fallbackText) {
+    return {
+      text: fallbackText,
+      date: fallbackDate || ""
+    };
+  }
+  var targetDate = timestamp ? new Date(timestamp) : new Date();
+  var targetKey = fallbackDate || getDiaryDateKey(targetDate);
+  var ritualEntries = Array.isArray(state.ritualEntries) ? state.ritualEntries : [];
+  var sameDayMorning = ritualEntries
+    .filter(function (entry) {
+      return entry && entry.type === "morning" && entry.text && entry.localDate === targetKey;
+    })
+    .sort(function (left, right) {
+      return new Date(right.timestamp) - new Date(left.timestamp);
+    })[0];
+  if (sameDayMorning) {
+    return {
+      text: sameDayMorning.text,
+      date: sameDayMorning.localDate || targetKey
+    };
+  }
+  return {
+    text: "",
+    date: targetKey
+  };
+}
+
+function getResistedCopingLabel(tool) {
+  var labels = {
+    walk: "прогулка",
+    sparkling_water: "газированная вода",
+    tea: "чай",
+    timer: "таймер",
+    water_pause: "стакан воды",
+    pause: "пауза"
+  };
+  return labels[tool] || "";
+}
+
+function buildResistedDiaryEntries(state) {
+  var resisted = Array.isArray(state.resisted) ? state.resisted : [];
+  return resisted.map(function (entry) {
+    var anchor = getRitualAnchorForTimestamp(state, entry.timestamp, "", entry.localDate);
+    return {
+      id: entry.id,
+      timestamp: entry.timestamp,
+      entryScope: "habit",
+      entryKind: "resisted",
+      text: "Удалось удержаться и не уйти в привычный сценарий.",
+      triggerTags: Array.isArray(entry.triggerTags) ? entry.triggerTags : [],
+      cravingLevel: entry.cravingLevel || null,
+      copingTool: entry.copingTool || "",
+      ritualAnchorText: anchor.text,
+      ritualAnchorDate: anchor.date
+    };
+  });
+}
+
+function getAnchorRepeatCount(entries, entry) {
+  if (!entry || !entry.ritualAnchorText || entry.entryScope === "state") return 0;
+  var anchorText = String(entry.ritualAnchorText || "").trim().toLowerCase();
+  if (!anchorText) return 0;
+  return entries.filter(function (item) {
+    return item &&
+      item.entryScope !== "state" &&
+      item.ritualAnchorText &&
+      String(item.ritualAnchorText).trim().toLowerCase() === anchorText &&
+      new Date(item.timestamp) <= new Date(entry.timestamp);
+  }).length;
+}
+
+function renderDiaryEntries(state) {
+  var root = document.getElementById("diary-entries");
+  var entries = state.diaryEntries.slice().concat(buildResistedDiaryEntries(state)).sort(function (a, b) {
+    return new Date(b.timestamp) - new Date(a.timestamp);
+  });
+  if (entryFilter !== "all") {
+    entries = entries.filter(function (entry) {
+      return (entry.entryScope === "state" ? "state" : "habit") === entryFilter;
+    });
+  }
+  if (!entries.length) {
+    if (entryFilter === "all" && (!state.diaryEntries || !state.diaryEntries.length) && (!state.resisted || !state.resisted.length)) {
+      root.innerHTML = "";
+      return;
+    }
+    root.innerHTML = '<div class="empty">' + getDiaryEmptyText(state) + '</div>';
+    return;
+  }
+
+  root.innerHTML = entries.map(function (entry) {
+    var date = new Date(entry.timestamp);
+    var isStateEntry = entry.entryScope === "state";
+    var isResistedEntry = entry.entryKind === "resisted";
+    var habitTagList = Array.isArray(entry.triggerTags) && entry.triggerTags.length
+      ? entry.triggerTags
+      : (entry.tag ? [entry.tag] : []);
+    var tagHtml = "";
+    if (isStateEntry) {
+      tagHtml = '<div class="entry-kind state">Состояние</div>';
+    } else if (isResistedEntry) {
+      tagHtml = '<div class="entry-kind resisted">Удержался</div>';
+    } else if (habitTagList.length) {
+      tagHtml = '<div class="de-tag" style="background:#E1F5EE;color:#085041;">' + window.HabitStore.helpers.triggerLabel(habitTagList[0]) + '</div>';
+    } else {
+      tagHtml = '<div class="entry-kind">О привычке</div>';
+    }
+    var related = entry.relatedSlipId ? state.slips.find(function (slip) { return slip.id === entry.relatedSlipId; }) : null;
+    var relatedHtml = related
+      ? '<div class="de-habit-ref"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#1D9E75" stroke-width="1.2"/><path d="M6 3.5V6.5l1.5 1" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg><div class="de-habit-label">' + state.currentHabit.name + ' · ' + window.HabitStore.helpers.formatTime(new Date(related.timestamp)) + ' ·</div><div class="de-habit-count">' + window.HabitStore.helpers.triggerLabel(related.triggerTag) + '</div></div>'
+      : "";
+    var stateSummary = isStateEntry
+      ? '<div class="state-summary">' +
+        '<div class="state-chip">настроение ' + (entry.moodScore || "—") + '/5</div>' +
+        '<div class="state-chip">энергия ' + (entry.energyScore || "—") + '/5</div>' +
+        '<div class="state-chip">стресс ' + (entry.stressScore || "—") + '/5</div>' +
+        (entry.contextTags || []).map(function (tag) {
+          return '<div class="state-chip">' + getStateTagLabel(tag) + '</div>';
+        }).join("") +
+      '</div>'
+      : "";
+    var resistedSummary = isResistedEntry
+      ? '<div class="state-summary">' +
+        (entry.cravingLevel ? '<div class="state-chip">тяга ' + entry.cravingLevel + '/5</div>' : "") +
+        (entry.copingTool ? '<div class="state-chip">сработало: ' + getResistedCopingLabel(entry.copingTool) + '</div>' : "") +
+      '</div>'
+      : "";
+    var bodySignalsHtml = Array.isArray(entry.bodySignals) && entry.bodySignals.length
+      ? '<div class="state-summary">' + entry.bodySignals.map(function (tag) {
+          return '<div class="state-chip">' + window.HabitStore.helpers.bodySignalLabel(tag) + '</div>';
+        }).join("") + '</div>'
+      : "";
+    var repeatCount = getAnchorRepeatCount(entries, entry);
+    var anchorHtml = entry.ritualAnchorText
+      ? '<div class="de-anchor"><div class="de-anchor-head"><div class="de-anchor-label">Ориентир дня</div>' + (repeatCount > 1 ? '<div class="de-anchor-repeat">' + repeatCount + '-й раз</div>' : '') + '</div><div class="de-anchor-text">«' + entry.ritualAnchorText.replace(/</g, "&lt;") + '»</div></div>'
+      : "";
+    var habitTagsHtml = !isStateEntry && habitTagList.length > (isResistedEntry ? 0 : 1)
+      ? '<div class="habit-tag-row">' + habitTagList.map(function (tag) {
+          return '<div class="habit-tag-chip">' + window.HabitStore.helpers.triggerLabel(tag) + '</div>';
+        }).join("") + '</div>'
+      : "";
+    return '<div class="diary-entry"><div class="de-header"><div class="de-avatar">' + state.profile.initials + '</div><div class="de-meta"><div class="de-name">' + state.profile.userName + '</div><div class="de-time">' + window.HabitStore.helpers.todayLabel(date) + '</div></div>' + tagHtml + '</div>' + stateSummary + resistedSummary + bodySignalsHtml + habitTagsHtml + '<div class="de-text">' + entry.text.replace(/</g, "&lt;") + '</div>' + relatedHtml + anchorHtml + '<div class="de-footer"><div class="de-reaction">' + (isStateEntry ? "Фон дня" : (isResistedEntry ? "Это получилось" : "Это честно")) + '</div><div class="de-reaction">' + (isStateEntry ? "Полезно для инсайтов" : (isResistedEntry ? "Запомнить этот ход" : "Хорошее наблюдение")) + '</div></div></div>';
+  }).join("");
+}
+
+document.getElementById("save-entry-btn").addEventListener("click", saveEntry);
+document.getElementById("setup-btn").addEventListener("click", function () {
+  openSetupNextStep(window.HabitStore.getState());
+});
+window.HabitStore.subscribe(render);
+window.DemoNavigation.initBottomTabs();
+render(window.HabitStore.getState());
+</script>
+</body>
+</html>
+
+
+
+

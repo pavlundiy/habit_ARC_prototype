@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI-разбор</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  color-scheme:light;
+  --font-sans:"Manrope","Segoe UI",sans-serif;
+  --bg:#ece7dd;
+  --surface:#faf9f6;
+  --surface-elevated:#ffffff;
+  --surface-soft:#f3efe7;
+  --border:#e6ded2;
+  --border-strong:#d6cfc2;
+  --text:#1e1c18;
+  --text-secondary:#8a8880;
+  --body:#4f4a43;
+  --accent:#1D9E75;
+  --accent-soft:#E1F5EE;
+  --accent-text:#085041;
+  --hero:#2d2a24;
+  --hero-elevated:#26231f;
+  --hero-muted:#d1c6b9;
+  --warning:#f2a66d;
+  --warning-soft:#fff1e4;
+  --shadow:0 14px 28px rgba(34,29,23,0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --bg:#0f1412;
+    --surface:#171c1a;
+    --surface-elevated:#1d2421;
+    --surface-soft:#202825;
+    --border:#29312d;
+    --border-strong:#35403a;
+    --text:#f3efe8;
+    --text-secondary:#b2aba0;
+    --body:#d6d0c7;
+    --accent:#33b887;
+    --accent-soft:#123328;
+    --accent-text:#b8f0db;
+    --hero:#0f1412;
+    --hero-elevated:#0b100e;
+    --hero-muted:#8f9b94;
+    --warning:#efb37d;
+    --warning-soft:#32251b;
+    --shadow:none;
+  }
+}
+html,body{min-height:100%;background:var(--bg);}
+body{padding:12px;font-family:var(--font-sans);color:var(--text);}
+.app{max-width:360px;margin:0 auto;}
+.screen{background:var(--surface);border-radius:30px;border:1px solid var(--border);overflow:hidden;position:relative;box-shadow:var(--shadow);}
+html.embedded-shell .screen{padding-bottom:112px;}
+.topbar{padding:18px 20px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.topbar-title{font-size:17px;font-weight:700;color:var(--text);}
+.topbar-sub{font-size:11px;color:var(--text-secondary);margin-top:3px;line-height:1.45;}
+.ghost-btn{border:none;background:var(--surface-soft);color:var(--body);border-radius:12px;padding:9px 12px;font:600 12px/1 var(--font-sans);cursor:pointer;white-space:nowrap;}
+.hero{margin:0 16px 14px;background:linear-gradient(180deg,var(--hero) 0%,var(--hero-elevated) 100%);border-radius:24px;padding:18px;color:#fff;border:1px solid rgba(255,255,255,0.04);}
+.hero-label{font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--hero-muted);}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-top:8px;}
+.hero-text{font-size:12px;line-height:1.6;color:#efe7dc;margin-top:12px;}
+.hero-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px;}
+.hero-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:10px 12px;}
+.hero-pill-label{font-size:10px;color:var(--hero-muted);text-transform:uppercase;letter-spacing:0.4px;}
+.hero-pill-value{font-size:15px;font-weight:700;color:#fff;margin-top:6px;}
+.section-title{font-size:10px;font-weight:700;color:var(--text-secondary);letter-spacing:0.5px;text-transform:uppercase;padding:0 20px 8px;}
+.card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--border);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);}
+.card-title{font-size:14px;font-weight:700;color:var(--text);}
+.card-sub{font-size:11px;color:var(--text-secondary);line-height:1.5;margin-top:4px;}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.mini{background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:12px;}
+.mini-label{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-secondary);}
+.mini-value{font-size:12px;color:var(--body);line-height:1.5;margin-top:8px;}
+.empty{font-size:12px;line-height:1.6;color:var(--text-secondary);margin-top:10px;}
+.plan-meta{font-size:11px;color:var(--text-secondary);line-height:1.5;margin-top:8px;}
+.plan-progress{margin-top:12px;}
+.plan-progress-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:11px;color:var(--text-secondary);}
+.plan-progress-bar{height:8px;border-radius:999px;background:var(--surface-soft);overflow:hidden;margin-top:8px;border:1px solid var(--border);}
+.plan-progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#5fd8ad);}
+.checklist{display:grid;gap:8px;margin-top:12px;}
+.check-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:11px 12px;}
+.check-toggle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--surface-elevated);cursor:pointer;flex:0 0 auto;position:relative;margin-top:1px;}
+.check-toggle.done{background:var(--accent);border-color:var(--accent);}
+.check-toggle.done::after{content:"";position:absolute;left:7px;top:4px;width:5px;height:9px;border:solid #e8fff7;border-width:0 2px 2px 0;transform:rotate(45deg);}
+.check-copy{flex:1 1 auto;}
+.check-text{font-size:12px;color:var(--body);line-height:1.55;}
+.check-text.done{text-decoration:line-through;color:var(--text-secondary);}
+.check-meta{font-size:10px;color:var(--text-secondary);margin-top:5px;}
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.impact-card{background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:12px;}
+.impact-label{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-secondary);}
+.impact-value{font-size:18px;font-weight:700;color:var(--text);margin-top:8px;}
+.impact-copy{font-size:11px;line-height:1.5;color:var(--body);margin-top:6px;}
+.plan-banner{background:var(--warning-soft);border:1px solid rgba(242,166,109,0.25);border-radius:14px;padding:12px 13px;font-size:12px;line-height:1.55;color:var(--body);margin-top:12px;}
+.history-list{display:grid;gap:8px;margin-top:12px;}
+.history-card{background:var(--surface-soft);border:1px solid var(--border);border-radius:16px;padding:12px 13px;}
+.history-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.history-date{font-size:12px;font-weight:700;color:var(--text);}
+.history-tag{font-size:10px;color:var(--accent-text);background:var(--accent-soft);padding:6px 8px;border-radius:999px;white-space:nowrap;}
+.history-summary{font-size:12px;color:var(--body);line-height:1.55;margin-top:10px;}
+.history-actions{display:grid;gap:6px;margin-top:10px;}
+.history-action{font-size:11px;line-height:1.45;color:var(--body);}
+.history-footer{display:flex;gap:8px;margin-top:12px;}
+.history-btn{border:none;border-radius:10px;padding:10px 12px;font:600 12px/1 var(--font-sans);cursor:pointer;}
+.history-btn.secondary{background:var(--surface-elevated);color:var(--body);border:1px solid var(--border);}
+.sticky-bottom{background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px 16px;position:sticky;bottom:0;}
+html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom));padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+.sticky-btn{border:none;border-radius:14px;padding:13px 12px;font:700 13px/1 var(--font-sans);cursor:pointer;}
+.sticky-btn.secondary{background:var(--surface-soft);color:var(--body);}
+.sticky-btn.primary{background:var(--accent);color:#E1F5EE;}
+.sticky-btn:disabled{opacity:0.45;cursor:default;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="screen">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">AI-разбор</div>
+        <div class="topbar-sub" id="screen-subtitle">История ответов, сравнение по времени и недельный план по активной привычке.</div>
+      </div>
+      <button class="ghost-btn" id="back-to-profile-btn" type="button">Назад</button>
+    </div>
+
+    <div class="hero">
+      <div class="hero-label">Последний фокус</div>
+      <div class="hero-title" id="hero-title">Разбор ещё не сохранён</div>
+      <div class="hero-text" id="hero-text">Сначала вставь в профиль хотя бы один ответ ИИ. После этого здесь появится история, сравнение и живой план недели.</div>
+      <div class="hero-meta">
+        <div class="hero-pill">
+          <div class="hero-pill-label">Разборов</div>
+          <div class="hero-pill-value" id="hero-review-count">0</div>
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill-label">Риск 30д</div>
+          <div class="hero-pill-value" id="hero-risk-level">—</div>
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill-label">План</div>
+          <div class="hero-pill-value" id="hero-plan-status">нет</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Сравнение</div>
+    <div class="card">
+      <div class="card-title">Что повторяется и что смещается</div>
+      <div class="card-sub" id="compare-sub">Сравнение строится по двум последним сохранённым разборам.</div>
+      <div class="insight-grid">
+        <div class="mini">
+          <div class="mini-label">Повторяется</div>
+          <div class="mini-value" id="compare-repeat">Пока недостаточно данных для сравнения.</div>
+        </div>
+        <div class="mini">
+          <div class="mini-label">Сдвиг</div>
+          <div class="mini-value" id="compare-shift">Сохрани хотя бы два ответа ИИ по одной привычке.</div>
+        </div>
+      </div>
+      <div class="plan-banner" id="compare-note">Когда ответов станет больше, здесь будет видно, какие темы ИИ повторяет из раза в раз, а что появилось только сейчас.</div>
+    </div>
+
+    <div class="section-title">План Недели</div>
+    <div class="card">
+      <div class="card-title">Рабочий план по последнему разбору</div>
+      <div class="card-sub" id="plan-sub">Можно сохранить действия из любого AI-разбора как ориентир на ближайшие 7 дней.</div>
+      <div class="plan-meta" id="plan-meta">План пока не сохранён.</div>
+      <div class="plan-progress">
+        <div class="plan-progress-head">
+          <span id="plan-progress-label">Выполнено 0 из 0 шагов</span>
+          <span id="plan-progress-percent">0%</span>
+        </div>
+        <div class="plan-progress-bar">
+          <div class="plan-progress-fill" id="plan-progress-fill"></div>
+        </div>
+      </div>
+      <div class="checklist" id="plan-list">
+        <div class="empty">Пока нет плана недели. Сохрани его из последнего разбора или из карточки в истории.</div>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-label">Поддержка плана</div>
+          <div class="impact-value" id="impact-support">+0</div>
+          <div class="impact-copy">Показывает, сколько опоры даёт выполнение недельных шагов.</div>
+        </div>
+        <div class="impact-card">
+          <div class="impact-label">Нагрузка недели</div>
+          <div class="impact-value" id="impact-index">—</div>
+          <div class="impact-copy" id="impact-copy">Появится, когда будет план недели и текущая аналитика.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">История Разборов</div>
+    <div class="card">
+      <div class="card-title">Сохранённые ответы ИИ</div>
+      <div class="card-sub">Каждый ответ остаётся внутри активной привычки. Можно в любой момент взять прошлый разбор за основу недели.</div>
+      <div class="history-list" id="history-list">
+        <div class="empty">Пока нет сохранённых AI-разборов.</div>
+      </div>
+    </div>
+
+    <div class="sticky-bottom">
+      <button class="sticky-btn secondary" id="back-bottom-btn" type="button">В профиль</button>
+      <button class="sticky-btn primary" id="save-latest-plan-btn" type="button">Сделать планом</button>
+    </div>
+  </div>
+</div>
+
+<script src="../analytics/store.js"></script>
+<script src="../analytics/app-core.js"></script>
+<script src="../analytics/runtime-browser-v2.js"></script>
+<script src="../analytics/ai-review-store-v2.js"></script>
+<script src="../analytics/navigation.js"></script>
+<script>
+var STOP_WORDS = {
+  "и": true, "в": true, "на": true, "с": true, "по": true, "для": true, "что": true, "это": true,
+  "как": true, "или": true, "при": true, "после": true, "если": true, "когда": true, "уже": true,
+  "нужно": true, "стоит": true, "можно": true, "чтобы": true, "который": true, "которая": true,
+  "его": true, "её": true, "она": true, "они": true, "только": true, "снова": true, "через": true,
+  "тебя": true, "твой": true, "этой": true, "этот": true, "есть": true, "нет": true, "раз": true,
+  "один": true, "два": true, "три": true, "где": true, "потом": true, "быстро": true, "очень": true
+};
+
+function formatReviewDate(iso) {
+  return window.HabitStore.helpers.todayLabel(new Date(iso));
+}
+
+function normalizeItem(text) {
+  return String(text || "").toLowerCase().replace(/[^a-zA-Zа-яА-ЯёЁ0-9\s]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function escapeHtml(text) {
+  return String(text || "").replace(/</g, "&lt;");
+}
+
+function riskLevelLabel(level) {
+  var labels = {
+    low: "Низкий",
+    moderate: "Умеренный",
+    high: "Высокий",
+    very_high: "Очень высокий"
+  };
+  return labels[level] || "—";
+}
+
+function tokenize(text) {
+  return normalizeItem(text)
+    .split(" ")
+    .filter(function (word) {
+      return word.length > 3 && !STOP_WORDS[word];
+    });
+}
+
+function topKeywords(review) {
+  var counts = {};
+  var source = [review.summary || ""]
+    .concat(review.actionItems || [])
+    .concat(review.highlights || [])
+    .join(" ");
+
+  tokenize(source).forEach(function (word) {
+    counts[word] = (counts[word] || 0) + 1;
+  });
+
+  return Object.keys(counts).sort(function (a, b) {
+    return counts[b] - counts[a];
+  });
+}
+
+function buildComparison(reviews) {
+  if (reviews.length < 2) {
+    return {
+      repeat: "Пока недостаточно данных для сравнения.",
+      shift: "Сохрани хотя бы два ответа ИИ по одной привычке.",
+      note: "Когда ответов станет больше, здесь будет видно, какие темы ИИ повторяет из раза в раз, а что появилось только сейчас.",
+      subtitle: "Сравнение строится по двум последним сохранённым разборам."
+    };
+  }
+
+  var latest = reviews[0];
+  var previous = reviews[1];
+  var latestKeywords = topKeywords(latest);
+  var previousKeywords = topKeywords(previous);
+  var repeated = latestKeywords.filter(function (word) { return previousKeywords.indexOf(word) !== -1; }).slice(0, 3);
+  var shifted = latestKeywords.filter(function (word) { return previousKeywords.indexOf(word) === -1; }).slice(0, 3);
+  var repeatedActions = (latest.actionItems || []).filter(function (item) {
+    var normalized = normalizeItem(item);
+    return (previous.actionItems || []).some(function (prevItem) {
+      return normalizeItem(prevItem) === normalized;
+    });
+  }).slice(0, 2);
+
+  return {
+    repeat: repeatedActions.length
+      ? "Повторяются конкретные действия: " + repeatedActions.join("; ") + "."
+      : repeated.length
+        ? "Снова возвращаются темы: " + repeated.join(", ") + "."
+        : "ИИ не повторяет дословно прошлые шаги, но общий фокус разбора остаётся похожим.",
+    shift: shifted.length
+      ? "Новый фокус сместился в сторону: " + shifted.join(", ") + "."
+      : "Сильного смещения пока не видно: последние два разбора говорят примерно об одном и том же.",
+    note: "Последний разбор от " + formatReviewDate(latest.createdAt) + " сравнивается с предыдущим от " + formatReviewDate(previous.createdAt) + ".",
+    subtitle: "Сопоставляем два последних ответа ИИ по активной привычке."
+  };
+}
+
+function renderPlan(plan) {
+  var metaNode = document.getElementById("plan-meta");
+  var listNode = document.getElementById("plan-list");
+  var heroPlanNode = document.getElementById("hero-plan-status");
+  var progressLabelNode = document.getElementById("plan-progress-label");
+  var progressPercentNode = document.getElementById("plan-progress-percent");
+  var progressFillNode = document.getElementById("plan-progress-fill");
+
+  if (!plan || !plan.items || !plan.items.length) {
+    metaNode.textContent = "План пока не сохранён.";
+    heroPlanNode.textContent = "нет";
+    progressLabelNode.textContent = "Выполнено 0 из 0 шагов";
+    progressPercentNode.textContent = "0%";
+    progressFillNode.style.width = "0%";
+    listNode.innerHTML = '<div class="empty">Пока нет плана недели. Сохрани его из последнего разбора или из карточки в истории.</div>';
+    return;
+  }
+
+  var progress = window.HabitAiReviewStore.getPlanProgress(plan);
+  var percent = Math.round(progress.ratio * 100);
+
+  heroPlanNode.textContent = percent >= 100 ? "готов" : "есть";
+  metaNode.textContent = "План сохранён " + formatReviewDate(plan.createdAt) + (plan.sourceCreatedAt ? " на основе разбора от " + formatReviewDate(plan.sourceCreatedAt) : "") + ".";
+  progressLabelNode.textContent = "Выполнено " + progress.completed + " из " + progress.total + " шагов";
+  progressPercentNode.textContent = percent + "%";
+  progressFillNode.style.width = percent + "%";
+  listNode.innerHTML = plan.items.map(function (item) {
+    return '' +
+      '<div class="check-item">' +
+        '<button class="check-toggle ' + (item.completed ? 'done' : '') + '" type="button" data-plan-item="' + item.id + '" aria-label="Отметить шаг"></button>' +
+        '<div class="check-copy">' +
+          '<div class="check-text ' + (item.completed ? 'done' : '') + '">' + escapeHtml(item.text) + '</div>' +
+          '<div class="check-meta">' + (item.completed && item.completedAt ? "Отмечено " + formatReviewDate(item.completedAt) : "Шаг недели") + '</div>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+
+  listNode.querySelectorAll("[data-plan-item]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var state = window.HabitStore.getState();
+      window.HabitAiReviewStore.toggleWeeklyPlanItem(state.currentHabit.id, button.dataset.planItem);
+      renderScreen();
+    });
+  });
+}
+
+function renderImpact(plan, analytics) {
+  var supportNode = document.getElementById("impact-support");
+  var indexNode = document.getElementById("impact-index");
+  var copyNode = document.getElementById("impact-copy");
+
+  if (!plan || !plan.items || !plan.items.length) {
+    supportNode.textContent = "+0";
+    indexNode.textContent = analytics.summary.dependencyIndex;
+    copyNode.textContent = "Появится, когда будет план недели и текущая аналитика.";
+    return;
+  }
+
+  var impact = window.HabitAiReviewStore.getPlanImpact(plan, analytics.summary.dependencyIndex);
+  supportNode.textContent = "+" + impact.supportGain;
+  indexNode.textContent = impact.adjustedIndex;
+  copyNode.textContent = "С текущим выполнением плана нагрузка недели выглядит как " + riskLevelLabel(impact.projectedRisk).toLowerCase() + " риск вместо " + riskLevelLabel(analytics.summary.riskLevel).toLowerCase() + ".";
+}
+
+function renderHistory(reviews) {
+  var root = document.getElementById("history-list");
+
+  if (!reviews.length) {
+    root.innerHTML = '<div class="empty">Пока нет сохранённых AI-разборов.</div>';
+    return;
+  }
+
+  root.innerHTML = reviews.map(function (review, index) {
+    var actionHtml = (review.actionItems || []).slice(0, 3).map(function (item) {
+      return '<div class="history-action">• ' + escapeHtml(item) + '</div>';
+    }).join("");
+
+    return '' +
+      '<div class="history-card">' +
+        '<div class="history-head">' +
+          '<div class="history-date">' + formatReviewDate(review.createdAt) + '</div>' +
+          '<div class="history-tag">' + (index === 0 ? 'Последний' : 'История') + '</div>' +
+        '</div>' +
+        '<div class="history-summary">' + escapeHtml(review.summary || 'Краткое резюме не выделилось автоматически.') + '</div>' +
+        '<div class="history-actions">' + (actionHtml || '<div class="history-action">Явные действия не выделились.</div>') + '</div>' +
+        '<div class="history-footer">' +
+          '<button class="history-btn secondary" type="button" data-make-plan="' + review.id + '">Сделать планом</button>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+
+  root.querySelectorAll("[data-make-plan]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var state = window.HabitStore.getState();
+      window.HabitAiReviewStore.buildPlanFromReview(state.currentHabit.id, button.dataset.makePlan);
+      renderScreen();
+    });
+  });
+}
+
+function renderScreen() {
+  var state = window.HabitStore.getState();
+  var reviews = window.HabitAiReviewStore.getReviews(state.currentHabit.id);
+  var latest = reviews[0];
+  var plan = window.HabitAiReviewStore.getWeeklyPlan(state.currentHabit.id);
+  var analytics = window.HabitAnalytics.getInsightViewModel("30d");
+  var comparison = buildComparison(reviews);
+
+  document.getElementById("screen-subtitle").textContent = "История ответов, сравнение по времени и недельный план для привычки: " + state.currentHabit.name + ".";
+  document.getElementById("hero-review-count").textContent = String(reviews.length);
+  document.getElementById("hero-risk-level").textContent = riskLevelLabel(analytics.summary.riskLevel);
+  document.getElementById("hero-title").textContent = latest ? state.currentHabit.name + ": " + formatReviewDate(latest.createdAt) : "Разбор ещё не сохранён";
+  document.getElementById("hero-text").textContent = latest
+    ? latest.summary || "Последний ответ ИИ сохранён, но краткое резюме пока не выделилось."
+    : "Сначала вставь в профиль хотя бы один ответ ИИ. После этого здесь появится история, сравнение и живой план недели.";
+  document.getElementById("compare-sub").textContent = comparison.subtitle;
+  document.getElementById("compare-repeat").textContent = comparison.repeat;
+  document.getElementById("compare-shift").textContent = comparison.shift;
+  document.getElementById("compare-note").textContent = comparison.note;
+  document.getElementById("save-latest-plan-btn").disabled = !latest;
+  document.getElementById("save-latest-plan-btn").textContent = latest ? "Сделать планом" : "Ждём разбор";
+
+  renderPlan(plan);
+  renderImpact(plan, analytics);
+  renderHistory(reviews);
+}
+
+function navigateToProfile() {
+  window.DemoNavigation.navigate("profile");
+}
+
+document.getElementById("back-to-profile-btn").addEventListener("click", navigateToProfile);
+document.getElementById("back-bottom-btn").addEventListener("click", navigateToProfile);
+document.getElementById("save-latest-plan-btn").addEventListener("click", function () {
+  var state = window.HabitStore.getState();
+  var latest = window.HabitAiReviewStore.getLatestReview(state.currentHabit.id);
+  if (!latest) {
+    return;
+  }
+  window.HabitAiReviewStore.buildPlanFromReview(state.currentHabit.id, latest.id);
+  renderScreen();
+});
+
+window.HabitStore.subscribe(renderScreen);
+renderScreen();
+</script>
+</body>
+</html>

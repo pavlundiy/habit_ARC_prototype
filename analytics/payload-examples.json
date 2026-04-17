@@ -1,0 +1,54 @@
+{
+  "habit": {
+    "id": "habit-smoking-001",
+    "userId": "user-001",
+    "type": "smoking",
+    "title": "Smoking",
+    "dailyLimit": 5,
+    "weeklyTarget": 28,
+    "createdAt": "2026-03-01T09:00:00.000Z"
+  },
+  "profile": {
+    "habitId": "habit-smoking-001",
+    "baselineDailyCount": 8,
+    "yearsWithHabit": 6,
+    "firstUseAfterWakingMinutes": 35,
+    "strongCravingFrequency": 4,
+    "failedCutbackAttempts": 3,
+    "mainReasons": ["stress", "after_food", "ritual"],
+    "selfControlRating": 4
+  },
+  "analyticsSnapshot": {
+    "period": "30d",
+    "dependencyIndex": 61.2,
+    "riskLevel": "high",
+    "mainTrigger": "stress",
+    "riskWindow": "13:00-16:00",
+    "headline": "Stress is the strongest driver right now.",
+    "recommendation": "Block a 10-minute decompression break before 13:00-16:00.",
+    "subscores": {
+      "cravingScore": 63,
+      "automaticityScore": 71,
+      "lossOfControlScore": 54,
+      "emotionalRelianceScore": 68,
+      "recoveryScore": 39
+    }
+  },
+  "insightsViewModel": {
+    "summary": {
+      "dependencyIndex": 61.2,
+      "riskLevel": "high",
+      "mainTrigger": "stress",
+      "riskWindow": "13:00-16:00"
+    },
+    "heatmap": {
+      "hours": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00", "23:00"],
+      "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    },
+    "triggers": [
+      { "tag": "stress", "count": 18, "share": 0.55 },
+      { "tag": "after_food", "count": 11, "share": 0.33 },
+      { "tag": "ritual", "count": 5, "share": 0.15 }
+    ]
+  }
+}

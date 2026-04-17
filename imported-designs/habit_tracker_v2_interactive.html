@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Главный экран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:"Manrope","Segoe UI",sans-serif;
+    --color-border-tertiary:#e8e5e0;
+    --color-text-secondary:#8a8880;
+  }
+  html,body{min-height:100%;background:#efece6;}
+  body{padding:14px;font-family:var(--font-sans);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  .app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+  .screen{background:#faf9f6;border-radius:28px;border:0.5px solid var(--color-border-tertiary);overflow:hidden;margin-bottom:24px;}
+  .screen-label{text-align:center;font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;font-family:var(--font-sans);}
+  .topbar{padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:center;background:#faf9f6;}
+  .topbar-left .hello{font-size:12px;color:#8a8880;}
+  .topbar-left .name{font-size:15px;font-weight:500;color:#1e1c18;}
+  .avatar{width:34px;height:34px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#E1F5EE;}
+  .mood-banner{margin:0 16px 14px;background:#E1F5EE;border-radius:16px;padding:14px 16px;border:0.5px solid #9FE1CB;display:flex;align-items:flex-start;gap:10px;}
+  .mood-icon{width:32px;height:32px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .mood-text{font-size:12px;color:#085041;line-height:1.5;}
+  .mood-text strong{font-weight:500;display:block;margin-bottom:2px;font-size:13px;}
+  .hero{margin:0 16px 14px;background:#1e1c18;border-radius:20px;padding:18px 20px 14px;}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .hero-badge{font-size:10px;color:#9FE1CB;background:rgba(29,158,117,0.25);padding:3px 10px;border-radius:20px;font-weight:500;}
+  .hero-habit{font-size:11px;color:#888;margin-bottom:4px;}
+  .hero-count{font-size:52px;font-weight:500;color:#fff;line-height:1;}
+  .hero-sub{font-size:12px;color:#888;margin-bottom:16px;}
+  .hero-goal{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .goal-track{flex:1;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
+  .goal-fill{height:100%;background:#1D9E75;border-radius:3px;}
+  .goal-label{font-size:11px;color:#9FE1CB;}
+  .big-record-btn{background:#1D9E75;border-radius:14px;padding:13px;text-align:center;font-size:14px;font-weight:500;color:#E1F5EE;cursor:pointer;transition:opacity .15s;}
+  .big-record-btn:active{opacity:.8;}
+  .section-title{font-size:10px;font-weight:500;color:#8a8880;letter-spacing:0.5px;text-transform:uppercase;padding:0 20px 8px;}
+  .week-row{display:flex;gap:6px;padding:0 16px 14px;justify-content:space-between;}
+  .week-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .w-day{font-size:10px;color:#b0ada8;}
+  .w-bar{width:100%;border-radius:4px;}
+  .w-num{font-size:11px;color:#555;font-weight:500;}
+  .w-num.best{color:#1D9E75;}
+  .w-num.worst{color:#D85A30;}
+  .tips-row{display:flex;gap:8px;padding:0 16px 14px;overflow:visible;}
+  .tip-btn{flex:1;background:#fff;border:0.5px solid #e0ddd8;border-radius:14px;padding:12px 10px;text-align:center;cursor:pointer;transition:background .15s;}
+  .tip-btn:active{background:#f0ede8;}
+  .tip-icon{width:28px;height:28px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;}
+  .tip-label{font-size:11px;color:#555;line-height:1.3;}
+  .log-section{padding:0 16px 80px;}
+  .log-item{background:#fff;border-radius:12px;padding:10px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;border:0.5px solid #e8e5e0;}
+  .log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .log-text{flex:1;font-size:12px;color:#444;}
+  .log-time{font-size:11px;color:#bbb;}
+  .sticky-bottom{background:#faf9f6;border-top:0.5px solid #e8e5e0;display:flex;padding:8px 0 10px;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#b0ada8;cursor:pointer;}
+  .tab.active{color:#1D9E75;}
+  .tab-dot{width:4px;height:4px;border-radius:50%;background:#1D9E75;margin:0 auto;}
+
+  .modal-overlay{position:absolute;inset:0;background:rgba(15,14,12,0.6);display:flex;align-items:flex-end;border-radius:28px;z-index:10;}
+  .modal-sheet{background:#faf9f6;border-radius:20px 20px 0 0;padding:20px;width:100%;}
+  .modal-handle{width:36px;height:4px;background:#d0cdc8;border-radius:2px;margin:0 auto 16px;}
+  .modal-title{font-size:15px;font-weight:500;color:#1e1c18;margin-bottom:4px;}
+  .modal-sub{font-size:12px;color:#8a8880;margin-bottom:16px;}
+  .modal-tip{background:#fff;border:0.5px solid #e0ddd8;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+  .modal-tip-title{font-size:12px;font-weight:500;color:#1e1c18;margin-bottom:3px;}
+  .modal-tip-text{font-size:12px;color:#666;line-height:1.5;}
+  .modal-close{width:100%;background:#1e1c18;color:#e8e5e0;border-radius:12px;padding:12px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;margin-top:8px;}
+
+  .toast{position:absolute;bottom:80px;left:16px;right:16px;background:#1e1c18;color:#e8e5e0;border-radius:12px;padding:12px 16px;font-size:12px;line-height:1.5;z-index:20;transition:opacity .3s;}
+  .toast.hidden{opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="screen-label">Главный экран — попробуй нажать кнопки</div>
+  <div class="screen" style="position:relative;">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="hello">Добрый день,</div>
+        <div class="name">Иван</div>
+      </div>
+      <div class="avatar">ИВ</div>
+    </div>
+
+    <div class="mood-banner">
+      <div class="mood-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#E1F5EE" stroke-width="1.5"/><path d="M5.5 9.5c.7.9 3.8.9 5 0" stroke="#E1F5EE" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="7" r="0.8" fill="#E1F5EE"/><circle cx="10" cy="7" r="0.8" fill="#E1F5EE"/></svg>
+      </div>
+      <div class="mood-text" id="mood-text">
+        <strong>Вчера было 5, сегодня пока 3</strong>
+        Ты уже лучше! Каждый сдержанный момент — это маленькая победа.
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-habit">Курение · сегодня</div>
+          <div class="hero-count" id="count">3</div>
+          <div class="hero-sub">из 5 максимум (цель: меньше 3)</div>
+        </div>
+        <div class="hero-badge" id="streak-badge">3 дня снижение</div>
+      </div>
+      <div class="hero-goal">
+        <div class="goal-track"><div class="goal-fill" id="goal-fill" style="width:60%;"></div></div>
+        <div class="goal-label" id="goal-label">3 / 5</div>
+      </div>
+      <div class="big-record-btn" id="record-btn">Зафиксировать срыв</div>
+    </div>
+
+    <div class="section-title">Эта неделя</div>
+    <div class="week-row">
+      <div class="week-col"><div class="w-day">пн</div><div class="w-bar" style="height:22px;background:#9FE1CB;"></div><div class="w-num best">5</div></div>
+      <div class="week-col"><div class="w-day">вт</div><div class="w-bar" style="height:32px;background:#F0997B;"></div><div class="w-num worst">8</div></div>
+      <div class="week-col"><div class="w-day">ср</div><div class="w-bar" style="height:20px;background:#9FE1CB;"></div><div class="w-num">4</div></div>
+      <div class="week-col"><div class="w-day">чт</div><div class="w-bar" style="height:18px;background:#9FE1CB;"></div><div class="w-num best">3</div></div>
+      <div class="week-col"><div class="w-day">пт</div><div class="w-bar" style="height:14px;background:#5DCAA5;"></div><div class="w-num best">3</div></div>
+      <div class="week-col"><div class="w-day">сб</div><div class="w-bar" style="height:3px;background:#d0cdc8;"></div><div class="w-num" style="color:#ccc;">—</div></div>
+      <div class="week-col"><div class="w-day">вс</div><div class="w-bar" style="height:3px;background:#d0cdc8;"></div><div class="w-num" style="color:#ccc;">—</div></div>
+    </div>
+
+    <div class="section-title">Советы и поддержка</div>
+    <div class="tips-row">
+      <div class="tip-btn" id="tip-smoke" onclick="showTip('smoke')">
+        <div class="tip-icon" style="background:#FAEEDA;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="8" width="9" height="2.5" rx="1.25" fill="#854F0B"/><rect x="11" y="8" width="2" height="2.5" rx="1" fill="#854F0B"/><path d="M9 6c0-2 2-2 2-4" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tip-label" style="color:#633806;">При курении</div>
+      </div>
+      <div class="tip-btn" id="tip-alco" onclick="showTip('alco')">
+        <div class="tip-icon" style="background:#E6F1FB;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2h4l1 4H4L5 2z" fill="#185FA5"/><path d="M4 6v5a1 1 0 001 1h4a1 1 0 001-1V6" stroke="#185FA5" stroke-width="1.2"/></svg>
+        </div>
+        <div class="tip-label" style="color:#0C447C;">При алкоголе</div>
+      </div>
+      <div class="tip-btn" id="tip-quit" onclick="showTip('quit')">
+        <div class="tip-icon" style="background:#EEEDFE;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tip-label" style="color:#3C3489;">Не бросать</div>
+      </div>
+    </div>
+
+    <div class="section-title">Последние записи</div>
+    <div class="log-section" id="log-section">
+      <div class="log-item"><div class="log-dot" style="background:#D85A30;"></div><div class="log-text">После обеда · стресс</div><div class="log-time">14:32</div></div>
+      <div class="log-item"><div class="log-dot" style="background:#EF9F27;"></div><div class="log-text">Утром · скука</div><div class="log-time">09:10</div></div>
+      <div class="log-item"><div class="log-dot" style="background:#EF9F27;"></div><div class="log-text">Без комментария</div><div class="log-time">07:45</div></div>
+    </div>
+
+    <div class="sticky-bottom">
+      <div class="tab active">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#1D9E75"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#1D9E75"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#1D9E75"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#1D9E75"/></svg>
+        Главная
+        <div class="tab-dot"></div>
+      </div>
+      <div class="tab">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12L5 7l3 3 2-4 4 5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        График
+      </div>
+      <div class="tab">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#b0ada8" stroke-width="1.5"/><path d="M8 5.5V8.5l2 1" stroke="#b0ada8" stroke-width="1.3" stroke-linecap="round"/></svg>
+        История
+      </div>
+      <div class="tab">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#b0ada8" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Профиль
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal" style="display:none;">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-sub" id="modal-sub"></div>
+        <div id="modal-tips"></div>
+        <div class="modal-close" onclick="closeModal()">Понятно, спасибо</div>
+      </div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+
+  </div>
+
+</div>
+
+<script>
+var count = 3;
+var toastTimer = null;
+
+var tips = {
+  smoke: {
+    title: 'Советы при курении',
+    sub: 'Работающие техники, которые помогают прямо сейчас',
+    items: [
+      {t:'Правило 5 минут', d:'Желание закурить длится не дольше 5 минут. Поставь таймер — оно пройдёт само.'},
+      {t:'Замени руки', d:'Возьми стакан воды, ручку, жвачку. 80% тяги — это привычка рук, не тела.'},
+      {t:'Глубокое дыхание', d:'4 секунды вдох — 7 задержка — 8 выдох. Три раза. Снимает острую тягу.'},
+      {t:'Смени место', d:'Если тянет в привычном месте — уйди оттуда. Контекст сильно влияет на желание.'}
+    ]
+  },
+  alco: {
+    title: 'Советы при тяге к алкоголю',
+    sub: 'Мягкие, но реально работающие способы',
+    items: [
+      {t:'Назови триггер', d:'Скука? Стресс? Компания? Назвать вслух — уже половина победы над импульсом.'},
+      {t:'Отложи на 20 минут', d:'Большинство острых желаний спадают сами. Пообещай себе решить через 20 минут.'},
+      {t:'Безалкогольный аналог', d:'Газировка с лаймом, Квас, Kombucha. Замена ритуала важнее замены вкуса.'},
+      {t:'Позвони кому-нибудь', d:'Разговор переключает мозг быстрее любого другого способа.'}
+    ]
+  },
+  quit: {
+    title: 'Не бросай на полпути',
+    sub: 'Общие принципы, которые помогают дойти до конца',
+    items: [
+      {t:'Срыв ≠ провал', d:'Один плохой день не перечёркивает прогресс. Авария — это не конец пути.'},
+      {t:'Маленькие шаги считаются', d:'Снизил с 8 до 5 — это уже −37%. Не нужно сразу ноль.'},
+      {t:'Веди счёт, не суди себя', d:'Этот дневник — не приговор, а зеркало. Смотри в него без осуждения.'},
+      {t:'Мозг меняется медленно', d:'Новая привычка закрепляется за 66 дней в среднем. Ты в процессе.'}
+    ]
+  }
+};
+
+var toasts = {
+  smoke: [
+    'Зафиксировано. Пройдёт — каждый раз немного легче.',
+    'Ещё одна отметка. Ты честен с собой — это уже много.',
+    'Записано. Попробуй стакан воды прямо сейчас.',
+    'Отмечено. Вспомни, почему ты начал считать.'
+  ],
+  moods: [
+    'Вчера было 5, сегодня уже меньше — ты движешься!',
+    'Каждая запись — это шаг к пониманию себя.',
+    'Снижение на 3 дня подряд. Это не случайность.',
+    'Ты замечаешь паттерны — это важнее, чем кажется.'
+  ]
+};
+
+function showTip(type) {
+  var d = tips[type];
+  document.getElementById('modal-title').textContent = d.title;
+  document.getElementById('modal-sub').textContent = d.sub;
+  var html = '';
+  for (var i=0;i<d.items.length;i++) {
+    html += '<div class="modal-tip"><div class="modal-tip-title">'+d.items[i].t+'</div><div class="modal-tip-text">'+d.items[i].d+'</div></div>';
+  }
+  document.getElementById('modal-tips').innerHTML = html;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.add('hidden'); }, 3500);
+}
+
+function updateUI() {
+  document.getElementById('count').textContent = count;
+  var pct = Math.min(100, Math.round(count/5*100));
+  document.getElementById('goal-fill').style.width = pct+'%';
+  document.getElementById('goal-label').textContent = count+' / 5';
+
+  var mood = document.getElementById('mood-text');
+  if(count === 0) {
+    mood.innerHTML = '<strong>Сегодня ноль!</strong>Невероятно. Это лучший день за неделю. Гордись собой.';
+  } else if(count <= 2) {
+    mood.innerHTML = '<strong>Отлично держишься!</strong>Почти у цели. Ещё немного — и рекорд.';
+  } else if(count <= 4) {
+    mood.innerHTML = '<strong>Вчера было 5, сегодня пока '+count+'</strong>Ты уже лучше! Каждый сдержанный момент — маленькая победа.';
+  } else {
+    mood.innerHTML = '<strong>Сложный день, и это нормально</strong>Не суди себя. Завтра — новый отсчёт. Ты не один.';
+  }
+
+  if(count >= 5) {
+    document.getElementById('goal-fill').style.background = '#D85A30';
+  } else {
+    document.getElementById('goal-fill').style.background = '#1D9E75';
+  }
+}
+
+document.getElementById('record-btn').addEventListener('click', function(){
+  count++;
+  var msgs = toasts.smoke;
+  showToast(msgs[Math.min(count-1, msgs.length-1)]);
+
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  var time = (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  var triggers = ['Стресс','Скука','После еды','Усталость'];
+  var trig = triggers[count % triggers.length];
+  var log = document.getElementById('log-section');
+  var item = document.createElement('div');
+  item.className = 'log-item';
+  item.style.background = '#fff7f0';
+  item.innerHTML = '<div class="log-dot" style="background:#D85A30;"></div><div class="log-text">Только что · '+trig+'</div><div class="log-time">'+time+'</div>';
+  log.insertBefore(item, log.firstChild);
+  setTimeout(function(){ item.style.background=''; }, 800);
+
+  updateUI();
+});
+</script>
+</body>
+</html>
