@@ -105,7 +105,7 @@
 .mood-text{flex:1;font-size:12px;color:var(--accent-text);line-height:1.55;}
 .mood-inline-badge{display:inline-flex;align-items:center;margin-bottom:6px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,0.42);border:1px solid rgba(29,158,117,0.18);color:#2b7f66;font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
 .mood-text strong{font-family:var(--font-display);font-weight:700;display:block;margin-bottom:3px;font-size:15px;line-height:1.2;letter-spacing:var(--tracking-tight);}
- .ritual-card{position:relative;isolation:isolate;margin:0 16px 14px;background:var(--surface-elevated);border-radius:18px;padding:14px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);display:block;overflow:hidden;}
+.ritual-card{position:relative;isolation:isolate;margin:0 16px 14px;background:var(--surface-elevated);border-radius:18px;padding:14px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);display:block;overflow:hidden;}
 .ritual-card > *{position:relative;z-index:1;}
 .ritual-echo-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;opacity:0;transition:opacity .22s ease;}
 .ritual-echo-layer::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 72% 18%, rgba(29,158,117,.08), transparent 34%), radial-gradient(circle at 28% 62%, rgba(29,158,117,.05), transparent 42%);opacity:.9;}
@@ -117,7 +117,7 @@
 .ritual-echo-path[data-tone="soft"]{stroke:rgba(239,159,39,.28);}
 .ritual-echo-path.resonating{stroke:rgba(29,158,117,.5);stroke-width:4.8;filter:drop-shadow(0 0 10px rgba(29,158,117,.16));animation:ritualResonate 2s ease-out 1;}
 .ritual-card.echo-resonating{box-shadow:0 16px 34px rgba(21,70,56,.09);}
-.ritual-phase-chip{display:inline-flex;align-items:center;justify-content:center;gap:8px;align-self:flex-start;margin-left:auto;padding:8px 11px;border-radius:999px;border:1px solid rgba(29,158,117,.16);background:rgba(225,245,238,.84);box-shadow:0 10px 20px rgba(29,158,117,.05);}
+.ritual-phase-chip{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid rgba(29,158,117,.16);background:rgba(225,245,238,.84);box-shadow:0 10px 20px rgba(29,158,117,.05);z-index:2;}
 .ritual-phase-dots{display:inline-flex;align-items:center;gap:8px;}
 .ritual-phase-dot{width:8px;height:8px;border-radius:50%;background:rgba(29,158,117,.2);opacity:.82;transition:transform .22s ease,background-color .22s ease,box-shadow .22s ease,opacity .22s ease;}
 .ritual-phase-dot.is-soft{background:rgba(29,158,117,.42);}
@@ -132,7 +132,8 @@
   0%,100%{transform:scale(1.08);box-shadow:0 0 0 5px rgba(29,158,117,.1);}
   50%{transform:scale(1.2);box-shadow:0 0 0 8px rgba(29,158,117,.14);}
 }
-.ritual-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);font-weight:700;}
+.ritual-kicker,.ritual-title,.ritual-copy{max-width:calc(100% - 92px);}
+.ritual-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);font-weight:700;min-height:22px;padding-right:4px;}
 .ritual-title{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-top:8px;}
 .ritual-copy{font-size:12.5px;color:var(--color-body);line-height:1.62;margin-top:6px;}
 .ritual-copy-main{color:var(--color-body);}
@@ -238,6 +239,7 @@
   .week-snapshot-value{font-size:14px;font-weight:700;color:var(--color-text);line-height:1.2;margin-top:6px;}
   .week-snapshot-copy{font-size:11px;color:var(--color-body);line-height:1.45;margin-top:4px;}
   .hero{margin:0 16px 14px;background:linear-gradient(180deg, var(--hero) 0%, var(--hero-elevated) 100%);border-radius:22px;padding:18px 18px 15px;box-shadow:0 14px 30px rgba(28,22,15,0.18);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
+  .hero.is-confirmed{background:linear-gradient(180deg, rgba(18,51,40,0.98) 0%, rgba(11,30,23,0.98) 100%);border-color:rgba(51,184,135,0.34);box-shadow:0 18px 34px rgba(8,26,20,0.26);}
   .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
   .hero-badge{min-width:78px;font-size:10px;color:var(--accent-soft-border);background:rgba(29,158,117,0.18);padding:4px 10px;border-radius:20px;font-weight:600;text-align:center;}
   .hero-habit{font-size:11px;font-weight:600;letter-spacing:0.02em;color:var(--hero-muted);margin-bottom:4px;}
@@ -257,9 +259,23 @@
   .record-cta-sub{font-size:11.5px;color:#9f9588;line-height:1.42;margin-top:4px;}
   .record-cta-arrow{font-size:18px;color:#b4aa9d;flex:0 0 auto;transition:transform .18s ease;line-height:1;}
   .big-record-btn.open .record-cta-arrow{transform:rotate(90deg);}
-  .secondary-btn{background:rgba(255,255,255,0.08);color:#faf9f6;border:1px solid rgba(255,255,255,0.09);}
+  .secondary-btn{position:relative;overflow:hidden;isolation:isolate;background:rgba(255,255,255,0.08);color:#faf9f6;border:1px solid rgba(255,255,255,0.09);}
+  .secondary-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg, rgba(184,240,219,0) 0%, rgba(184,240,219,.24) 44%, rgba(255,255,255,.34) 50%, rgba(184,240,219,.24) 56%, rgba(184,240,219,0) 100%);transform:translateX(-120%);opacity:0;pointer-events:none;z-index:1;}
   .big-record-btn:active{opacity:.92;box-shadow:0 12px 24px rgba(17,14,11,0.24);}
   .secondary-btn:active{opacity:.92;box-shadow:0 10px 20px rgba(17,14,11,0.16);}
+  .secondary-btn.is-saving{background:rgba(18,51,40,0.96);border-color:var(--accent);color:var(--accent-text);box-shadow:0 12px 24px rgba(8,26,20,0.28);}
+  .secondary-btn.is-confirmed{background:linear-gradient(180deg, rgba(29,158,117,0.98) 0%, rgba(24,129,96,0.98) 100%);border-color:rgba(184,240,219,0.58);color:#f7fffb;box-shadow:0 16px 30px rgba(15,74,56,0.34), inset 0 0 0 1px rgba(247,255,251,0.18);transform:translateY(-1px) scale(1.01);animation:secondaryButtonBreath .9s ease-out 1;}
+  .secondary-btn.is-flashing::before{opacity:1;animation:secondaryButtonFlash .34s ease-out 1;}
+  @keyframes secondaryButtonFlash{
+    0%{transform:translateX(-120%);opacity:0;}
+    15%{opacity:1;}
+    100%{transform:translateX(120%);opacity:0;}
+  }
+  @keyframes secondaryButtonBreath{
+    0%{transform:translateY(-1px) scale(1.01);box-shadow:0 16px 30px rgba(15,74,56,0.34), inset 0 0 0 1px rgba(247,255,251,0.18);}
+    45%{transform:translateY(-1px) scale(1.035);box-shadow:0 18px 34px rgba(15,74,56,0.38), 0 0 0 6px rgba(184,240,219,0.08), inset 0 0 0 1px rgba(247,255,251,0.22);}
+    100%{transform:translateY(-1px) scale(1.01);box-shadow:0 16px 30px rgba(15,74,56,0.34), inset 0 0 0 1px rgba(247,255,251,0.18);}
+  }
   .slip-sheet{position:fixed;inset:0;display:none;background:rgba(247,243,236,0.76);backdrop-filter:blur(10px);border-radius:30px;z-index:18;overflow:hidden;}
   .slip-sheet.open{display:block;}
   .slip-sheet-panel{position:fixed;inset:0;background:var(--surface);padding:18px 16px calc(118px + env(safe-area-inset-bottom));overflow-y:auto;}
@@ -657,6 +673,12 @@ var slipComposerState = {
   cravingLevel: 4,
   saving: false
 };
+var resistedSaving = false;
+var resistedConfirmed = false;
+var resistedFlashing = false;
+var resistedFlashTimer = null;
+var resistedConfirmTimer = null;
+var heroConfirmedTimer = null;
 var memoryExpanded = false;
 
 function getAdviceTimeSegment(hour) {
@@ -890,6 +912,33 @@ function closeSlipSheet() {
   renderSlipComposer(window.HabitStore.getState());
 }
 
+function pulseHeroConfirmation() {
+  var hero = document.querySelector(".hero");
+  if (!hero) return;
+  hero.classList.add("is-confirmed");
+  if (heroConfirmedTimer) {
+    window.clearTimeout(heroConfirmedTimer);
+  }
+  heroConfirmedTimer = window.setTimeout(function () {
+    hero.classList.remove("is-confirmed");
+    heroConfirmedTimer = null;
+  }, 520);
+}
+
+function applyResistedButtonState(state) {
+  var resistedBtn = document.getElementById("resisted-btn");
+  if (!resistedBtn) return;
+  var trackerCopy = state && state.currentHabit
+    ? polishTrackerCopy(state.currentHabit.id, getTrackerCopy(state.currentHabit.id))
+    : { resistedLabel: "\u0423\u0434\u0435\u0440\u0436\u0430\u043b\u0441\u044f" };
+  resistedBtn.textContent = resistedSaving
+    ? "\u0424\u0438\u043a\u0441\u0438\u0440\u0443\u0435\u043c..."
+    : (resistedConfirmed ? "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u043e" : trackerCopy.resistedLabel);
+  resistedBtn.classList.toggle("is-saving", resistedSaving);
+  resistedBtn.classList.toggle("is-confirmed", resistedConfirmed);
+  resistedBtn.classList.toggle("is-flashing", resistedFlashing);
+}
+
 function renderSlipComposer(state) {
   var root = document.getElementById("slip-sheet");
   var triggerRow = document.getElementById("slip-tag-row");
@@ -1082,34 +1131,34 @@ document.getElementById("tip-btn-3").onclick = function () { showTip("tertiary")
 
 function getTrackerCopy(habitId) {
   var copy = {
-    recordLabel: "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЃСЂС‹РІ",
-    resistedLabel: "РЈРґРµСЂР¶Р°Р»СЃСЏ",
-    slipToast: "РЎРѕР±С‹С‚РёРµ СЃРѕС…СЂР°РЅРµРЅРѕ. Р—Р°РїРёСЃСЊ СѓР¶Рµ РѕС‚РїСЂР°РІР»РµРЅР° РІ РґРЅРµРІРЅРёРє Рё Р°РЅР°Р»РёС‚РёРєСѓ.",
-    successToast: "РњРѕРјРµРЅС‚ СѓРґРµСЂР¶Р°РЅРёСЏ СЃРѕС…СЂР°РЅС‘РЅ Рё СѓСЃРёР»РёС‚ Р°РЅР°Р»РёС‚РёРєСѓ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ."
+    recordLabel: "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0441\u0440\u044b\u0432",
+    resistedLabel: "\u0423\u0434\u0435\u0440\u0436\u0430\u043b\u0441\u044f",
+    slipToast: "\u0421\u0440\u044b\u0432 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u0417\u0430\u043f\u0438\u0441\u044c \u0443\u0436\u0435 \u043f\u043e\u043f\u0430\u043b\u0430 \u0432 \u0434\u043d\u0435\u0432\u043d\u0438\u043a \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443.",
+    successToast: "\u041c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u0438 \u0443\u0441\u0438\u043b\u0438\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f."
   };
 
   if (habitId === "alcohol") {
-    copy.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    copy.resistedLabel = "РќРµ РІС‹РїРёР»";
-    copy.slipToast = "Р­РїРёР·РѕРґ СЃ Р°Р»РєРѕРіРѕР»РµРј СЃРѕС…СЂР°РЅС‘РЅ. РћРЅ СѓР¶Рµ РІР»РёСЏРµС‚ РЅР° РґРЅРµРІРЅРёРє Рё Р°РЅР°Р»РёС‚РёРєСѓ.";
-    copy.successToast = "РњРѕРјРµРЅС‚, РєРѕРіРґР° С‚С‹ РЅРµ РІС‹РїРёР», СЃРѕС…СЂР°РЅС‘РЅ РєР°Рє РѕРїРѕСЂР° РґР»СЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.";
+    copy.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    copy.resistedLabel = "\u041d\u0435 \u0432\u044b\u043f\u0438\u043b";
+    copy.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441 \u0430\u043b\u043a\u043e\u0433\u043e\u043b\u0435\u043c \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041e\u043d \u0443\u0436\u0435 \u0432\u043b\u0438\u044f\u0435\u0442 \u043d\u0430 \u0434\u043d\u0435\u0432\u043d\u0438\u043a \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443.";
+    copy.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442, \u043a\u043e\u0433\u0434\u0430 \u0442\u044b \u043d\u0435 \u0432\u044b\u043f\u0438\u043b, \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u043a\u0430\u043a \u043e\u043f\u043e\u0440\u0430 \u0434\u043b\u044f \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f.";
   } else if (habitId === "sweets") {
-    copy.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    copy.slipToast = "Р­РїРёР·РѕРґ СЃРѕ СЃР»Р°РґРєРёРј СЃРѕС…СЂР°РЅС‘РЅ. РўРµРїРµСЂСЊ Р±СѓРґРµС‚ Р»РµРіС‡Рµ Р·Р°РјРµС‚РёС‚СЊ, С‡С‚Рѕ Р·Р°РїСѓСЃРєР°РµС‚ С‚СЏРіСѓ.";
-    copy.successToast = "РњРѕРјРµРЅС‚ СѓРґРµСЂР¶Р°РЅРёСЏ РѕС‚ СЃР»Р°РґРєРѕРіРѕ СЃРѕС…СЂР°РЅС‘РЅ Рё РїРѕРґРґРµСЂР¶РёС‚ Р°РЅР°Р»РёС‚РёРєСѓ СЃР°РјРѕРєРѕРЅС‚СЂРѕР»СЏ.";
+    copy.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    copy.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e \u0441\u043b\u0430\u0434\u043a\u0438\u043c \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u0422\u0435\u043f\u0435\u0440\u044c \u0431\u0443\u0434\u0435\u0442 \u043b\u0435\u0433\u0447\u0435 \u0437\u0430\u043c\u0435\u0442\u0438\u0442\u044c, \u0447\u0442\u043e \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442 \u0442\u044f\u0433\u0443.";
+    copy.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f \u043e\u0442 \u0441\u043b\u0430\u0434\u043a\u043e\u0433\u043e \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u0438 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u0441\u0430\u043c\u043e\u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044f.";
   } else if (habitId === "social") {
-    copy.recordLabel = "РЎРѕСЂРІР°Р»СЃСЏ РІ Р»РµРЅС‚Сѓ";
-    copy.resistedLabel = "Р’С‹С€РµР» РІРѕРІСЂРµРјСЏ";
-    copy.slipToast = "Р—Р°С…РѕРґ РІ Р»РµРЅС‚Сѓ СЃРѕС…СЂР°РЅС‘РЅ. Р­С‚Рѕ РїРѕРјРѕР¶РµС‚ СѓРІРёРґРµС‚СЊ, РєРѕРіРґР° Р°РІС‚РѕРїСЂРѕРєСЂСѓС‚РєР° РІРєР»СЋС‡Р°РµС‚СЃСЏ С‡Р°С‰Рµ.";
-    copy.successToast = "РњРѕРјРµРЅС‚ РІС‹С…РѕРґР° РёР· Р»РµРЅС‚С‹ СЃРѕС…СЂР°РЅС‘РЅ Рё РїРѕРјРѕР¶РµС‚ Р°РЅР°Р»РёС‚РёРєРµ СЃР°РјРѕРєРѕРЅС‚СЂРѕР»СЏ.";
+    copy.recordLabel = "\u0421\u043e\u0440\u0432\u0430\u043b\u0441\u044f \u0432 \u043b\u0435\u043d\u0442\u0443";
+    copy.resistedLabel = "\u0412\u044b\u0448\u0435\u043b \u0432\u043e\u0432\u0440\u0435\u043c\u044f";
+    copy.slipToast = "\u0417\u0430\u0445\u043e\u0434 \u0432 \u043b\u0435\u043d\u0442\u0443 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u042d\u0442\u043e \u043f\u043e\u043c\u043e\u0436\u0435\u0442 \u0443\u0432\u0438\u0434\u0435\u0442\u044c, \u043a\u043e\u0433\u0434\u0430 \u0430\u0432\u0442\u043e\u043f\u0440\u043e\u043a\u0440\u0443\u0442\u043a\u0430 \u0432\u043a\u043b\u044e\u0447\u0430\u0435\u0442\u0441\u044f \u0447\u0430\u0449\u0435.";
+    copy.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442 \u0432\u044b\u0445\u043e\u0434\u0430 \u0438\u0437 \u043b\u0435\u043d\u0442\u044b \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u0438 \u043f\u043e\u043c\u043e\u0436\u0435\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0435 \u0441\u0430\u043c\u043e\u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044f.";
   } else if (habitId === "overeating") {
-    copy.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    copy.resistedLabel = "РћСЃС‚Р°РЅРѕРІРёР»СЃСЏ РІРѕРІСЂРµРјСЏ";
-    copy.slipToast = "Р­РїРёР·РѕРґ РїРµСЂРµРµРґР°РЅРёСЏ СЃРѕС…СЂР°РЅС‘РЅ. РўР°Рє Р±СѓРґРµС‚ РїСЂРѕС‰Рµ СѓРІРёРґРµС‚СЊ РµРіРѕ СЂРµР°Р»СЊРЅСѓСЋ РїСЂРёС‡РёРЅСѓ.";
-    copy.successToast = "РњРѕРјРµРЅС‚, РєРѕРіРґР° С‚С‹ РѕСЃС‚Р°РЅРѕРІРёР»СЃСЏ РІРѕРІСЂРµРјСЏ, СЃРѕС…СЂР°РЅС‘РЅ Рё СѓСЃРёР»РёС‚ Р°РЅР°Р»РёС‚РёРєСѓ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.";
+    copy.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    copy.resistedLabel = "\u041e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u043b\u0441\u044f \u0432\u043e\u0432\u0440\u0435\u043c\u044f";
+    copy.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u043f\u0435\u0440\u0435\u0435\u0434\u0430\u043d\u0438\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u0422\u0430\u043a \u0431\u0443\u0434\u0435\u0442 \u043f\u0440\u043e\u0449\u0435 \u0443\u0432\u0438\u0434\u0435\u0442\u044c \u0435\u0433\u043e \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u043f\u0440\u0438\u0447\u0438\u043d\u0443.";
+    copy.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442, \u043a\u043e\u0433\u0434\u0430 \u0442\u044b \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u043b\u0441\u044f \u0432\u043e\u0432\u0440\u0435\u043c\u044f, \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u0438 \u0443\u0441\u0438\u043b\u0438\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f.";
   } else if (habitId === "custom") {
-    copy.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    copy.slipToast = "Р­РїРёР·РѕРґ СЃРѕС…СЂР°РЅС‘РЅ. РћРЅ СѓР¶Рµ РїРѕРїР°Р» РІ РґРЅРµРІРЅРёРє Рё Р°РЅР°Р»РёС‚РёРєСѓ РїСЂРёРІС‹С‡РєРё.";
+    copy.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    copy.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041e\u043d \u0443\u0436\u0435 \u043f\u043e\u043f\u0430\u043b \u0432 \u0434\u043d\u0435\u0432\u043d\u0438\u043a \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u043f\u0440\u0438\u0432\u044b\u0447\u043a\u0438.";
   }
 
   return copy;
@@ -1231,33 +1280,33 @@ function getNextSlipEvent(habitId) {
 
 function polishTrackerCopy(habitId, copy) {
   var next = Object.assign({}, copy);
-  next.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЃСЂС‹РІ";
-  next.resistedLabel = "РЈРґРµСЂР¶Р°Р»СЃСЏ";
-  next.slipToast = "РЎРѕР±С‹С‚РёРµ СЃРѕС…СЂР°РЅРµРЅРѕ. Р›РµРЅС‚Р° Рё Р°РЅР°Р»РёС‚РёРєР° СѓР¶Рµ РѕР±РЅРѕРІРёР»РёСЃСЊ.";
-  next.successToast = "РњРѕРјРµРЅС‚ СѓРґРµСЂР¶Р°РЅРёСЏ СЃРѕС…СЂР°РЅС‘РЅ. Р­С‚Рѕ С‚РѕР¶Рµ РІР°Р¶РЅР°СЏ С‡Р°СЃС‚СЊ С‚РІРѕРµРіРѕ СЂРёС‚РјР°.";
+  next.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0441\u0440\u044b\u0432";
+  next.resistedLabel = "\u0423\u0434\u0435\u0440\u0436\u0430\u043b\u0441\u044f";
+  next.slipToast = "\u0421\u0440\u044b\u0432 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041b\u0435\u043d\u0442\u0430 \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0430 \u0443\u0436\u0435 \u043e\u0431\u043d\u043e\u0432\u0438\u043b\u0438\u0441\u044c.";
+  next.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u042d\u0442\u043e \u0442\u043e\u0436\u0435 \u0432\u0430\u0436\u043d\u0430\u044f \u0447\u0430\u0441\u0442\u044c \u0442\u0432\u043e\u0435\u0433\u043e \u0440\u0438\u0442\u043c\u0430.";
 
   if (habitId === "alcohol") {
-    next.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    next.resistedLabel = "РќРµ РІС‹РїРёР»";
-    next.slipToast = "Р­РїРёР·РѕРґ СЃРѕС…СЂР°РЅС‘РЅ. Р›РµРЅС‚Р° Рё Р°РЅР°Р»РёС‚РёРєР° СѓР¶Рµ РїРѕРґСЃС‚СЂРѕРёР»РёСЃСЊ РїРѕРґ РЅРµРіРѕ.";
-    next.successToast = "РњРѕРјРµРЅС‚, РєРѕРіРґР° С‚С‹ РЅРµ РІС‹РїРёР», СЃРѕС…СЂР°РЅС‘РЅ РєР°Рє РѕРїРѕСЂР° РЅР° Р±СѓРґСѓС‰РµРµ.";
+    next.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    next.resistedLabel = "\u041d\u0435 \u0432\u044b\u043f\u0438\u043b";
+    next.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041b\u0435\u043d\u0442\u0430 \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0430 \u0443\u0436\u0435 \u043f\u043e\u0434\u0441\u0442\u0440\u043e\u0438\u043b\u0438\u0441\u044c \u043f\u043e\u0434 \u043d\u0435\u0433\u043e.";
+    next.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442, \u043a\u043e\u0433\u0434\u0430 \u0442\u044b \u043d\u0435 \u0432\u044b\u043f\u0438\u043b, \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u043a\u0430\u043a \u043e\u043f\u043e\u0440\u0430 \u043d\u0430 \u0431\u0443\u0434\u0443\u0449\u0435\u0435.";
   } else if (habitId === "sweets") {
-    next.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    next.slipToast = "Р­РїРёР·РѕРґ СЃРѕС…СЂР°РЅС‘РЅ. РўРµРїРµСЂСЊ Р±СѓРґРµС‚ Р»РµРіС‡Рµ Р·Р°РјРµС‚РёС‚СЊ, С‡С‚Рѕ РёРјРµРЅРЅРѕ Р·Р°РїСѓСЃРєР°РµС‚ С‚СЏРіСѓ.";
-    next.successToast = "РњРѕРјРµРЅС‚ СѓРґРµСЂР¶Р°РЅРёСЏ СЃРѕС…СЂР°РЅС‘РЅ. РћРЅ СѓСЃРёР»РёС‚ РєР°СЂС‚РёРЅСѓ СЃР°РјРѕРєРѕРЅС‚СЂРѕР»СЏ.";
+    next.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    next.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u0422\u0435\u043f\u0435\u0440\u044c \u0431\u0443\u0434\u0435\u0442 \u043b\u0435\u0433\u0447\u0435 \u0437\u0430\u043c\u0435\u0442\u0438\u0442\u044c, \u0447\u0442\u043e \u0438\u043c\u0435\u043d\u043d\u043e \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442 \u0442\u044f\u0433\u0443.";
+    next.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041e\u043d \u0443\u0441\u0438\u043b\u0438\u0442 \u043a\u0430\u0440\u0442\u0438\u043d\u0443 \u0441\u0430\u043c\u043e\u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044f.";
   } else if (habitId === "social") {
-    next.recordLabel = "РЎРѕСЂРІР°Р»СЃСЏ РІ Р»РµРЅС‚Сѓ";
-    next.resistedLabel = "Р’С‹С€РµР» РІРѕРІСЂРµРјСЏ";
-    next.slipToast = "Р—Р°С…РѕРґ РІ Р»РµРЅС‚Сѓ СЃРѕС…СЂР°РЅС‘РЅ. Р­С‚Рѕ РїРѕРјРѕР¶РµС‚ С‚РѕС‡РЅРµРµ СѓРІРёРґРµС‚СЊ СЃС†РµРЅР°СЂРёР№ Р°РІС‚РѕРїСЂРѕРєСЂСѓС‚РєРё.";
-    next.successToast = "РњРѕРјРµРЅС‚ РІС‹С…РѕРґР° СЃРѕС…СЂР°РЅС‘РЅ. Р­С‚Рѕ С‚РѕР¶Рµ РґРІРёР¶РµРЅРёРµ РІ РЅСѓР¶РЅСѓСЋ СЃС‚РѕСЂРѕРЅСѓ.";
+    next.recordLabel = "\u0421\u043e\u0440\u0432\u0430\u043b\u0441\u044f \u0432 \u043b\u0435\u043d\u0442\u0443";
+    next.resistedLabel = "\u0412\u044b\u0448\u0435\u043b \u0432\u043e\u0432\u0440\u0435\u043c\u044f";
+    next.slipToast = "\u0417\u0430\u0445\u043e\u0434 \u0432 \u043b\u0435\u043d\u0442\u0443 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u042d\u0442\u043e \u043f\u043e\u043c\u043e\u0436\u0435\u0442 \u0442\u043e\u0447\u043d\u0435\u0435 \u0443\u0432\u0438\u0434\u0435\u0442\u044c \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0439 \u0430\u0432\u0442\u043e\u043f\u0440\u043e\u043a\u0440\u0443\u0442\u043a\u0438.";
+    next.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442 \u0432\u044b\u0445\u043e\u0434\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u042d\u0442\u043e \u0442\u043e\u0436\u0435 \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0435 \u0432 \u043d\u0443\u0436\u043d\u0443\u044e \u0441\u0442\u043e\u0440\u043e\u043d\u0443.";
   } else if (habitId === "overeating") {
-    next.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    next.resistedLabel = "РћСЃС‚Р°РЅРѕРІРёР»СЃСЏ РІРѕРІСЂРµРјСЏ";
-    next.slipToast = "Р­РїРёР·РѕРґ СЃРѕС…СЂР°РЅС‘РЅ. РўР°Рє Р±СѓРґРµС‚ Р»РµРіС‡Рµ Р·Р°РјРµС‚РёС‚СЊ РµРіРѕ СЂРµР°Р»СЊРЅСѓСЋ РїСЂРёС‡РёРЅСѓ.";
-    next.successToast = "РњРѕРјРµРЅС‚, РєРѕРіРґР° С‚С‹ РѕСЃС‚Р°РЅРѕРІРёР»СЃСЏ РІРѕРІСЂРµРјСЏ, С‚РѕР¶Рµ СЃРѕС…СЂР°РЅС‘РЅ РІ СЂРёС‚РјРµ РЅРµРґРµР»Рё.";
+    next.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    next.resistedLabel = "\u041e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u043b\u0441\u044f \u0432\u043e\u0432\u0440\u0435\u043c\u044f";
+    next.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u0422\u0430\u043a \u0431\u0443\u0434\u0435\u0442 \u043b\u0435\u0433\u0447\u0435 \u0437\u0430\u043c\u0435\u0442\u0438\u0442\u044c \u0435\u0433\u043e \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u043f\u0440\u0438\u0447\u0438\u043d\u0443.";
+    next.successToast = "\u041c\u043e\u043c\u0435\u043d\u0442, \u043a\u043e\u0433\u0434\u0430 \u0442\u044b \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u043b\u0441\u044f \u0432\u043e\u0432\u0440\u0435\u043c\u044f, \u0442\u043e\u0436\u0435 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u0432 \u0440\u0438\u0442\u043c\u0435 \u043d\u0435\u0434\u0435\u043b\u0438.";
   } else if (habitId === "custom") {
-    next.recordLabel = "Р—Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СЌРїРёР·РѕРґ";
-    next.slipToast = "Р­РїРёР·РѕРґ СЃРѕС…СЂР°РЅС‘РЅ. РћРЅ СѓР¶Рµ РїРѕРїР°Р» РІ Р»РµРЅС‚Сѓ Рё Р°РЅР°Р»РёС‚РёРєСѓ РїСЂРёРІС‹С‡РєРё.";
+    next.recordLabel = "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043f\u0438\u0437\u043e\u0434";
+    next.slipToast = "\u042d\u043f\u0438\u0437\u043e\u0434 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d. \u041e\u043d \u0443\u0436\u0435 \u043f\u043e\u043f\u0430\u043b \u0432 \u043b\u0435\u043d\u0442\u0443 \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u043f\u0440\u0438\u0432\u044b\u0447\u043a\u0438.";
   }
 
   return next;
@@ -1398,7 +1447,15 @@ function renderMain(state) {
   document.getElementById("goal-fill").style.background = todayCount >= limit ? "#D85A30" : "#1D9E75";
   document.getElementById("goal-label").textContent = "СЃРµРіРѕРґРЅСЏ " + todayCount + " / " + limit;
   document.getElementById("record-btn").textContent = trackerCopy.recordLabel;
-  document.getElementById("resisted-btn").textContent = trackerCopy.resistedLabel;
+  var resistedBtn = document.getElementById("resisted-btn");
+  if (resistedBtn) {
+    resistedBtn.textContent = resistedSaving
+      ? "\u0424\u0438\u043a\u0441\u0438\u0440\u0443\u0435\u043c..."
+      : (resistedConfirmed ? "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u043e" : trackerCopy.resistedLabel);
+    resistedBtn.classList.toggle("is-saving", resistedSaving);
+    resistedBtn.classList.toggle("is-confirmed", resistedConfirmed);
+    resistedBtn.classList.toggle("is-flashing", resistedFlashing);
+  }
   document.getElementById("streak-badge").textContent = trackerState.badge || "\u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0434\u0435\u043d\u044c";
 
   var mood = document.getElementById("mood-text");
@@ -1504,6 +1561,7 @@ function renderMain(state) {
   if (vm && window.HabitScreenDom && window.HabitScreenDom.applyMainScreenViewModel) {
     window.HabitScreenDom.applyMainScreenViewModel(vm);
   }
+  applyResistedButtonState(state);
   syncRitualEntryAction();
   normalizePrimaryFlow();
   renderSlipComposer(state);
@@ -1520,12 +1578,38 @@ document.getElementById("record-btn").addEventListener("click", function () {
 });
 
 document.getElementById("resisted-btn").addEventListener("click", function () {
+  if (resistedSaving) return;
   var state = window.HabitStore.getState();
   var trackerCopy = polishTrackerCopy(state.currentHabit.id, getTrackerCopy(state.currentHabit.id));
   var toastCopy = this.dataset.toast || trackerCopy.successToast;
-  slipComposerState = { open: false, tags: [], bodySignals: [], note: "", cravingLevel: 4 };
-  window.HabitStore.recordResisted(getHabitDemoEvents(state.currentHabit.id).resisted);
-  showToast(toastCopy);
+  resistedSaving = true;
+  resistedConfirmed = false;
+  resistedFlashing = true;
+  renderMain(window.HabitStore.getState());
+  if (resistedFlashTimer) {
+    window.clearTimeout(resistedFlashTimer);
+  }
+  resistedFlashTimer = window.setTimeout(function () {
+    resistedFlashing = false;
+    resistedFlashTimer = null;
+    renderMain(window.HabitStore.getState());
+  }, 180);
+  window.setTimeout(function () {
+    slipComposerState = { open: false, tags: [], bodySignals: [], note: "", cravingLevel: 4, saving: false };
+    window.HabitStore.recordResisted(getHabitDemoEvents(state.currentHabit.id).resisted);
+    resistedSaving = false;
+    resistedConfirmed = true;
+    renderMain(window.HabitStore.getState());
+    showToast(toastCopy);
+    if (resistedConfirmTimer) {
+      window.clearTimeout(resistedConfirmTimer);
+    }
+    resistedConfirmTimer = window.setTimeout(function () {
+      resistedConfirmed = false;
+      resistedConfirmTimer = null;
+      renderMain(window.HabitStore.getState());
+    }, 980);
+  }, 220);
 });
 document.getElementById("slip-sheet-close").addEventListener("click", function () {
   closeSlipSheet();
