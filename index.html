@@ -794,11 +794,20 @@
             font: 600 0.94rem "DM Sans", sans-serif;
             padding: 10px 16px;
             cursor: pointer;
+            transition: border-color .16s ease, background-color .16s ease, color .16s ease, box-shadow .16s ease, transform .14s ease;
         }
 
         .onboarding-chip.accent {
             border-color: rgba(29, 158, 117, 0.42);
             color: #127355;
+        }
+
+        .onboarding-chip.active {
+            background: rgba(225, 245, 238, 0.96);
+            border-color: rgba(29, 158, 117, 0.48);
+            color: #0f6f54;
+            box-shadow: 0 10px 20px rgba(29, 158, 117, 0.10);
+            transform: translateY(-1px);
         }
 
         .onboarding-meta-note {
@@ -937,6 +946,21 @@
             </div>
         </section>
     </main>
+    <script>
+        (function () {
+            function forceHideShellLoading() {
+                var loading = document.getElementById("shellLoading");
+                if (loading) {
+                    loading.classList.add("hidden");
+                }
+            }
+
+            window.__habitShellBootFallback = window.setTimeout(forceHideShellLoading, 5000);
+            window.addEventListener("error", function () {
+                window.setTimeout(forceHideShellLoading, 60);
+            }, { once: true });
+        })();
+    </script>
     <input id="welcomeRestoreInput" type="file" accept=".json,application/json" hidden>
 
     <script src="analytics/store.js"></script>
@@ -1266,6 +1290,11 @@
                 bar.classList.toggle("active", index === stepIndex);
             });
 
+            document.querySelectorAll("[data-ritual-text]").forEach((button) => {
+                const text = button.dataset.ritualText || "";
+                button.classList.toggle("active", text === String(onboardingSelection.ritualText || ""));
+            });
+
             onboardingStep1Body.classList.toggle("open", stepIndex === 0);
             onboardingHabitOptions.classList.toggle("open", stepIndex === 1);
             onboardingGoalOptions.classList.toggle("open", stepIndex === 2);
@@ -1411,6 +1440,10 @@
         function hideShellLoading() {
             if (shellLoadingHidden || !shellLoading) return;
             shellLoadingHidden = true;
+            if (window.__habitShellBootFallback) {
+                window.clearTimeout(window.__habitShellBootFallback);
+                window.__habitShellBootFallback = null;
+            }
             shellLoading.classList.add("hidden");
         }
 
