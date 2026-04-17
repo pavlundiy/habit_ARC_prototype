@@ -76,6 +76,16 @@
     .slip-sheet-anchor,.slip-trigger-card,.slip-intensity-card,.slip-note,.slip-save{background:var(--surface-elevated);border-color:var(--color-border-strong);}
     .slip-sheet-anchor-value,.slip-trigger-title,.slip-intensity-title,.slip-note,.slip-save{color:var(--color-text);}
     .slip-trigger-sub,.slip-intensity-sub,.slip-note::placeholder{color:var(--color-text-secondary);}
+    .slip-trigger-card.active,
+    .slip-intensity-card.active{
+      background:linear-gradient(180deg, rgba(18,51,40,0.96) 0%, rgba(25,60,48,0.92) 100%);
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(51,184,135,0.2), 0 14px 26px rgba(8,26,20,0.34);
+    }
+    .slip-trigger-card.active .slip-trigger-title,
+    .slip-intensity-card.active .slip-intensity-title{color:var(--color-text);}
+    .slip-trigger-card.active .slip-trigger-sub,
+    .slip-intensity-card.active .slip-intensity-sub{color:var(--accent-text);}
   }
   html,body{min-height:100%;background:var(--bg);}
   body{padding:12px;font-family:var(--font-sans);color:var(--color-text);}
