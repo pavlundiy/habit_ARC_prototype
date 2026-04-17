@@ -1,0 +1,1541 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Трекер привычки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            color-scheme: light;
+            --shell: #f4f0e7;
+            --shell-dark: #e6dfd1;
+            --stroke: rgba(73, 64, 52, 0.12);
+            --text: #1d1d1a;
+            --muted: rgba(29, 29, 26, 0.56);
+            --shadow: 0 30px 70px rgba(64, 49, 31, 0.16);
+            --body-top: rgba(29, 158, 117, 0.12);
+            --body-bottom: rgba(239, 159, 39, 0.1);
+            --body-bg-start: #f6f2e9;
+            --body-bg-end: #ebe4d9;
+            --device-bg: #f7f4ed;
+            --head-bg: rgba(255, 252, 246, 0.8);
+            --notch: rgba(28, 28, 26, 0.92);
+            --frame-bg: #efece6;
+            --nav-shell-bg: rgba(255, 252, 246, 0.82);
+            --nav-shell-border: rgba(73, 64, 52, 0.10);
+            --nav-shell-shadow-strong: rgba(34, 29, 23, 0.14);
+            --nav-shell-shadow-soft: rgba(34, 29, 23, 0.06);
+            --nav-active-bg-top: rgba(255, 255, 255, 0.98);
+            --nav-active-bg-bottom: rgba(248, 244, 236, 0.96);
+            --nav-active-border: rgba(255, 255, 255, 0.88);
+            --nav-active-shadow: rgba(34, 29, 23, 0.10);
+            --nav-active-text: #16956e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+                --shell: #18211d;
+                --shell-dark: #0b100e;
+                --stroke: rgba(255, 255, 255, 0.1);
+                --text: #f4f7f4;
+                --muted: rgba(244, 247, 244, 0.65);
+                --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+                --body-top: rgba(29, 158, 117, 0.2);
+                --body-bottom: rgba(255, 201, 138, 0.14);
+                --body-bg-start: #121a17;
+                --body-bg-end: #0d1311;
+                --device-bg: #0b0f0d;
+                --head-bg: #111815;
+                --notch: rgba(4, 7, 6, 0.92);
+                --frame-bg: #131816;
+                --nav-shell-bg: rgba(20, 27, 24, 0.82);
+                --nav-shell-border: rgba(255, 255, 255, 0.08);
+                --nav-shell-shadow-strong: rgba(0, 0, 0, 0.34);
+                --nav-shell-shadow-soft: rgba(0, 0, 0, 0.18);
+                --nav-active-bg-top: rgba(33, 42, 38, 0.96);
+                --nav-active-bg-bottom: rgba(22, 29, 26, 0.94);
+                --nav-active-border: rgba(255, 255, 255, 0.09);
+                --nav-active-shadow: rgba(0, 0, 0, 0.28);
+                --nav-active-text: #56d4aa;
+            }
+
+            .welcome-note {
+                border-color: rgba(255, 255, 255, 0.08);
+                background: rgba(20, 27, 24, 0.72);
+            }
+
+            .welcome-note[data-tone="success"] {
+                background: rgba(51, 184, 135, 0.14);
+                border-color: rgba(86, 212, 170, 0.2);
+                color: #b8f0db;
+            }
+
+            .welcome-note[data-tone="error"] {
+                background: rgba(218, 101, 72, 0.16);
+                border-color: rgba(255, 143, 113, 0.2);
+                color: #ffc0b0;
+            }
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: "DM Sans", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, var(--body-top), transparent 24%),
+                radial-gradient(circle at bottom right, var(--body-bottom), transparent 22%),
+                linear-gradient(180deg, var(--body-bg-start) 0%, var(--body-bg-end) 100%);
+            display: grid;
+            place-items: center;
+            padding: 24px 16px;
+        }
+
+        .layout {
+            width: min(100%, 430px);
+        }
+
+        .stage {
+            padding: 14px;
+            border-radius: 40px;
+            background: linear-gradient(180deg, var(--shell), var(--shell-dark));
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow);
+        }
+
+        .device {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            background: var(--device-bg);
+            border: 1px solid var(--stroke);
+        }
+
+        .device::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 124px;
+            height: 26px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: var(--notch);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .device-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px 12px;
+            background: var(--head-bg);
+            border-bottom: 1px solid var(--stroke);
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(14px);
+        }
+
+        .device-title {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .frame-stack {
+            position: relative;
+            width: 100%;
+            height: 780px;
+            overflow: hidden;
+            background: var(--frame-bg);
+        }
+
+        .frame-track {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            transform: translate3d(0, 0, 0);
+            transition: transform .44s cubic-bezier(.2,.72,.2,1);
+            will-change: transform;
+        }
+
+        .frame-pane {
+            flex: 0 0 20%;
+            width: 20%;
+            height: 100%;
+        }
+
+        .screen-frame {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--frame-bg);
+        }
+
+        .shell-tabs-wrap {
+            position: absolute;
+            left: 50%;
+            width: calc(100% - 32px);
+            transform: translateX(-50%);
+            bottom: 14px;
+            z-index: 6;
+            pointer-events: none;
+        }
+
+        .shell-tabs {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: stretch;
+            gap: 6px;
+            padding: 8px;
+            border: 1px solid var(--nav-shell-border);
+            border-radius: 999px;
+            background: var(--nav-shell-bg);
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            box-shadow:
+                0 20px 40px var(--nav-shell-shadow-strong),
+                0 6px 14px var(--nav-shell-shadow-soft);
+            pointer-events: auto;
+        }
+
+        .shell-tabs::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            top: 1px;
+            height: 40%;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0));
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .shell-active-pill {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            width: calc(25% - 4.5px);
+            height: calc(100% - 16px);
+            border-radius: 18px;
+            background: linear-gradient(180deg, var(--nav-active-bg-top), var(--nav-active-bg-bottom));
+            box-shadow:
+                inset 0 1px 0 var(--nav-active-border),
+                0 10px 22px var(--nav-active-shadow);
+            transform: translateX(0);
+            transition:
+                transform .34s cubic-bezier(.2,.72,.2,1),
+                width .24s ease,
+                box-shadow .24s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shell-tab {
+            position: relative;
+            z-index: 1;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: 600 0.68rem/1 "DM Sans", sans-serif;
+            cursor: pointer;
+            border-radius: 18px;
+            padding: 8px 4px;
+            min-height: 52px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            justify-self: stretch;
+            width: 100%;
+            gap: 4px;
+            text-align: center;
+            transition: color .22s ease, transform .16s ease;
+        }
+
+        .shell-tab:active {
+            transform: translateY(1px) scale(0.992);
+        }
+
+        .shell-tab.active {
+            color: var(--nav-active-text);
+        }
+
+        .shell-tab-icon {
+            width: 17px;
+            height: 17px;
+            display: block;
+            margin-inline: auto;
+            transition: opacity .2s ease;
+        }
+
+        .shell-tab > span:not(.shell-tab-badge) {
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: opacity .22s ease;
+        }
+
+        .shell-tab-badge {
+            position: absolute;
+            top: 8px;
+            right: 18px;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #1d9e75;
+            box-shadow: 0 0 0 3px rgba(255, 252, 246, 0.9);
+            display: none;
+        }
+
+        .shell-tab.has-notification .shell-tab-badge {
+            display: block;
+        }
+
+        .shell-notice {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            top: 12px;
+            z-index: 7;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(29, 158, 117, 0.18);
+            background: rgba(255, 252, 246, 0.96);
+            box-shadow: 0 18px 30px rgba(34, 29, 23, 0.10);
+            backdrop-filter: blur(14px);
+        }
+
+        .shell-notice.open {
+            display: flex;
+        }
+
+        .shell-notice-copy {
+            min-width: 0;
+        }
+
+        .shell-notice-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .shell-notice-sub {
+            margin-top: 4px;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        .shell-notice-btn {
+            flex: 0 0 auto;
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: #1d9e75;
+            color: #f4fff9;
+            font: 700 0.78rem "DM Sans", sans-serif;
+            cursor: pointer;
+        }
+
+        .shell-overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(11, 12, 11, 0.42);
+            z-index: 8;
+            backdrop-filter: blur(12px);
+        }
+
+        .shell-overlay.open {
+            display: flex;
+        }
+
+        .shell-loading {
+            position: absolute;
+            inset: 0;
+            z-index: 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 50% 34%, rgba(29, 158, 117, 0.10), transparent 18%),
+                radial-gradient(circle at top left, rgba(29, 158, 117, 0.08), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(239, 159, 39, 0.06), transparent 28%),
+                rgba(250, 249, 246, 0.985);
+            backdrop-filter: blur(12px);
+            opacity: 1;
+            visibility: visible;
+            transition: opacity .42s ease, visibility .42s ease;
+        }
+
+        .shell-loading.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .shell-loading-card {
+            width: min(100%, 248px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            padding: 18px 18px;
+        }
+
+        .shell-loading-mark {
+            width: 74px;
+            height: 74px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(225, 245, 238, 0.98) 0%, rgba(214, 242, 231, 0.96) 100%);
+            border: 1px solid rgba(29, 158, 117, 0.24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 18px 34px rgba(29, 158, 117, 0.11),
+                0 0 0 10px rgba(29, 158, 117, 0.03);
+            animation: shellLoadingPulse 1.8s ease-in-out infinite;
+        }
+
+        .shell-loading-glyph {
+            position: relative;
+            width: 28px;
+            height: 34px;
+        }
+
+        .shell-loading-glyph::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 1px;
+            width: 3px;
+            height: 19px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: rgba(8, 80, 65, 0.56);
+        }
+
+        .shell-loading-glyph::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 7px;
+            width: 14px;
+            height: 14px;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            background: #1D9E75;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.58);
+        }
+
+        @keyframes shellLoadingPulse {
+            0% {
+                transform: scale(0.98);
+                box-shadow:
+                    0 14px 26px rgba(29, 158, 117, 0.09),
+                    0 0 0 8px rgba(29, 158, 117, 0.025);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow:
+                    0 20px 38px rgba(29, 158, 117, 0.13),
+                    0 0 0 14px rgba(29, 158, 117, 0.045);
+            }
+            100% {
+                transform: scale(0.98);
+                box-shadow:
+                    0 14px 26px rgba(29, 158, 117, 0.09),
+                    0 0 0 8px rgba(29, 158, 117, 0.025);
+            }
+        }
+
+        .shell-loading-title {
+            font-size: 1.14rem;
+            line-height: 1.15;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.03em;
+        }
+
+        .shell-loading-copy {
+            font-size: 0.82rem;
+            line-height: 1.55;
+            color: var(--muted);
+            max-width: 208px;
+        }
+
+        .welcome-sheet {
+            width: 100%;
+            background: var(--device-bg);
+            border: 1px solid var(--stroke);
+            border-radius: 26px;
+            padding: 18px 16px 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-kicker {
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .welcome-title {
+            margin-top: 8px;
+            font-size: 1.2rem;
+            line-height: 1.25;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .welcome-copy {
+            margin-top: 10px;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .welcome-actions {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .welcome-btn {
+            width: 100%;
+            border: 1px solid var(--stroke);
+            border-radius: 16px;
+            padding: 13px 14px;
+            font: 700 0.92rem "DM Sans", sans-serif;
+            cursor: pointer;
+        }
+
+        .welcome-btn.primary {
+            background: #1D9E75;
+            color: #f4fff9;
+            border-color: transparent;
+        }
+
+        .welcome-btn.secondary {
+            background: var(--device-bg);
+            color: var(--text);
+        }
+
+        .welcome-note {
+            margin-top: 12px;
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: var(--muted);
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(73, 64, 52, 0.08);
+            background: rgba(255, 252, 246, 0.68);
+            transition: background .18s ease, border-color .18s ease, color .18s ease;
+        }
+
+        .welcome-note[data-tone="success"] {
+            background: rgba(29, 158, 117, 0.12);
+            border-color: rgba(29, 158, 117, 0.22);
+            color: #127355;
+        }
+
+        .welcome-note[data-tone="error"] {
+            background: rgba(218, 101, 72, 0.12);
+            border-color: rgba(218, 101, 72, 0.22);
+            color: #9f4633;
+        }
+
+        .onboarding-sheet {
+            max-width: 100%;
+        }
+
+        .onboarding-mode {
+            display: none;
+        }
+
+        .onboarding-mode.open {
+            display: block;
+        }
+
+        .onboarding-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .onboarding-progress {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            flex: 1 1 auto;
+        }
+
+        .onboarding-progress-bar {
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(73, 64, 52, 0.12);
+            overflow: hidden;
+        }
+
+        .onboarding-progress-bar::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left center;
+            background: #1D9E75;
+            transition: transform .18s ease;
+        }
+
+        .onboarding-progress-bar.done::after,
+        .onboarding-progress-bar.active::after {
+            transform: scaleX(1);
+        }
+
+        .onboarding-progress-bar.active::after {
+            background: #1e1c18;
+        }
+
+        .onboarding-ghost {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: 600 0.88rem "DM Sans", sans-serif;
+            cursor: pointer;
+            padding: 4px 2px;
+        }
+
+        .onboarding-ghost[hidden] {
+            display: none;
+        }
+
+        .onboarding-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            background: #e1f5ee;
+            color: #127355;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 800 1.4rem "DM Sans", sans-serif;
+            margin-bottom: 18px;
+        }
+
+        .onboarding-title {
+            font: 800 2.1rem/1.12 "DM Sans", sans-serif;
+            letter-spacing: -0.04em;
+            color: var(--text);
+        }
+
+        .onboarding-copy {
+            margin-top: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .onboarding-copy.secondary {
+            margin-top: 20px;
+        }
+
+        .onboarding-body {
+            margin-top: 22px;
+        }
+
+        .onboarding-static {
+            display: none;
+        }
+
+        .onboarding-static.open {
+            display: block;
+        }
+
+        .onboarding-option-stack {
+            display: none;
+            gap: 10px;
+        }
+
+        .onboarding-option-stack.open {
+            display: grid;
+        }
+
+        .onboarding-option {
+            width: 100%;
+            border: 1px solid rgba(73, 64, 52, 0.12);
+            border-radius: 22px;
+            background: rgba(255, 252, 246, 0.72);
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .onboarding-option.active {
+            border-color: rgba(29, 158, 117, 0.42);
+            background: rgba(225, 245, 238, 0.96);
+        }
+
+        .onboarding-option-copy {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .onboarding-option-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.35;
+        }
+
+        .onboarding-option-meta {
+            margin-top: 4px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        .onboarding-option-mark {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(73, 64, 52, 0.14);
+            background: rgba(255,255,255,0.88);
+            flex: 0 0 auto;
+        }
+
+        .onboarding-option.active .onboarding-option-mark {
+            background: #1D9E75;
+            border-color: #1D9E75;
+            box-shadow: inset 0 0 0 7px #ffffff;
+        }
+
+        .onboarding-ritual {
+            display: none;
+        }
+
+        .onboarding-ritual.open {
+            display: block;
+        }
+
+        .onboarding-ritual-field {
+            width: 100%;
+            min-height: 120px;
+            border: 2px solid #1e1c18;
+            border-radius: 24px;
+            background: #ffffff;
+            padding: 18px 20px;
+            resize: none;
+            outline: none;
+            color: var(--text);
+            font: 600 1.05rem/1.55 "DM Sans", sans-serif;
+        }
+
+        .onboarding-ritual-field::placeholder {
+            color: rgba(29, 29, 26, 0.32);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .onboarding-ritual-meta {
+            margin-top: 8px;
+            text-align: right;
+            font-size: 0.82rem;
+            color: rgba(29, 29, 26, 0.34);
+        }
+
+        .onboarding-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .onboarding-chip {
+            border: 1px solid rgba(73, 64, 52, 0.12);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.84);
+            color: var(--text);
+            font: 600 0.94rem "DM Sans", sans-serif;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+
+        .onboarding-chip.accent {
+            border-color: rgba(29, 158, 117, 0.42);
+            color: #127355;
+        }
+
+        .onboarding-meta-note {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 0.84rem;
+            color: rgba(29, 29, 26, 0.34);
+        }
+
+        .welcome-btn:disabled {
+            cursor: default;
+            opacity: 0.46;
+        }
+
+        @media (max-width: 430px) {
+            body {
+                padding: 0;
+                background: var(--body-bg-end);
+            }
+
+            .layout {
+                width: 100%;
+            }
+
+            .stage {
+                padding: 0;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .device {
+                min-height: 100dvh;
+                border-radius: 0;
+                border: 0;
+            }
+
+            .device::before {
+                top: 8px;
+            }
+
+            .frame-stack {
+                height: calc(100dvh - 47px);
+            }
+
+            .shell-overlay {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="layout">
+        <section class="stage">
+            <div class="device">
+                <div class="device-head">
+                    <span>9:41</span>
+                    <span class="device-title" id="deviceTitle">Главная</span>
+                    <span>Привычка</span>
+                </div>
+                <div class="frame-stack">
+                    <div class="frame-track" id="frameTrack"></div>
+                </div>
+                <div class="shell-notice" id="shellNotice">
+                    <div class="shell-notice-copy">
+                        <div class="shell-notice-title">AI-разбор готов</div>
+                        <div class="shell-notice-sub" id="shellNoticeText">Новый вывод уже сохранён в профиле.</div>
+                    </div>
+                    <button class="shell-notice-btn" id="shellNoticeBtn" type="button">Открыть</button>
+                </div>
+                <div class="shell-tabs-wrap">
+                    <div class="shell-tabs" id="shellTabs">
+                        <div class="shell-active-pill" id="shellActivePill"></div>
+                    </div>
+                </div>
+                <div class="shell-overlay" id="welcomeOverlay">
+                    <div class="welcome-sheet onboarding-sheet">
+                        <div class="onboarding-mode open" id="welcomeMode">
+                            <div class="welcome-kicker">Первый запуск</div>
+                            <div class="welcome-title">Можно начать с чистого трека или восстановить резервную копию</div>
+                            <div class="welcome-copy">Если у тебя уже были данные в приложении, их можно вернуть сразу на старте. Если нет, мы спокойно пройдём четыре коротких шага и начнём первый день не с пустого экрана, а с живого ориентира.</div>
+                            <div class="welcome-actions">
+                                <button class="welcome-btn primary" id="welcomeStartBtn" type="button">Начать настройку</button>
+                                <button class="welcome-btn secondary" id="welcomeRestoreBtn" type="button">Восстановить из копии</button>
+                            </div>
+                            <div class="welcome-note" id="welcomeStatus" data-tone="neutral">Новая установка стартует с пустого состояния. Демо-данные больше не подставляются автоматически.</div>
+                        </div>
+
+                        <div class="onboarding-mode" id="onboardingMode">
+                            <div class="onboarding-head">
+                                <button class="onboarding-ghost" id="onboardingBackBtn" type="button" hidden>Назад</button>
+                                <div class="onboarding-progress" id="onboardingProgress">
+                                    <div class="onboarding-progress-bar"></div>
+                                    <div class="onboarding-progress-bar"></div>
+                                    <div class="onboarding-progress-bar"></div>
+                                    <div class="onboarding-progress-bar"></div>
+                                </div>
+                                <button class="onboarding-ghost" id="onboardingSkipBtn" type="button">Пропустить</button>
+                            </div>
+
+                            <div class="onboarding-icon" id="onboardingIcon">01</div>
+                            <div class="onboarding-title" id="onboardingTitle">Это не трекер.</div>
+                            <div class="onboarding-copy" id="onboardingCopy">Это дневник с памятью.</div>
+                            <div class="onboarding-copy secondary" id="onboardingCopySecondary">Большинство приложений просто считают. Это — помнит твои слова, паттерны и рабочие ходы в нужный момент.</div>
+
+                            <div class="onboarding-body">
+                                <div class="onboarding-static open" id="onboardingStep1Body"></div>
+                                <div class="onboarding-option-stack" id="onboardingHabitOptions"></div>
+                                <div class="onboarding-option-stack" id="onboardingGoalOptions"></div>
+                                <div class="onboarding-ritual" id="onboardingRitualBlock">
+                                    <textarea class="onboarding-ritual-field" id="onboardingRitualInput" maxlength="120" placeholder="Напиши своими словами — одно предложение."></textarea>
+                                    <div class="onboarding-ritual-meta" id="onboardingRitualMeta">0 / 120</div>
+                                    <div class="onboarding-chip-row" id="onboardingRitualChips">
+                                        <button class="onboarding-chip" type="button" data-ritual-text="Замечать себя до первого порыва">Замечать себя</button>
+                                        <button class="onboarding-chip accent" type="button" data-ritual-text="Пауза перед первым порывом">Пауза перед порывом</button>
+                                        <button class="onboarding-chip" type="button" data-ritual-text="Не идти на автопилоте после обеда">Не на автопилоте</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="welcome-actions">
+                                <button class="welcome-btn primary" id="onboardingNextBtn" type="button">Понятно, продолжим</button>
+                            </div>
+                            <div class="onboarding-meta-note" id="onboardingMeta">1 из 4 · займёт около 2 минут</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shell-loading" id="shellLoading">
+                    <div class="shell-loading-card">
+                        <div class="shell-loading-mark"><div class="shell-loading-glyph" aria-hidden="true"></div></div>
+                        <div class="shell-loading-title">Собираем твой день</div>
+                        <div class="shell-loading-copy">Откроем приложение спокойно.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        (function () {
+            function forceHideShellLoading() {
+                var loading = document.getElementById("shellLoading");
+                if (loading) {
+                    loading.classList.add("hidden");
+                }
+            }
+
+            window.__habitShellBootFallback = window.setTimeout(forceHideShellLoading, 5000);
+            window.addEventListener("error", function () {
+                window.setTimeout(forceHideShellLoading, 60);
+            }, { once: true });
+        })();
+    </script>
+    <input id="welcomeRestoreInput" type="file" accept=".json,application/json" hidden>
+
+    <script src="analytics/store.js"></script>
+    <script src="analytics/app-core.js"></script>
+    <script src="analytics/ui-feedback.js"></script>
+    <script>
+        const frameTrack = document.getElementById("frameTrack");
+        const shellTabsRoot = document.getElementById("shellTabs");
+        const title = document.getElementById("deviceTitle");
+        const welcomeOverlay = document.getElementById("welcomeOverlay");
+        const welcomeStatus = document.getElementById("welcomeStatus");
+        const welcomeRestoreInput = document.getElementById("welcomeRestoreInput");
+        const welcomeMode = document.getElementById("welcomeMode");
+        const onboardingMode = document.getElementById("onboardingMode");
+        const onboardingBackBtn = document.getElementById("onboardingBackBtn");
+        const onboardingSkipBtn = document.getElementById("onboardingSkipBtn");
+        const onboardingProgressBars = Array.from(document.querySelectorAll("#onboardingProgress .onboarding-progress-bar"));
+        const onboardingIcon = document.getElementById("onboardingIcon");
+        const onboardingTitle = document.getElementById("onboardingTitle");
+        const onboardingCopy = document.getElementById("onboardingCopy");
+        const onboardingCopySecondary = document.getElementById("onboardingCopySecondary");
+        const onboardingStep1Body = document.getElementById("onboardingStep1Body");
+        const onboardingHabitOptions = document.getElementById("onboardingHabitOptions");
+        const onboardingGoalOptions = document.getElementById("onboardingGoalOptions");
+        const onboardingRitualBlock = document.getElementById("onboardingRitualBlock");
+        const onboardingRitualInput = document.getElementById("onboardingRitualInput");
+        const onboardingRitualMeta = document.getElementById("onboardingRitualMeta");
+        const onboardingNextBtn = document.getElementById("onboardingNextBtn");
+        const onboardingMeta = document.getElementById("onboardingMeta");
+        const shellLoading = document.getElementById("shellLoading");
+        const shellActivePill = document.getElementById("shellActivePill");
+        const shellNotice = document.getElementById("shellNotice");
+        const shellNoticeText = document.getElementById("shellNoticeText");
+        const shellNoticeBtn = document.getElementById("shellNoticeBtn");
+        const AI_NOTICE_KEY = "habit_ai_notice_v1";
+        let shellLoadingHidden = false;
+        const ONBOARDING_HABITS = [
+            { id: "smoking", label: "Курение", meta: "сигареты, вейп" },
+            { id: "alcohol", label: "Алкоголь", meta: "пиво, вино, крепкое" },
+            { id: "social", label: "Телефон", meta: "соцсети, скроллинг" },
+            { id: "custom", label: "Другое", meta: "название можно уточнить позже" }
+        ];
+        const ONBOARDING_GOALS = [
+            {
+                id: "understand_triggers",
+                label: "Понять свои триггеры",
+                meta: "Самый мягкий старт: сначала увидеть повторяющийся сценарий."
+            },
+            {
+                id: "reduce_count",
+                label: "Снизить количество",
+                meta: "Без жёстких обещаний — просто сделать тяжёлых дней меньше."
+            },
+            {
+                id: "take_control",
+                label: "Взять под контроль",
+                meta: "Подойдёт, если хочется быстрее почувствовать опору и границы."
+            },
+            {
+                id: "stay_honest",
+                label: "Быть честным с собой",
+                meta: "Если пока важнее ясная картина, а не цель — это тоже хороший вход."
+            }
+        ];
+        const ONBOARDING_STEPS = [
+            {
+                title: "Это не трекер.",
+                copy: "Это дневник с памятью.",
+                secondary: "Большинство приложений просто считают. Это — помнит твои слова, паттерны и рабочие ходы в нужный момент.",
+                cta: "Понятно, продолжим",
+                icon: "01"
+            },
+            {
+                title: "С какой привычкой работаем?",
+                copy: "Выбери одну — другие можно добавить позже.",
+                secondary: "",
+                cta: "Продолжить",
+                icon: "02"
+            },
+            {
+                title: "Какая цель на первый месяц?",
+                copy: "Не нужно сразу бросать. Начни с малого — это работает лучше.",
+                secondary: "",
+                cta: "Продолжить",
+                icon: "03"
+            },
+            {
+                title: "Первый ориентир.",
+                copy: "Что важно сохранить уже сегодня?",
+                secondary: "Напиши своими словами — одно предложение. Так первый день начнётся уже не с пустого экрана, а с живой дуги.",
+                cta: "Начать с этим ориентиром",
+                icon: "04"
+            }
+        ];
+        const routes = window.HabitAppCore && window.HabitAppCore.getRoutes
+            ? window.HabitAppCore.getRoutes()
+            : [];
+        const routeMap = routes.reduce((acc, route, index) => {
+            acc[route.id] = { title: route.title, index, src: route.src, tab: route.tab };
+            return acc;
+        }, {});
+        renderFrameTrack();
+        renderShellTabs();
+        const shellTabs = Array.from(document.querySelectorAll(".shell-tab"));
+        let currentRoute = null;
+        let onboardingStep = 0;
+        let onboardingSelection = {
+            habitId: "smoking",
+            goalId: "understand_triggers",
+            ritualText: ""
+        };
+
+        function readAiNotice() {
+            try {
+                const raw = localStorage.getItem(AI_NOTICE_KEY);
+                if (!raw) return { unread: false, text: "", createdAt: null };
+                const parsed = JSON.parse(raw);
+                return {
+                    unread: !!parsed.unread,
+                    text: String(parsed.text || ""),
+                    createdAt: parsed.createdAt || null
+                };
+            } catch (error) {
+                return { unread: false, text: "", createdAt: null };
+            }
+        }
+
+        function writeAiNotice(nextState) {
+            localStorage.setItem(AI_NOTICE_KEY, JSON.stringify(nextState));
+            return nextState;
+        }
+
+        function applyAiNotice() {
+            const notice = readAiNotice();
+            const profileTab = shellTabs.find((button) => button.dataset.route === "profile");
+            if (profileTab) {
+                profileTab.classList.toggle("has-notification", !!notice.unread);
+            }
+            if (notice.unread && notice.text && currentRoute !== "profile" && currentRoute !== "ai-review") {
+                shellNoticeText.textContent = notice.text;
+                shellNotice.classList.add("open");
+            } else {
+                shellNotice.classList.remove("open");
+            }
+        }
+
+        function markAiNoticeRead() {
+            const notice = readAiNotice();
+            if (!notice.unread) return;
+            writeAiNotice({
+                unread: false,
+                text: notice.text,
+                createdAt: notice.createdAt
+            });
+            applyAiNotice();
+        }
+
+        function pushAiNotice(text) {
+            writeAiNotice({
+                unread: true,
+                text: text || "Новый AI-разбор уже сохранён в профиле.",
+                createdAt: new Date().toISOString()
+            });
+            applyAiNotice();
+        }
+
+        function getRequestedRoute() {
+            if (window.HabitAppCore && window.HabitAppCore.getInitialRoute) {
+                return window.HabitAppCore.getInitialRoute(window.location.href);
+            }
+            return "main";
+        }
+
+        function renderFrameTrack() {
+            frameTrack.style.width = `${Math.max(routes.length, 1) * 100}%`;
+            frameTrack.innerHTML = routes.map((route) => {
+                return `<div class="frame-pane" style="flex:0 0 ${100 / Math.max(routes.length, 1)}%;width:${100 / Math.max(routes.length, 1)}%;"><iframe id="screenFrame${route.id.replace(/(^|-)([a-z])/g, (_, dash, char) => char.toUpperCase())}" class="screen-frame" src="${route.src}" title="${route.title}"></iframe></div>`;
+            }).join("");
+        }
+
+        function renderShellTabs() {
+            const tabsMarkup = (window.HabitAppCore && window.HabitAppCore.getPrimaryTabs
+                ? window.HabitAppCore.getPrimaryTabs()
+                : []
+            ).map((route, index) => {
+                return `<button class="shell-tab${index === 0 ? " active" : ""}" type="button" data-route="${route.id}">${route.icon || ""}<span>${route.title}</span><span class="shell-tab-badge"></span></button>`;
+            }).join("");
+            shellTabsRoot.insertAdjacentHTML("beforeend", tabsMarkup);
+        }
+
+        function syncRouteInUrl(route) {
+            const resolvedRoute = window.HabitAppCore && window.HabitAppCore.normalizeRoute
+                ? window.HabitAppCore.normalizeRoute(route)
+                : route;
+            if (!routeMap[resolvedRoute]) {
+                return;
+            }
+            const url = new URL(window.location.href);
+            url.searchParams.set("screen", resolvedRoute);
+            url.hash = resolvedRoute;
+            window.history.replaceState({}, "", url.toString());
+        }
+
+        function updateShellTabs(route) {
+            shellTabs.forEach((button) => {
+                button.classList.toggle("active", button.dataset.route === route);
+            });
+            requestAnimationFrame(syncActivePill);
+        }
+
+        function syncActivePill() {
+            if (!shellActivePill) {
+                return;
+            }
+
+            const activeTab = shellTabs.find((button) => button.classList.contains("active"));
+            if (!activeTab) {
+                shellActivePill.style.opacity = "0";
+                return;
+            }
+
+            const pillInset = 4;
+            const rootRect = shellTabsRoot.getBoundingClientRect();
+            const tabRect = activeTab.getBoundingClientRect();
+            const pillWidth = Math.max(0, tabRect.width - pillInset * 2);
+            const x = (tabRect.left - rootRect.left) + ((tabRect.width - pillWidth) / 2);
+
+            shellActivePill.style.opacity = "1";
+            shellActivePill.style.width = `${pillWidth}px`;
+            shellActivePill.style.transform = `translateX(${x}px)`;
+        }
+
+        function getStatusMessage(key, payload = {}) {
+            if (window.HabitUiFeedback && window.HabitUiFeedback.getStatusMessage) {
+                return window.HabitUiFeedback.getStatusMessage(key, payload);
+            }
+            return "";
+        }
+
+        function getStatusTone(key) {
+            if (window.HabitUiFeedback && window.HabitUiFeedback.getStatusTone) {
+                return window.HabitUiFeedback.getStatusTone(key);
+            }
+            return "neutral";
+        }
+
+        function setWelcomeStatus(message, tone = "neutral") {
+            if (window.HabitUiFeedback && window.HabitUiFeedback.applyStatus) {
+                window.HabitUiFeedback.applyStatus(welcomeStatus, message, tone);
+                return;
+            }
+            welcomeStatus.textContent = message;
+            welcomeStatus.dataset.tone = tone;
+        }
+
+        function setWelcomeStatusKey(key, payload = {}) {
+            setWelcomeStatus(getStatusMessage(key, payload), getStatusTone(key));
+        }
+
+        function applyTrackPosition(route, immediate) {
+            const screen = routeMap[route] || routeMap.main;
+            if (immediate) {
+                const previousTransition = frameTrack.style.transition;
+                frameTrack.style.transition = "none";
+                frameTrack.style.transform = `translate3d(-${screen.index * (100 / Math.max(routes.length, 1))}%, 0, 0)`;
+                requestAnimationFrame(() => {
+                    frameTrack.style.transition = previousTransition || "transform .5s cubic-bezier(.22,.8,.2,1)";
+                });
+                return;
+            }
+
+            frameTrack.style.transform = `translate3d(-${screen.index * (100 / Math.max(routes.length, 1))}%, 0, 0)`;
+        }
+
+        function setScreen(route, options = {}) {
+            const resolvedRoute = routeMap[route] ? route : "main";
+            const immediate = !!options.immediate;
+
+            if (currentRoute === resolvedRoute && !immediate) {
+                syncRouteInUrl(resolvedRoute);
+                return;
+            }
+
+            currentRoute = resolvedRoute;
+            title.textContent = routeMap[resolvedRoute].title;
+            syncRouteInUrl(resolvedRoute);
+            updateShellTabs(resolvedRoute);
+            applyTrackPosition(resolvedRoute, immediate);
+            if (resolvedRoute === "profile") {
+                markAiNoticeRead();
+            } else {
+                applyAiNotice();
+            }
+        }
+
+        function shouldShowWelcome() {
+            if (!window.HabitStore || !window.HabitStore.getState) {
+                return false;
+            }
+            const state = window.HabitStore.getState();
+            const meta = state.meta || {};
+            return meta.installMode === "fresh" && !meta.onboardingCompletedAt;
+        }
+
+        function switchOverlayMode(mode) {
+            const showWelcome = mode === "welcome";
+            welcomeMode.classList.toggle("open", showWelcome);
+            onboardingMode.classList.toggle("open", !showWelcome);
+        }
+
+        function renderOnboardingStep() {
+            const stepIndex = Math.max(0, Math.min(onboardingStep, ONBOARDING_STEPS.length - 1));
+            const step = ONBOARDING_STEPS[stepIndex];
+            switchOverlayMode("onboarding");
+
+            onboardingBackBtn.hidden = stepIndex === 0;
+            onboardingTitle.textContent = step.title;
+            onboardingCopy.textContent = step.copy;
+            onboardingCopySecondary.textContent = step.secondary;
+            onboardingCopySecondary.style.display = step.secondary ? "block" : "none";
+            onboardingIcon.textContent = step.icon;
+            onboardingMeta.textContent = `${stepIndex + 1} из 4 · займёт около 2 минут`;
+            onboardingNextBtn.textContent = step.cta;
+
+            onboardingProgressBars.forEach((bar, index) => {
+                bar.classList.toggle("done", index < stepIndex);
+                bar.classList.toggle("active", index === stepIndex);
+            });
+
+            onboardingStep1Body.classList.toggle("open", stepIndex === 0);
+            onboardingHabitOptions.classList.toggle("open", stepIndex === 1);
+            onboardingGoalOptions.classList.toggle("open", stepIndex === 2);
+            onboardingRitualBlock.classList.toggle("open", stepIndex === 3);
+
+            onboardingNextBtn.disabled =
+                (stepIndex === 1 && !onboardingSelection.habitId) ||
+                (stepIndex === 2 && !onboardingSelection.goalId) ||
+                (stepIndex === 3 && !String(onboardingSelection.ritualText || "").trim());
+        }
+
+        function renderOnboardingHabitOptions() {
+            onboardingHabitOptions.innerHTML = ONBOARDING_HABITS.map((habit) => {
+                const active = habit.id === onboardingSelection.habitId ? " active" : "";
+                return `
+                    <button class="onboarding-option${active}" type="button" data-onboarding-habit="${habit.id}">
+                        <div class="onboarding-option-copy">
+                            <div class="onboarding-option-title">${habit.label}</div>
+                            <div class="onboarding-option-meta">${habit.meta}</div>
+                        </div>
+                        <span class="onboarding-option-mark"></span>
+                    </button>
+                `;
+            }).join("");
+
+            onboardingHabitOptions.querySelectorAll("[data-onboarding-habit]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    onboardingSelection.habitId = button.dataset.onboardingHabit || "smoking";
+                    renderOnboardingHabitOptions();
+                    renderOnboardingStep();
+                });
+            });
+        }
+
+        function renderOnboardingGoalOptions() {
+            onboardingGoalOptions.innerHTML = ONBOARDING_GOALS.map((goal) => {
+                const active = goal.id === onboardingSelection.goalId ? " active" : "";
+                return `
+                    <button class="onboarding-option${active}" type="button" data-onboarding-goal="${goal.id}">
+                        <div class="onboarding-option-copy">
+                            <div class="onboarding-option-title">${goal.label}</div>
+                            <div class="onboarding-option-meta">${goal.meta}</div>
+                        </div>
+                        <span class="onboarding-option-mark"></span>
+                    </button>
+                `;
+            }).join("");
+
+            onboardingGoalOptions.querySelectorAll("[data-onboarding-goal]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    onboardingSelection.goalId = button.dataset.onboardingGoal || "understand_triggers";
+                    renderOnboardingGoalOptions();
+                    renderOnboardingStep();
+                });
+            });
+        }
+
+        function updateOnboardingRitualMeta() {
+            onboardingRitualMeta.textContent = `${String(onboardingSelection.ritualText || "").length} / 120`;
+        }
+
+        function resetOnboardingState() {
+            onboardingStep = 0;
+            onboardingSelection = {
+                habitId: "smoking",
+                goalId: "understand_triggers",
+                ritualText: ""
+            };
+            onboardingRitualInput.value = "";
+            updateOnboardingRitualMeta();
+            renderOnboardingHabitOptions();
+            renderOnboardingGoalOptions();
+            renderOnboardingStep();
+        }
+
+        function beginOnboarding() {
+            resetOnboardingState();
+        }
+
+        function finishOnboarding() {
+            const selectedGoal = ONBOARDING_GOALS.find((item) => item.id === onboardingSelection.goalId) || ONBOARDING_GOALS[0];
+            if (window.HabitStore && window.HabitStore.selectHabit) {
+                window.HabitStore.selectHabit(onboardingSelection.habitId || "smoking", "");
+            }
+            if (window.HabitStore && window.HabitStore.setStarterGoal) {
+                window.HabitStore.setStarterGoal({
+                    id: selectedGoal.id,
+                    label: selectedGoal.label
+                });
+            }
+            if (window.HabitStore && window.HabitStore.saveRitualEntry) {
+                window.HabitStore.saveRitualEntry({
+                    type: "morning",
+                    text: String(onboardingSelection.ritualText || "").trim()
+                });
+            }
+            if (window.HabitStore && window.HabitStore.completeOnboarding) {
+                window.HabitStore.completeOnboarding({ installMode: "active" });
+            } else if (window.HabitStore && window.HabitStore.setInstallMode) {
+                window.HabitStore.setInstallMode("active");
+            }
+            closeWelcome();
+            setScreen("main");
+        }
+
+        function advanceOnboarding() {
+            if (onboardingStep >= ONBOARDING_STEPS.length - 1) {
+                finishOnboarding();
+                return;
+            }
+            onboardingStep += 1;
+            renderOnboardingStep();
+        }
+
+        function retreatOnboarding() {
+            if (onboardingStep <= 0) {
+                switchOverlayMode("welcome");
+                return;
+            }
+            onboardingStep -= 1;
+            renderOnboardingStep();
+        }
+
+        function skipOnboarding() {
+            if (window.HabitStore && window.HabitStore.completeOnboarding) {
+                window.HabitStore.completeOnboarding({ installMode: "active" });
+            } else if (window.HabitStore && window.HabitStore.setInstallMode) {
+                window.HabitStore.setInstallMode("active");
+            }
+            closeWelcome();
+            setScreen("main");
+        }
+
+        function openWelcome() {
+            switchOverlayMode("welcome");
+            welcomeOverlay.classList.add("open");
+        }
+
+        function closeWelcome() {
+            welcomeOverlay.classList.remove("open");
+        }
+
+        function hideShellLoading() {
+            if (shellLoadingHidden || !shellLoading) return;
+            shellLoadingHidden = true;
+            if (window.__habitShellBootFallback) {
+                window.clearTimeout(window.__habitShellBootFallback);
+                window.__habitShellBootFallback = null;
+            }
+            shellLoading.classList.add("hidden");
+        }
+
+        function startFreshSetup() {
+            beginOnboarding();
+        }
+
+        function openRestorePicker() {
+            welcomeRestoreInput.value = "";
+            welcomeRestoreInput.click();
+        }
+
+        function restoreFromBackup(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const parsed = JSON.parse(String(reader.result || "{}"));
+                    if (!window.HabitStore || !window.HabitStore.tryReplaceState) {
+                        throw new Error("Store unavailable");
+                    }
+                    const result = window.HabitStore.tryReplaceState(parsed);
+                    if (!result.ok) {
+                        setWelcomeStatusKey(
+                            result.errorCode === "invalid_backup" ? "restore_invalid_backup" : "restore_failed"
+                        );
+                        return;
+                    }
+                    closeWelcome();
+                    setScreen("main");
+                } catch (error) {
+                    setWelcomeStatusKey("restore_parse_failed");
+                }
+            };
+            reader.onerror = () => {
+                setWelcomeStatusKey("restore_read_failed");
+            };
+            reader.readAsText(file, "utf-8");
+        }
+
+        window.addEventListener("message", (event) => {
+            if (!event.data) {
+                return;
+            }
+
+            if (event.data.type === "demo:ai-review-ready") {
+                pushAiNotice(event.data.text || "Новый AI-разбор уже сохранён в профиле.");
+                return;
+            }
+
+            if (event.data.type !== "demo:navigate") {
+                return;
+            }
+
+            setScreen(event.data.route);
+        });
+
+        window.addEventListener("hashchange", () => {
+            setScreen(getRequestedRoute());
+        });
+
+        shellTabs.forEach((button) => {
+            button.addEventListener("click", () => setScreen(button.dataset.route));
+        });
+        window.addEventListener("resize", syncActivePill);
+
+        document.getElementById("welcomeStartBtn").addEventListener("click", startFreshSetup);
+        document.getElementById("welcomeRestoreBtn").addEventListener("click", openRestorePicker);
+        welcomeRestoreInput.addEventListener("change", restoreFromBackup);
+        onboardingBackBtn.addEventListener("click", retreatOnboarding);
+        onboardingSkipBtn.addEventListener("click", skipOnboarding);
+        onboardingNextBtn.addEventListener("click", advanceOnboarding);
+        onboardingRitualInput.addEventListener("input", () => {
+            onboardingSelection.ritualText = onboardingRitualInput.value.slice(0, 120);
+            if (onboardingRitualInput.value !== onboardingSelection.ritualText) {
+                onboardingRitualInput.value = onboardingSelection.ritualText;
+            }
+            updateOnboardingRitualMeta();
+            renderOnboardingStep();
+        });
+        document.querySelectorAll("[data-ritual-text]").forEach((button) => {
+            button.addEventListener("click", () => {
+                onboardingSelection.ritualText = button.dataset.ritualText || "";
+                onboardingRitualInput.value = onboardingSelection.ritualText;
+                updateOnboardingRitualMeta();
+                renderOnboardingStep();
+            });
+        });
+        shellNoticeBtn.addEventListener("click", () => setScreen("profile"));
+
+        renderOnboardingHabitOptions();
+        renderOnboardingGoalOptions();
+        updateOnboardingRitualMeta();
+        setScreen(getRequestedRoute(), { immediate: true });
+        requestAnimationFrame(syncActivePill);
+        applyAiNotice();
+
+        window.setTimeout(() => {
+            hideShellLoading();
+        }, shouldShowWelcome() ? 3400 : 2800);
+
+        if (shouldShowWelcome()) {
+            openWelcome();
+        }
+    </script>
+</body>
+</html>
