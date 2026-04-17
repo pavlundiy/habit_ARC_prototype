@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Инсайты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:"Manrope","Segoe UI",sans-serif;
+    --color-border-tertiary:#e8e5e0;
+    --color-text-secondary:#8a8880;
+  }
+  html,body{min-height:100%;background:#efece6;}
+  body{padding:14px;font-family:var(--font-sans);}
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:#faf9f6;border-radius:28px;border:0.5px solid var(--color-border-tertiary);overflow:hidden;}
+.lbl{text-align:center;font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;}
+.topbar{padding:16px 20px 4px;display:flex;justify-content:space-between;align-items:flex-start;}
+.topbar-title{font-size:17px;font-weight:500;color:#1e1c18;}
+.topbar-sub{font-size:11px;color:#8a8880;margin-top:2px;}
+.period-pills{display:flex;gap:5px;padding:12px 20px 14px;}
+.pp{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:0.5px solid #e0ddd8;color:#8a8880;background:#fff;transition:all .15s;}
+.pp.active{background:#1e1c18;color:#faf9f6;border-color:#1e1c18;}
+.section-lbl{font-size:10px;font-weight:500;color:#8a8880;letter-spacing:0.5px;text-transform:uppercase;padding:0 20px 8px;}
+.insight-card{margin:0 16px 10px;background:#fff;border:0.5px solid #e8e5e0;border-radius:16px;padding:14px 16px;}
+.ic-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ic-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ic-title{font-size:13px;font-weight:500;color:#1e1c18;flex:1;}
+.ic-badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:500;}
+.ic-text{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;}
+.ic-highlight{background:#faf9f6;border-radius:10px;padding:10px 12px;border-left:3px solid #1D9E75;}
+.ic-hl-text{font-size:12px;color:#085041;line-height:1.5;}
+.heatmap-grid{display:grid;grid-template-columns:36px repeat(7,1fr);gap:3px;padding:0 16px 14px;}
+.hm-label{font-size:10px;color:#8a8880;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;}
+.hm-cell{height:20px;border-radius:4px;cursor:pointer;transition:opacity .1s;position:relative;}
+.hm-cell:hover{opacity:.75;}
+.hm-col-label{font-size:10px;color:#8a8880;text-align:center;}
+.trigger-bars{padding:0 16px 14px;}
+.tbar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.tbar-label{font-size:12px;color:#333;width:80px;flex-shrink:0;}
+.tbar-track{flex:1;height:8px;background:#f0ede8;border-radius:4px;overflow:hidden;}
+.tbar-fill{height:100%;border-radius:4px;}
+.tbar-val{font-size:12px;font-weight:500;color:#333;width:24px;text-align:right;}
+.stat-row{display:flex;gap:8px;padding:0 16px 14px;}
+.stat-card{flex:1;background:#fff;border:0.5px solid #e8e5e0;border-radius:12px;padding:12px;text-align:center;}
+.stat-num{font-size:20px;font-weight:500;color:#1e1c18;line-height:1;}
+.stat-sub{font-size:10px;color:#8a8880;margin-top:3px;line-height:1.3;}
+.stat-trend{font-size:11px;margin-top:4px;}
+.sticky-bottom{background:#faf9f6;border-top:0.5px solid #e8e5e0;display:flex;padding:8px 0 12px;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#b0ada8;cursor:pointer;}
+.tab.active{color:#1D9E75;}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:#1D9E75;margin:0 auto;}
+.tooltip-box{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);background:#1e1c18;color:#faf9f6;font-size:10px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;display:none;z-index:5;}
+.hm-cell:hover .tooltip-box{display:block;}
+</style>
+</head>
+<body>
+
+<div class="app">
+<div class="lbl">Экран «Инсайты» — нажимай на ячейки тепловой карты</div>
+<div class="screen">
+
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Инсайты</div>
+      <div class="topbar-sub">Что стоит за твоей привычкой</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.05 5.05l1.41 1.41M13.54 13.54l1.41 1.41M5.05 14.95l1.41-1.41M13.54 6.46l1.41-1.41" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="period-pills">
+    <div class="pp" onclick="setPeriod(this,'7')">7 дней</div>
+    <div class="pp active" onclick="setPeriod(this,'30')">30 дней</div>
+    <div class="pp" onclick="setPeriod(this,'90')">3 месяца</div>
+  </div>
+
+  <div class="section-lbl">Главный инсайт</div>
+  <div class="insight-card">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#FAEEDA;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4M6 14h4" stroke="#854F0B" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="ic-title">Пик тяги — после 13:00</div>
+      <div class="ic-badge" style="background:#FAEEDA;color:#633806;">стресс</div>
+    </div>
+    <div class="ic-text">68% всех срывов происходят между 13:00 и 16:00 — сразу после обеда и в пик рабочей нагрузки. В дневнике ты сам отмечал: <em>«чувствую, что задыхаюсь от дедлайнов».</em></div>
+    <div class="ic-highlight">
+      <div class="ic-hl-text">Попробуй 10-минутную прогулку сразу после обеда — это разрывает автоматический сценарий.</div>
+    </div>
+  </div>
+
+  <div class="section-lbl">Тепловая карта по часам</div>
+  <div class="heatmap-grid" id="heatmap">
+    <div></div>
+    <div class="hm-col-label">пн</div>
+    <div class="hm-col-label">вт</div>
+    <div class="hm-col-label">ср</div>
+    <div class="hm-col-label">чт</div>
+    <div class="hm-col-label">пт</div>
+    <div class="hm-col-label">сб</div>
+    <div class="hm-col-label">вс</div>
+  </div>
+
+  <div class="section-lbl">Триггеры этого месяца</div>
+  <div class="trigger-bars">
+    <div class="tbar-row"><div class="tbar-label">Стресс</div><div class="tbar-track"><div class="tbar-fill" style="width:72%;background:#D85A30;"></div></div><div class="tbar-val">18</div></div>
+    <div class="tbar-row"><div class="tbar-label">Скука</div><div class="tbar-track"><div class="tbar-fill" style="width:44%;background:#EF9F27;"></div></div><div class="tbar-val">11</div></div>
+    <div class="tbar-row"><div class="tbar-label">Компания</div><div class="tbar-track"><div class="tbar-fill" style="width:28%;background:#7F77DD;"></div></div><div class="tbar-val">7</div></div>
+    <div class="tbar-row"><div class="tbar-label">После еды</div><div class="tbar-track"><div class="tbar-fill" style="width:20%;background:#5DCAA5;"></div></div><div class="tbar-val">5</div></div>
+    <div class="tbar-row"><div class="tbar-label">Усталость</div><div class="tbar-track"><div class="tbar-fill" style="width:12%;background:#B4B2A9;"></div></div><div class="tbar-val">3</div></div>
+  </div>
+
+  <div class="section-lbl">За 30 дней</div>
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-num">124</div>
+      <div class="stat-sub">всего срывов</div>
+      <div class="stat-trend" style="color:#1D9E75;">↓ −22 от пред.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">4.1</div>
+      <div class="stat-sub">в среднем в день</div>
+      <div class="stat-trend" style="color:#1D9E75;">↓ было 5.8</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">3</div>
+      <div class="stat-sub">лучших дня подряд</div>
+      <div class="stat-trend" style="color:#EF9F27;">рекорд!</div>
+    </div>
+  </div>
+
+  <div class="section-lbl">Паттерн недели</div>
+  <div class="insight-card" style="margin-bottom:14px;">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#E1F5EE;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="#0F6E56" stroke-width="1.3"/><path d="M5 3V2M11 3V2M2 7h12" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="ic-title">Вторник — самый трудный день</div>
+      <div class="ic-badge" style="background:#FCEBEB;color:#791F1F;">риск</div>
+    </div>
+    <div class="ic-text">По вторникам у тебя в среднем 7.2 срыва — вдвое больше чем в субботу (3.1). Вероятно, это связано с планёрками и дедлайнами начала недели.</div>
+    <div class="ic-highlight">
+      <div class="ic-hl-text">В ближайший вторник поставь напоминание в 12:30: <em>«Стоп. Дышать. Пауза.»</em></div>
+    </div>
+  </div>
+
+  <div class="sticky-bottom">
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/></svg>
+      Главная
+    </div>
+    <div class="tab active">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="#1D9E75"/></svg>
+      Инсайты
+      <div class="tab-dot"></div>
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="#b0ada8" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="#b0ada8" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Дневник
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#b0ada8" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Профиль
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+var data = [
+  [1,0,2,1,0,0,0],
+  [2,3,1,2,1,0,0],
+  [1,1,2,1,2,1,0],
+  [3,4,2,3,2,0,0],
+  [4,6,3,5,4,1,0],
+  [5,7,4,6,5,1,1],
+  [3,5,3,4,3,1,0],
+  [2,3,2,3,2,0,0],
+  [1,2,1,2,1,0,0]
+];
+var hours = ['07:00','09:00','11:00','13:00','15:00','17:00','19:00','21:00','23:00'];
+var days = ['пн','вт','ср','чт','пт','сб','вс'];
+var maxVal = 7;
+
+function getColor(v) {
+  if(v===0) return '#f0ede8';
+  var t = v/maxVal;
+  if(t < 0.3) return '#9FE1CB';
+  if(t < 0.6) return '#EF9F27';
+  return '#D85A30';
+}
+
+var grid = document.getElementById('heatmap');
+for(var r=0;r<hours.length;r++){
+  var lbl = document.createElement('div');
+  lbl.className='hm-label';
+  lbl.textContent=hours[r];
+  grid.appendChild(lbl);
+  for(var c=0;c<7;c++){
+    var cell = document.createElement('div');
+    cell.className='hm-cell';
+    cell.style.background=getColor(data[r][c]);
+    var tip = document.createElement('div');
+    tip.className='tooltip-box';
+    tip.textContent=days[c]+' '+hours[r]+': '+data[r][c]+' раза';
+    cell.appendChild(tip);
+    grid.appendChild(cell);
+  }
+}
+
+function setPeriod(el, p) {
+  document.querySelectorAll('.pp').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

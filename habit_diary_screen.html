@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Дневник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:"Manrope","Segoe UI",sans-serif;
+    --color-border-tertiary:#e8e5e0;
+    --color-text-secondary:#8a8880;
+  }
+  html,body{min-height:100%;background:#efece6;}
+  body{padding:14px;font-family:var(--font-sans);}
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:#faf9f6;border-radius:28px;border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;}
+.screen-label{text-align:center;font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;}
+.topbar{padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center;}
+.topbar-title{font-size:17px;font-weight:500;color:#1e1c18;}
+.topbar-sub{font-size:11px;color:#8a8880;margin-top:1px;}
+.tab-pills{display:flex;gap:6px;padding:0 20px 14px;}
+.pill{padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid #e0ddd8;color:#8a8880;background:#fff;transition:all .15s;}
+.pill.active{background:#1e1c18;color:#faf9f6;border-color:#1e1c18;}
+.panel{display:none;padding:0 16px 90px;}
+.panel.active{display:block;}
+
+.entry-compose{background:#fff;border:0.5px solid #e0ddd8;border-radius:16px;padding:14px;margin-bottom:14px;}
+.compose-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.compose-avatar{width:30px;height:30px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#E1F5EE;flex-shrink:0;}
+.compose-meta{flex:1;}
+.compose-name{font-size:12px;font-weight:500;color:#1e1c18;}
+.compose-time{font-size:11px;color:#8a8880;}
+.compose-textarea{width:100%;border:none;outline:none;font-size:13px;color:#1e1c18;line-height:1.6;resize:none;background:transparent;font-family:var(--font-sans);min-height:72px;}
+.compose-textarea::placeholder{color:#c0bdb8;}
+.compose-bottom{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:0.5px solid #f0ede8;}
+.tag-chip{padding:5px 12px;border-radius:20px;font-size:11px;border:0.5px solid #e0ddd8;color:#6a6864;background:#faf9f6;cursor:pointer;transition:all .15s;}
+.tag-chip.sel{background:#1e1c18;color:#faf9f6;border-color:#1e1c18;}
+.compose-send{margin-left:auto;background:#1D9E75;color:#E1F5EE;border:none;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-sans);}
+
+.diary-entry{background:#fff;border:0.5px solid #e8e5e0;border-radius:14px;padding:14px;margin-bottom:10px;}
+.de-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.de-avatar{width:26px;height:26px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#E1F5EE;flex-shrink:0;}
+.de-meta{flex:1;}
+.de-name{font-size:12px;font-weight:500;color:#1e1c18;}
+.de-time{font-size:10px;color:#8a8880;}
+.de-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.de-text{font-size:13px;color:#333;line-height:1.6;margin-bottom:8px;}
+.de-habit-ref{display:flex;align-items:center;gap:6px;background:#faf9f6;border-radius:8px;padding:7px 10px;border-left:3px solid #1D9E75;}
+.de-habit-label{font-size:11px;color:#555;}
+.de-habit-count{font-size:11px;font-weight:500;color:#085041;}
+.de-footer{display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:8px;border-top:0.5px solid #f0ede8;}
+.de-reaction{font-size:11px;color:#8a8880;cursor:pointer;}
+.de-reaction:hover{color:#1e1c18;}
+
+.log-item{background:#fff;border-radius:12px;padding:11px 14px;margin-bottom:8px;border:0.5px solid #e8e5e0;}
+.log-row{display:flex;align-items:center;gap:10px;}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.log-text{flex:1;font-size:12px;color:#333;}
+.log-time{font-size:11px;color:#bbb;}
+.log-note-btn{font-size:11px;color:#1D9E75;cursor:pointer;padding:4px 0;margin-top:6px;display:flex;align-items:center;gap:4px;}
+.log-note-area{margin-top:8px;display:none;}
+.log-note-area.open{display:block;}
+.log-note-input{width:100%;border:0.5px solid #e0ddd8;border-radius:8px;padding:8px 10px;font-size:12px;color:#1e1c18;background:#faf9f6;font-family:var(--font-sans);resize:none;outline:none;line-height:1.5;}
+.log-note-save{margin-top:6px;font-size:11px;color:#fff;background:#1D9E75;border:none;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:var(--font-sans);}
+.log-note-saved{margin-top:6px;font-size:11px;color:#1D9E75;padding:4px 0;}
+
+.sticky-bottom{background:#faf9f6;border-top:0.5px solid #e8e5e0;display:flex;padding:8px 0 12px;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#b0ada8;cursor:pointer;}
+.tab.active{color:#1D9E75;}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:#1D9E75;margin:0 auto;}
+
+.empty{text-align:center;padding:32px 20px;color:#b0ada8;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="app">
+<div class="screen-label">Экран «Дневник» — попробуй написать мысль и сохранить заметку к срыву</div>
+<div class="screen">
+
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Дневник</div>
+      <div class="topbar-sub">Твои мысли и записи о привычке</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#1D9E75" stroke-width="1.5"/><path d="M10 6v5M10 13v1" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="tab-pills">
+    <div class="pill active" onclick="switchTab('diary')">Мысли</div>
+    <div class="pill" onclick="switchTab('log')">Записи срывов</div>
+  </div>
+
+  <div class="panel active" id="panel-diary">
+
+    <div class="entry-compose">
+      <div class="compose-top">
+        <div class="compose-avatar">ИВ</div>
+        <div class="compose-meta">
+          <div class="compose-name">Иван</div>
+          <div class="compose-time" id="compose-time">сейчас</div>
+        </div>
+      </div>
+      <textarea class="compose-textarea" id="compose-text" placeholder="Почему сорвался? Что чувствовал? Что хочу изменить?&#10;Пиши свободно — это только для тебя..."></textarea>
+      <div class="compose-bottom">
+        <div class="tag-chip" onclick="toggleTag(this,'стресс')">стресс</div>
+        <div class="tag-chip" onclick="toggleTag(this,'скука')">скука</div>
+        <div class="tag-chip" onclick="toggleTag(this,'компания')">компания</div>
+        <button class="compose-send" onclick="saveEntry()">Сохранить</button>
+      </div>
+    </div>
+
+    <div id="diary-entries">
+
+      <div class="diary-entry">
+        <div class="de-header">
+          <div class="de-avatar">ИВ</div>
+          <div class="de-meta">
+            <div class="de-name">Иван</div>
+            <div class="de-time">сегодня, 14:35</div>
+          </div>
+          <div class="de-tag" style="background:#FAEEDA;color:#633806;">стресс</div>
+        </div>
+        <div class="de-text">Закурил после совещания. Начальник снова давил по срокам — чувствовал, что задыхаюсь. Понял, что сигарета для меня это «пауза», а не удовольствие. Надо найти другую паузу.</div>
+        <div class="de-habit-ref">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#1D9E75" stroke-width="1.2"/><path d="M6 3.5V6.5l1.5 1" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <div class="de-habit-label">Курение · 14:32 ·</div>
+          <div class="de-habit-count">3-й раз за день</div>
+        </div>
+        <div class="de-footer">
+          <div class="de-reaction">👍 Это честно</div>
+          <div class="de-reaction">💡 Хорошее наблюдение</div>
+        </div>
+      </div>
+
+      <div class="diary-entry">
+        <div class="de-header">
+          <div class="de-avatar">ИВ</div>
+          <div class="de-meta">
+            <div class="de-name">Иван</div>
+            <div class="de-time">сегодня, 09:12</div>
+          </div>
+          <div class="de-tag" style="background:#E6F1FB;color:#0C447C;">скука</div>
+        </div>
+        <div class="de-text">Утром не знал чем заняться, пока кофе варился. Автоматически потянулся за сигаретой. Даже не хотел особо. Просто привычка рук — руки ищут что-то делать.</div>
+        <div class="de-habit-ref">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#1D9E75" stroke-width="1.2"/><path d="M6 3.5V6.5l1.5 1" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <div class="de-habit-label">Курение · 09:10 ·</div>
+          <div class="de-habit-count">1-й раз за день</div>
+        </div>
+        <div class="de-footer">
+          <div class="de-reaction">👍 Это честно</div>
+          <div class="de-reaction">💡 Хорошее наблюдение</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel" id="panel-log">
+    <div id="log-entries">
+
+      <div class="log-item">
+        <div class="log-row">
+          <div class="log-dot" style="background:#D85A30;"></div>
+          <div class="log-text">После обеда · стресс</div>
+          <div class="log-time">14:32</div>
+        </div>
+        <div class="log-note-btn" onclick="toggleNote(this)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9V7l5-5 2 2-5 5H2z" stroke="#1D9E75" stroke-width="1.1" stroke-linejoin="round"/></svg>
+          Добавить мысль к этому моменту
+        </div>
+        <div class="log-note-area">
+          <textarea class="log-note-input" rows="3" placeholder="Что происходило? Почему именно сейчас?"></textarea>
+          <button class="log-note-save" onclick="saveNote(this)">Сохранить</button>
+        </div>
+      </div>
+
+      <div class="log-item">
+        <div class="log-row">
+          <div class="log-dot" style="background:#EF9F27;"></div>
+          <div class="log-text">Утром · скука</div>
+          <div class="log-time">09:10</div>
+        </div>
+        <div class="log-note-btn" onclick="toggleNote(this)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9V7l5-5 2 2-5 5H2z" stroke="#1D9E75" stroke-width="1.1" stroke-linejoin="round"/></svg>
+          Добавить мысль к этому моменту
+        </div>
+        <div class="log-note-area">
+          <textarea class="log-note-input" rows="3" placeholder="Что происходило? Почему именно сейчас?"></textarea>
+          <button class="log-note-save" onclick="saveNote(this)">Сохранить</button>
+        </div>
+      </div>
+
+      <div class="log-item">
+        <div class="log-row">
+          <div class="log-dot" style="background:#EF9F27;"></div>
+          <div class="log-text">Без комментария</div>
+          <div class="log-time">07:45</div>
+        </div>
+        <div class="log-note-btn" onclick="toggleNote(this)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9V7l5-5 2 2-5 5H2z" stroke="#1D9E75" stroke-width="1.1" stroke-linejoin="round"/></svg>
+          Добавить мысль к этому моменту
+        </div>
+        <div class="log-note-area">
+          <textarea class="log-note-input" rows="3" placeholder="Что происходило? Почему именно сейчас?"></textarea>
+          <button class="log-note-save" onclick="saveNote(this)">Сохранить</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sticky-bottom">
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/></svg>
+      Главная
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12L5 7l3 3 2-4 4 5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      График
+    </div>
+    <div class="tab active">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="#1D9E75" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Дневник
+      <div class="tab-dot"></div>
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#b0ada8" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Профиль
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  if(tab==='diary'){
+    document.querySelectorAll('.pill')[0].classList.add('active');
+    document.getElementById('panel-diary').classList.add('active');
+  } else {
+    document.querySelectorAll('.pill')[1].classList.add('active');
+    document.getElementById('panel-log').classList.add('active');
+  }
+}
+
+function toggleTag(el, tag) {
+  el.classList.toggle('sel');
+}
+
+function saveEntry() {
+  var text = document.getElementById('compose-text').value.trim();
+  if(!text) return;
+  var tags = [];
+  document.querySelectorAll('.tag-chip.sel').forEach(function(c){ tags.push(c.textContent); });
+  var now = new Date();
+  var h = now.getHours(); var m = now.getMinutes();
+  var timeStr = 'сегодня, '+(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  var tagHtml = tags.length ? '<div class="de-tag" style="background:#E1F5EE;color:#085041;">'+tags[0]+'</div>' : '';
+  var entry = document.createElement('div');
+  entry.className = 'diary-entry';
+  entry.style.background = '#f0fdf8';
+  entry.innerHTML =
+    '<div class="de-header"><div class="de-avatar">ИВ</div><div class="de-meta"><div class="de-name">Иван</div><div class="de-time">'+timeStr+'</div></div>'+tagHtml+'</div>'+
+    '<div class="de-text">'+text.replace(/</g,'&lt;')+'</div>'+
+    '<div class="de-footer"><div class="de-reaction">👍 Это честно</div><div class="de-reaction">💡 Хорошее наблюдение</div></div>';
+  var container = document.getElementById('diary-entries');
+  container.insertBefore(entry, container.firstChild);
+  setTimeout(function(){ entry.style.background=''; }, 1000);
+  document.getElementById('compose-text').value = '';
+  document.querySelectorAll('.tag-chip.sel').forEach(function(c){ c.classList.remove('sel'); });
+}
+
+function toggleNote(btn) {
+  var area = btn.nextElementSibling;
+  area.classList.toggle('open');
+  if(area.classList.contains('open')) {
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 8L9 4M9 4H5M9 4V8" stroke="#8a8880" stroke-width="1.1" stroke-linecap="round"/></svg> Скрыть';
+    btn.style.color='#8a8880';
+  } else {
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9V7l5-5 2 2-5 5H2z" stroke="#1D9E75" stroke-width="1.1" stroke-linejoin="round"/></svg> Добавить мысль к этому моменту';
+    btn.style.color='#1D9E75';
+  }
+}
+
+function saveNote(btn) {
+  var area = btn.parentElement;
+  var input = area.querySelector('.log-note-input');
+  var text = input.value.trim();
+  if(!text) return;
+  var saved = document.createElement('div');
+  saved.className = 'log-note-saved';
+  saved.textContent = '✓ Сохранено: «'+text.substring(0,60)+(text.length>60?'…':'')+'»';
+  area.innerHTML = '';
+  area.appendChild(saved);
+  area.previousElementSibling.style.display = 'none';
+}
+
+var now = new Date();
+var h = now.getHours(); var m = now.getMinutes();
+document.getElementById('compose-time').textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+</script>
+</body>
+</html>

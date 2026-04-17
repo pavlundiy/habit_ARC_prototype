@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echo Memory Demo</title>
+  <style>
+    :root {
+      --bg: #faf9f6;
+      --outer: #ece7dd;
+      --text: #1e1c18;
+      --muted: #8a8880;
+      --line: #e6ded2;
+      --green: #1d9e75;
+      --green-soft: rgba(29, 158, 117, 0.12);
+      --green-mid: rgba(29, 158, 117, 0.26);
+      --green-strong: rgba(29, 158, 117, 0.72);
+      --white: #ffffff;
+      --shadow: 0 22px 42px rgba(60, 48, 34, 0.12);
+      --shadow-soft: 0 10px 22px rgba(60, 48, 34, 0.08);
+      --radius-phone: 42px;
+      --radius-card: 26px;
+      --radius-inner: 18px;
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(29, 158, 117, 0.08), transparent 28%),
+        var(--outer);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 36px 18px;
+    }
+
+    .demo {
+      width: min(100%, 1180px);
+      display: grid;
+      gap: 28px;
+      justify-items: center;
+    }
+
+    .intro {
+      width: min(100%, 720px);
+      text-align: center;
+      display: grid;
+      gap: 10px;
+    }
+
+    .kicker {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.03;
+      letter-spacing: -0.04em;
+    }
+
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .stage {
+      display: grid;
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .controls {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .control {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 4px 12px rgba(60, 48, 34, 0.04);
+    }
+
+    .control:hover {
+      transform: translateY(-1px);
+    }
+
+    .control.is-active {
+      background: var(--text);
+      border-color: var(--text);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(30, 28, 24, 0.18);
+    }
+
+    .phone {
+      width: min(100%, 428px);
+      background: #111;
+      border-radius: var(--radius-phone);
+      padding: 14px;
+      box-shadow: 0 28px 60px rgba(37, 30, 18, 0.18);
+      position: relative;
+    }
+
+    .capsule {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 22px;
+      border-radius: 0 0 16px 16px;
+      background: #201c18;
+      z-index: 4;
+    }
+
+    .screen {
+      background: var(--bg);
+      border-radius: 32px;
+      min-height: 820px;
+      overflow: hidden;
+      position: relative;
+      padding: 22px 18px 22px;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+      padding: 4px 8px 0;
+    }
+
+    .status strong {
+      font-weight: 700;
+      color: #9a978f;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .ritual-card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px 22px 22px;
+      min-height: 520px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      isolation: isolate;
+    }
+
+    .ritual-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(29, 158, 117, 0.08), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.96));
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ritual-card > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .echo-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .echo-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .echo-path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: opacity 0.35s ease, stroke 0.35s ease, filter 0.35s ease, stroke-width 0.35s ease;
+    }
+
+    .echo-path.base-a {
+      stroke: rgba(29, 158, 117, 0.20);
+      stroke-width: 4.5;
+      opacity: 0.9;
+    }
+
+    .echo-path.base-b {
+      stroke: rgba(29, 158, 117, 0.12);
+      stroke-width: 3.5;
+      opacity: 0.86;
+    }
+
+    .echo-path.resonance {
+      stroke: rgba(29, 158, 117, 0.78);
+      stroke-width: 5.5;
+      opacity: 0;
+      filter: drop-shadow(0 0 0 rgba(29, 158, 117, 0));
+    }
+
+    .ritual-card.is-resonating .echo-path.resonance {
+      opacity: 1;
+      filter: drop-shadow(0 0 18px rgba(29, 158, 117, 0.24));
+      animation: echo-resonate 2.4s ease-in-out infinite;
+    }
+
+    .ritual-card[data-state="hidden"] .echo-path {
+      opacity: 0;
+    }
+
+    .ritual-card[data-state="hidden"] .memory-pill,
+    .ritual-card[data-state="hidden"] .memory-note {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .ritual-card[data-state="trace"] .memory-pill,
+    .ritual-card[data-state="resonance"] .memory-pill,
+    .ritual-card[data-state="trace"] .memory-note,
+    .ritual-card[data-state="resonance"] .memory-note {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .phase-chip {
+      justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(29, 158, 117, 0.16);
+      background: rgba(225, 245, 238, 0.86);
+      color: #0e6650;
+      box-shadow: 0 10px 20px rgba(29, 158, 117, 0.06);
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 0.24s ease, transform 0.24s ease, background 0.24s ease, border-color 0.24s ease;
+    }
+
+    .ritual-card[data-state="trace"] .phase-chip,
+    .ritual-card[data-state="resonance"] .phase-chip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .phase-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phase-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(29, 158, 117, 0.20);
+      transition: transform 0.24s ease, background 0.24s ease, box-shadow 0.24s ease, opacity 0.24s ease;
+      opacity: 0.8;
+    }
+
+    .phase-dot.is-on {
+      background: rgba(29, 158, 117, 0.88);
+      box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.10);
+      transform: scale(1.08);
+      opacity: 1;
+    }
+
+    .phase-dot.is-soft {
+      background: rgba(29, 158, 117, 0.42);
+    }
+
+    .ritual-card.is-resonating .phase-dot.is-on {
+      animation: dot-pulse 2.4s ease-in-out infinite;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      max-width: 320px;
+    }
+
+    .copy {
+      margin: 0;
+      max-width: 315px;
+      color: #6f6b64;
+      font-size: 17px;
+      line-height: 1.58;
+    }
+
+    .memory-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(29, 158, 117, 0.22);
+      background: rgba(225, 245, 238, 0.9);
+      color: #0e6650;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .memory-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.14);
+    }
+
+    .memory-note {
+      margin-top: -6px;
+      color: #5f5b54;
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 300px;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .memory-note strong {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .field {
+      background: #f3efe7;
+      border: 1px solid #e8dfd1;
+      border-radius: var(--radius-inner);
+      padding: 16px 16px 20px;
+      min-height: 132px;
+      display: grid;
+      align-items: start;
+      color: #6a665f;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .hint {
+      font-size: 14px;
+      color: #8b867f;
+      line-height: 1.5;
+      margin-top: -4px;
+    }
+
+    .cta {
+      justify-self: start;
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      padding: 14px 22px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 16px 30px rgba(29, 158, 117, 0.18);
+      cursor: pointer;
+    }
+
+    .legend {
+      width: min(100%, 760px);
+      display: grid;
+      gap: 12px;
+    }
+
+    .legend-card {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(230, 222, 210, 0.92);
+      border-radius: 24px;
+      padding: 18px 20px;
+      display: grid;
+      gap: 10px;
+      box-shadow: 0 12px 28px rgba(60, 48, 34, 0.06);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #59554e;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .legend-swatch {
+      width: 54px;
+      height: 16px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+      background: linear-gradient(90deg, rgba(29, 158, 117, 0.05), rgba(29, 158, 117, 0.22));
+      border: 1px solid rgba(29, 158, 117, 0.12);
+    }
+
+    .legend-swatch.trace {
+      background: linear-gradient(90deg, rgba(29, 158, 117, 0.10), rgba(29, 158, 117, 0.28));
+    }
+
+    .legend-swatch.resonance {
+      background: linear-gradient(90deg, rgba(29, 158, 117, 0.20), rgba(29, 158, 117, 0.78));
+      box-shadow: 0 0 16px rgba(29, 158, 117, 0.16);
+    }
+
+    @keyframes echo-resonate {
+      0%, 100% {
+        opacity: 0.62;
+        stroke-width: 5.2;
+        filter: drop-shadow(0 0 8px rgba(29, 158, 117, 0.14));
+      }
+      50% {
+        opacity: 1;
+        stroke-width: 6.4;
+        filter: drop-shadow(0 0 20px rgba(29, 158, 117, 0.28));
+      }
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.10);
+      }
+      50% {
+        transform: scale(1.22);
+        box-shadow: 0 0 0 8px rgba(29, 158, 117, 0.14);
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 20px 10px 34px;
+      }
+
+      .screen {
+        min-height: 760px;
+      }
+
+      .title {
+        font-size: 31px;
+      }
+
+      .copy {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="demo">
+    <section class="intro">
+      <div class="kicker">Echo-memory demo</div>
+      <h1>Отдельный экран, чтобы понять дугу без шума остального интерфейса.</h1>
+      <p>Здесь дуга не прячется за подписью. Мы смотрим только на один ритуальный экран и переключаем три состояния: без памяти, тихий след и резонанс с похожим прошлым днём.</p>
+    </section>
+
+    <section class="stage">
+      <div class="controls" role="tablist" aria-label="Состояние эхо-памяти">
+        <button class="control is-active" data-state-control="hidden" type="button" role="tab" aria-selected="true">Без дуги</button>
+        <button class="control" data-state-control="trace" type="button" role="tab" aria-selected="false">Тихий след</button>
+        <button class="control" data-state-control="resonance" type="button" role="tab" aria-selected="false">Резонанс</button>
+      </div>
+
+      <div class="phone">
+        <div class="capsule" aria-hidden="true"></div>
+        <section class="screen">
+          <div class="status">
+            <span>21:08</span>
+            <strong>Сегодня</strong>
+          </div>
+
+          <article class="card ritual-card" id="ritual-card" data-state="hidden">
+            <div class="echo-layer" aria-hidden="true">
+              <svg class="echo-svg" viewBox="0 0 360 520" preserveAspectRatio="none">
+                <path class="echo-path base-a" d="M 18 370 C 62 122, 214 24, 338 154"></path>
+                <path class="echo-path base-b" d="M 58 404 C 92 206, 214 108, 344 228"></path>
+                <path class="echo-path resonance" d="M 24 358 C 78 136, 214 32, 334 150"></path>
+              </svg>
+            </div>
+
+            <div class="phase-chip" id="phase-chip" aria-label="Ритм дня">
+              <span class="phase-dots" aria-hidden="true">
+                <span class="phase-dot" data-phase-dot="morning"></span>
+                <span class="phase-dot" data-phase-dot="day"></span>
+                <span class="phase-dot" data-phase-dot="evening"></span>
+              </span>
+            </div>
+
+            <div class="eyebrow">Вечерний ритуал</div>
+            <h2 class="title">Что сегодня было самым сложным или самым важным?</h2>
+            <p class="copy">Одна честная фраза вечером помогает увидеть реальный ритм дня. Если сегодняшний ориентир уже был раньше, дуга на фоне напоминает: этот путь тебе знаком.</p>
+
+            <div class="memory-pill" id="memory-pill">Эхо-память считывает прошлый след</div>
+            <div class="memory-note" id="memory-note">Сейчас это просто <strong>тихая дуга</strong> в фоне. Она не спорит с текстом, а держит continuity дня.</div>
+
+            <div class="field" id="memory-field">Например: после встречи меня сильнее всего выбивает напряжение.</div>
+            <div class="hint">Вечерняя заметка уже есть. Если захочешь, её можно уточнить.</div>
+            <button class="cta" type="button">Обновить мысль</button>
+          </article>
+        </section>
+      </div>
+
+      <section class="legend">
+        <div class="legend-card">
+          <div class="legend-row">
+            <span class="legend-swatch"></span>
+            <span><strong>Без дуги</strong> — обычный ритуальный экран. Ничего не отвлекает, но continuity не чувствуется.</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-swatch trace"></span>
+            <span><strong>Тихий след</strong> — видимая дуга прошлого дня. Она уже читается как форма памяти, даже без текста.</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-swatch resonance"></span>
+            <span><strong>Резонанс</strong> — когда сегодняшний ориентир похож на прошлый рабочий день, ведущая дуга мягко оживает.</span>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var controls = Array.prototype.slice.call(document.querySelectorAll("[data-state-control]"));
+      var card = document.getElementById("ritual-card");
+      var pill = document.getElementById("memory-pill");
+      var note = document.getElementById("memory-note");
+      var field = document.getElementById("memory-field");
+      var phaseDots = {
+        morning: document.querySelector('[data-phase-dot="morning"]'),
+        day: document.querySelector('[data-phase-dot="day"]'),
+        evening: document.querySelector('[data-phase-dot="evening"]')
+      };
+
+      var copyByState = {
+        hidden: {
+          pill: "",
+          note: "",
+          field: "Например: после встречи меня сильнее всего выбивает напряжение.",
+          phases: {}
+        },
+        trace: {
+          pill: "Эхо-память: след прошлого дня",
+          note: "Здесь уже видно, что <strong>дуга живёт в самой карточке</strong>. А маленькая капсула сверху подсказывает: это один и тот же ритм утра, дня и вечера.",
+          field: "Например: после встречи меня сильнее всего выбивает напряжение.",
+          phases: { morning: "soft", day: "soft", evening: "on" }
+        },
+        resonance: {
+          pill: "Эхо-память: этот ориентир уже был",
+          note: "Здесь капсула уже не просто про фазу дня. Она показывает, что <strong>утро, день и вечер связаны одной дугой</strong>, а похожий ориентир раньше уже сработал.",
+          field: "Например: похожая фраза уже помогала тебе не спорить с собой после тяжёлой встречи.",
+          phases: { morning: "soft", day: "on", evening: "on" }
+        }
+      };
+
+      function syncPhases(phases) {
+        Object.keys(phaseDots).forEach(function (key) {
+          var dot = phaseDots[key];
+          var state = (phases && phases[key]) || "";
+          dot.classList.toggle("is-on", state === "on");
+          dot.classList.toggle("is-soft", state === "soft");
+        });
+      }
+
+      function applyState(state) {
+        var copy = copyByState[state] || copyByState.hidden;
+        card.dataset.state = state;
+        card.classList.toggle("is-resonating", state === "resonance");
+        pill.textContent = copy.pill;
+        note.innerHTML = copy.note;
+        field.textContent = copy.field;
+        syncPhases(copy.phases);
+
+        controls.forEach(function (control) {
+          var active = control.getAttribute("data-state-control") === state;
+          control.classList.toggle("is-active", active);
+          control.setAttribute("aria-selected", active ? "true" : "false");
+        });
+      }
+
+      controls.forEach(function (control) {
+        control.addEventListener("click", function () {
+          applyState(control.getAttribute("data-state-control"));
+        });
+      });
+
+      applyState("hidden");
+    })();
+  </script>
+</body>
+</html>

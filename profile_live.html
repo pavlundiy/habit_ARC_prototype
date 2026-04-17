@@ -1,0 +1,1851 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Профиль</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+button{transition:transform .14s ease,opacity .16s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease,color .18s ease;}
+button:active{transform:translateY(1px) scale(.992);}
+button:disabled{transform:none;cursor:default;}
+:root{
+  color-scheme: light;
+  --font-sans:"DM Sans","Segoe UI",sans-serif;
+  --font-display:var(--font-sans);
+  --tracking-display:-0.035em;
+  --tracking-tight:-0.02em;
+  --tracking-caps:0.1em;
+  --bg:#ece7dd;
+  --surface:#faf9f6;
+  --surface-elevated:#ffffff;
+  --surface-soft:#f3efe7;
+  --color-border-tertiary:#e6ded2;
+  --color-border-strong:#d6cfc2;
+  --color-text:#1e1c18;
+  --color-text-secondary:#8a8880;
+  --color-text-muted:#b0ada8;
+  --color-body:#4f4a43;
+  --accent:#1D9E75;
+  --accent-soft:#E1F5EE;
+  --accent-text:#085041;
+  --hero:#2d2a24;
+  --hero-elevated:#26231f;
+  --hero-muted:#d1c6b9;
+  --tab-bg:#faf9f6;
+  --overlay:rgba(15,14,12,0.6);
+  --shadow-card:0 14px 28px rgba(34, 29, 23, 0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0f1412;
+    --surface:#171c1a;
+    --surface-elevated:#1d2421;
+    --surface-soft:#202825;
+    --color-border-tertiary:#29312d;
+    --color-border-strong:#35403a;
+    --color-text:#f3efe8;
+    --color-text-secondary:#b2aba0;
+    --color-text-muted:#8c867c;
+    --color-body:#d6d0c7;
+    --accent:#33b887;
+    --accent-soft:#123328;
+    --accent-text:#b8f0db;
+    --hero:#0f1412;
+    --hero-elevated:#0b100e;
+    --hero-muted:#8f9b94;
+    --tab-bg:#161b19;
+    --overlay:rgba(0,0,0,0.7);
+    --shadow-card:none;
+  }
+  .export-note[data-tone="success"]{background:rgba(51,184,135,0.16);border-color:rgba(86,212,170,0.24);color:#b8f0db;}
+  .export-note[data-tone="error"]{background:rgba(218,101,72,0.16);border-color:rgba(255,143,113,0.24);color:#ffb7a4;}
+}
+html,body{min-height:100%;background:var(--bg);}
+body{padding:12px;font-family:var(--font-sans);color:var(--color-text);}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:var(--surface);border-radius:30px;border:1px solid var(--color-border-tertiary);overflow:hidden;position:relative;box-shadow:var(--shadow-card);padding-bottom:112px;min-height:calc(100dvh - 24px);}
+html.embedded-shell .sticky-bottom{display:none;}
+.topbar{padding:18px 20px 12px;display:flex;justify-content:space-between;align-items:flex-start;}
+.topbar-title{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.topbar-sub{font-size:11.5px;color:var(--color-text-secondary);line-height:1.45;margin-top:2px;}
+  .hero{margin:0 16px 16px;background:linear-gradient(180deg, var(--hero) 0%, var(--hero-elevated) 100%);border-radius:24px;padding:18px;color:#fff;box-shadow:0 14px 30px rgba(28,22,15,0.18);border:1px solid rgba(255,255,255,0.04);}
+.hero-head{display:flex;align-items:center;gap:12px;}
+  .avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent-soft);}
+.hero-name{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:var(--tracking-tight);}
+.hero-note{font-size:12.5px;color:var(--hero-muted);line-height:1.5;margin-top:3px;}
+.hero-index{margin-top:16px;display:flex;justify-content:space-between;align-items:end;gap:8px;}
+.hero-index-num{font-family:var(--font-display);font-size:48px;line-height:0.96;font-weight:800;letter-spacing:-0.05em;}
+  .hero-index-meta{font-size:11.5px;line-height:1.45;color:var(--accent-text);text-align:right;}
+.section-title{font-size:9px;font-weight:700;color:var(--color-text-secondary);letter-spacing:var(--tracking-caps);text-transform:uppercase;padding:0 20px 8px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px;}
+.card{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:16px;padding:14px;box-shadow:var(--shadow-card);}
+.card-label{font-size:9px;font-weight:700;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:var(--tracking-caps);}
+.card-value{font-family:var(--font-display);font-size:24px;color:var(--color-text);font-weight:800;letter-spacing:var(--tracking-display);line-height:1.04;margin-top:8px;}
+.card-sub{font-size:11.5px;color:var(--color-body);margin-top:6px;line-height:1.5;}
+.wide-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);}
+.wide-title{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-bottom:8px;}
+.wide-text{font-size:12.5px;color:var(--color-body);line-height:1.62;}
+.setup-progress{height:8px;border-radius:999px;background:var(--surface-soft);overflow:hidden;margin:10px 0 12px;border:1px solid var(--color-border-tertiary);}
+.setup-progress-fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #79d9b8 100%);border-radius:999px;}
+.setup-list{display:grid;gap:8px;margin-top:12px;}
+.setup-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.setup-mark{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:0 0 auto;}
+  .setup-mark.done{background:var(--accent);color:var(--accent-soft);}
+.setup-mark.pending{background:var(--surface-elevated);color:var(--color-text-secondary);border:1px solid var(--color-border-strong);}
+.setup-copy{min-width:0;}
+.setup-step-title{font-size:12px;font-weight:600;color:var(--color-text);}
+.setup-step-sub{font-size:11px;color:var(--color-body);line-height:1.5;margin-top:3px;}
+.setup-action{margin-top:12px;width:100%;border:none;border-radius:12px;background:var(--color-text);color:var(--surface);padding:11px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
+.setup-action:active{box-shadow:0 8px 18px rgba(30,28,24,0.12);}
+.week-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);display:none;}
+.week-card.open{display:block;}
+.week-kicker{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);}
+.week-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;}
+.week-title{font-size:14px;font-weight:700;color:var(--color-text);}
+.week-badge{font-size:10px;padding:4px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text);font-weight:600;}
+.week-copy{font-size:12px;color:var(--color-body);line-height:1.55;margin-top:6px;}
+.week-progress{height:7px;border-radius:999px;background:var(--surface-soft);overflow:hidden;border:1px solid var(--color-border-tertiary);margin-top:12px;}
+.week-progress-fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #79d9b8 100%);}
+.week-meta{font-size:11px;color:var(--color-text-secondary);margin-top:8px;}
+.week-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.week-chip{padding:6px 10px;border-radius:999px;font-size:11px;border:1px solid var(--color-border-tertiary);background:var(--surface-soft);color:var(--color-body);}
+  .week-chip.done{background:var(--accent-soft);border-color:var(--accent-soft-border);color:var(--accent-text);font-weight:600;}
+.week-review{margin-top:12px;padding:12px 13px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.week-review-title{font-size:12px;font-weight:700;color:var(--color-text);}
+.week-review-copy{font-size:11px;color:var(--color-body);line-height:1.55;margin-top:5px;}
+.week-review-meta{font-size:11px;color:var(--color-text-secondary);margin-top:6px;}
+.snapshot-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-card);}
+.snapshot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.snapshot-title{font-size:13px;font-weight:700;color:var(--color-text);}
+.snapshot-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.5;margin-top:4px;}
+.snapshot-grid{display:grid;gap:8px;margin-top:12px;}
+.snapshot-item{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:11px 12px;}
+.snapshot-label{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-secondary);}
+.snapshot-value{font-size:13px;font-weight:700;color:var(--color-text);margin-top:6px;}
+.snapshot-copy{font-size:11px;color:var(--color-body);line-height:1.5;margin-top:5px;}
+.snapshot-badge{font-size:10px;padding:4px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text);font-weight:600;white-space:nowrap;}
+.detail-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;}
+.detail-toggle{width:100%;border:none;background:none;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;cursor:pointer;font-family:var(--font-sans);}
+.detail-toggle:active{background:rgba(30,28,24,0.04);}
+.detail-copy{min-width:0;}
+.detail-title{font-size:13.5px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);}
+.detail-sub{font-size:11.5px;color:var(--color-body);line-height:1.55;margin-top:6px;}
+.detail-arrow{font-size:16px;color:var(--color-text-secondary);transition:transform 0.2s ease;flex:0 0 auto;}
+.detail-card.open .detail-arrow{transform:rotate(180deg);}
+.detail-body{display:none;padding:0 16px 14px;}
+.detail-card.open .detail-body{display:block;}
+.tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.tone-option{border:1px solid var(--color-border-strong);border-radius:12px;padding:11px 12px;background:var(--surface-soft);cursor:pointer;text-align:left;transition:border-color .16s ease,background .16s ease,transform .16s ease;}
+.tone-option:active{transform:translateY(1px);}
+.tone-option.active{background:var(--accent-soft);border-color:var(--accent);}
+.tone-option-label{font-size:12px;font-weight:700;color:var(--color-text);}
+.tone-option-copy{font-size:11px;color:var(--color-body);line-height:1.45;margin-top:4px;}
+.tone-preview{margin-top:12px;padding:12px 13px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.tone-preview-label{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-secondary);}
+.tone-preview-copy{font-size:12px;color:var(--color-body);line-height:1.55;margin-top:6px;}
+.habit-picker{display:flex;flex-direction:column;gap:10px;}
+.habit-current{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:15px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.habit-current-name{font-size:15px;font-weight:600;color:var(--color-text);}
+.habit-current-meta{font-size:11px;color:var(--color-text-secondary);margin-top:4px;}
+.habit-change{border:none;border-radius:10px;background:var(--accent);color:var(--accent-soft);padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;}
+.habit-change:active{box-shadow:0 8px 18px rgba(29,158,117,0.18);}
+.habit-options{display:grid;gap:8px;}
+.habit-option{width:100%;text-align:left;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px 14px;cursor:pointer;}
+.habit-option.active{border-color:var(--accent);background:var(--accent-soft);}
+.habit-option-name{font-size:13px;font-weight:600;color:var(--color-text);}
+.habit-option-meta{font-size:11px;color:var(--color-body);margin-top:4px;line-height:1.45;}
+.custom-input{width:100%;margin-top:10px;border:1px solid var(--color-border-strong);border-radius:12px;padding:11px 12px;font-size:13px;color:var(--color-text);background:var(--surface-elevated);font-family:var(--font-sans);outline:none;}
+.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.sheet-btn{border:none;border-radius:12px;padding:11px 12px;font-size:13px;font-weight:600;cursor:pointer;}
+.sheet-btn.secondary{background:var(--surface-soft);color:var(--color-body);}
+.sheet-btn.primary{background:var(--color-text);color:var(--surface);}
+.sheet-btn.secondary:active{box-shadow:0 8px 16px rgba(30,28,24,0.08);}
+.sheet-btn.primary:active{box-shadow:0 8px 18px rgba(30,28,24,0.12);}
+.context-screen{position:fixed;inset:0;background:var(--surface);display:none;z-index:13;overflow:hidden;}
+.context-screen.open{display:block;}
+.context-screen-inner{height:100%;overflow-y:auto;padding:18px 16px calc(116px + env(safe-area-inset-bottom));}
+.context-screen-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;}
+.context-screen-back{width:40px;height:40px;border:none;border-radius:14px;background:var(--surface-soft);color:var(--color-text);display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1;cursor:pointer;flex:0 0 auto;}
+.context-screen-copy{min-width:0;flex:1;}
+.context-screen-title{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:var(--tracking-tight);color:var(--color-text);line-height:1.04;}
+.context-screen-sub{font-size:12px;color:var(--color-text-secondary);line-height:1.55;margin-top:5px;}
+.context-screen-note{margin:0 0 14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:16px;padding:12px 14px;font-size:12px;color:var(--color-body);line-height:1.6;}
+.context-screen-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.onboarding-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+.onboarding-copy{font-size:12px;color:var(--color-body);line-height:1.5;}
+.onboarding-copy strong{display:block;font-size:13px;color:var(--color-text);margin-bottom:4px;}
+.onboarding-btn{border:none;border-radius:10px;background:var(--color-text);color:var(--surface);padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;}
+.onboarding-btn:active{box-shadow:0 8px 18px rgba(30,28,24,0.12);}
+.export-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.export-btn{border:none;border-radius:12px;padding:11px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
+.export-btn.secondary{background:var(--surface-soft);color:var(--color-body);border:1px solid var(--color-border-tertiary);}
+  .export-btn.primary{background:var(--accent);color:var(--accent-soft);}
+.export-btn.full{grid-column:1 / -1;}
+.export-btn.secondary:active{box-shadow:0 8px 16px rgba(30,28,24,0.08);}
+.export-btn.primary:active{box-shadow:0 8px 18px rgba(29,158,117,0.18);}
+.privacy-stack{display:grid;gap:10px;margin-top:12px;}
+.privacy-card{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px 14px;}
+.privacy-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.privacy-label{font-size:12px;font-weight:600;color:var(--color-text);}
+.privacy-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.45;margin-top:4px;}
+.privacy-switch{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+.privacy-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.privacy-option{border:1px solid var(--color-border-strong);border-radius:10px;padding:9px 10px;background:var(--surface-elevated);font-size:12px;color:var(--color-body);cursor:pointer;text-align:center;}
+.privacy-option.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text);font-weight:600;}
+.privacy-option:active{box-shadow:0 8px 16px rgba(30,28,24,0.08);}
+.export-note{font-size:11px;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--color-border-tertiary);background:var(--surface-soft);color:var(--color-text-secondary);transition:background .18s ease,border-color .18s ease,color .18s ease;}
+.export-note[data-tone="success"]{background:var(--accent-soft);border-color:rgba(29,158,117,0.28);color:var(--accent-text);}
+.export-note[data-tone="error"]{background:rgba(218,101,72,0.12);border-color:rgba(218,101,72,0.26);color:#9c4a34;}
+.prompt-preview{width:100%;min-height:240px;border:1px solid var(--color-border-strong);border-radius:14px;padding:12px 13px;background:var(--surface-elevated);color:var(--color-text);font:500 12px/1.6 var(--font-sans);resize:none;outline:none;}
+.sheet-actions-single{margin-top:8px;}
+.review-meta{font-size:11px;color:var(--color-text-secondary);margin-top:6px;}
+.review-summary{font-size:12px;color:var(--color-body);line-height:1.6;margin-top:10px;}
+.review-empty{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:8px;}
+.review-list{display:grid;gap:8px;margin-top:12px;}
+.review-item{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--color-body);line-height:1.5;}
+.review-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.review-textarea{width:100%;min-height:220px;border:1px solid var(--color-border-strong);border-radius:14px;padding:12px 13px;background:var(--surface-elevated);color:var(--color-text);font:500 12px/1.6 var(--font-sans);resize:vertical;outline:none;}
+.manual-ai-panel{display:none;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed var(--color-border-strong);background:rgba(255,255,255,0.58);}
+.manual-ai-panel.open{display:block;}
+.manual-ai-copy{font-size:11px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:10px;}
+.manual-ai-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.qa-stack{display:grid;gap:10px;}
+.qa-card{background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px 14px;}
+.qa-title{font-size:13px;font-weight:600;color:var(--color-text);line-height:1.45;margin-bottom:10px;}
+.qa-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.qa-option{border:1px solid var(--color-border-strong);border-radius:10px;padding:9px 10px;background:var(--surface-soft);font-size:12px;color:var(--color-body);cursor:pointer;text-align:center;}
+.qa-option.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text);font-weight:600;}
+.finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.finance-metric{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:12px;}
+.finance-metric-label{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;}
+.finance-metric-value{font-size:20px;font-weight:700;color:var(--color-text);line-height:1.1;margin-top:8px;}
+.finance-metric-sub{font-size:11px;color:var(--color-body);line-height:1.5;margin-top:6px;}
+.finance-note{font-size:12px;color:var(--color-body);line-height:1.6;margin-top:10px;}
+.finance-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.finance-health-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.health-chip{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:12px;padding:10px 12px;}
+.health-chip-label{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;}
+.health-chip-value{font-size:13px;font-weight:600;color:var(--color-text);margin-top:6px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;}
+.form-field{display:flex;flex-direction:column;gap:6px;align-self:stretch;}
+.form-field.full{grid-column:1 / -1;}
+.form-label{min-height:32px;display:flex;align-items:flex-end;font-size:11px;font-weight:600;line-height:1.35;color:var(--color-text);}
+.form-input{width:100%;border:1px solid var(--color-border-strong);border-radius:12px;padding:11px 12px;font-size:13px;color:var(--color-text);background:var(--surface-elevated);font-family:var(--font-sans);outline:none;}
+.sticky-bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:296px;max-width:calc(100% - 32px);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid var(--color-border-tertiary);border-radius:24px;background:var(--tab-bg);backdrop-filter:blur(20px);box-shadow:0 18px 36px rgba(34,29,23,0.12);z-index:15;}
+.tab{display:flex;align-items:center;justify-content:center;min-width:0;color:var(--color-text-muted);cursor:pointer;}
+.tab-chip{width:100%;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:18px;transition:background .16s ease,color .16s ease,transform .16s ease;}
+.tab:active .tab-chip{transform:translateY(1px);}
+.tab.active{color:var(--accent);}
+.tab.active .tab-chip{background:var(--surface-elevated);box-shadow:var(--shadow-card);}
+.tab-icon{width:17px;height:17px;display:block;}
+.tab-label{font-size:10px;font-weight:600;line-height:1.1;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="screen">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Профиль</div>
+      <div class="topbar-sub">Твоя опора и текущая динамика</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6" r="3.5" stroke="#1D9E75" stroke-width="1.5"/><path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="hero">
+    <div class="hero-head">
+      <div class="avatar" id="profile-avatar">ИВ</div>
+      <div>
+        <div class="hero-name" id="profile-name">Иван</div>
+        <div class="hero-note" id="profile-habit">Курение · поведенческий индекс</div>
+      </div>
+    </div>
+    <div class="hero-index">
+      <div class="hero-index-num" id="profile-index">0</div>
+      <div class="hero-index-meta" id="profile-index-meta">умеренная нагрузка</div>
+    </div>
+  </div>
+
+  <div class="wide-card" id="setup-card" style="display:none;">
+    <div class="wide-title">Быстрый запуск</div>
+    <div class="wide-text" id="setup-copy">Три коротких шага, чтобы приложение стало по-настоящему личным и полезным.</div>
+    <div class="setup-progress">
+      <div class="setup-progress-fill" id="setup-progress-fill" style="width:0%;"></div>
+    </div>
+    <div class="setup-list" id="setup-list"></div>
+    <button class="setup-action" id="setup-action-btn" type="button">Продолжить настройку</button>
+  </div>
+
+  <div class="week-card" id="first-week-card">
+    <div class="week-kicker" id="first-week-kicker">Первая неделя · день 1</div>
+    <div class="week-head">
+      <div class="week-title" id="first-week-title">Первая неделя только начинается</div>
+      <div class="week-badge" id="first-week-badge">первые сигналы</div>
+    </div>
+    <div class="week-copy" id="first-week-copy">Сейчас важнее честность и повторяемость, чем идеальные дни.</div>
+    <div class="week-progress"><div class="week-progress-fill" id="first-week-progress" style="width:0%;"></div></div>
+    <div class="week-meta" id="first-week-meta">0 из 4 опор уже есть</div>
+    <div class="week-chips" id="first-week-chips"></div>
+    <div class="week-review">
+      <div class="week-review-title" id="first-week-review-title">Неделя только собирает основу</div>
+      <div class="week-review-copy" id="first-week-review-copy">Сейчас важнее не идеальные дни, а несколько честных сигналов в разных состояниях.</div>
+      <div class="week-review-meta" id="first-week-review-meta">Сигналов: 0 · дней с активностью: 0 · удержаний: 0</div>
+    </div>
+  </div>
+
+  <div class="snapshot-card" id="weekly-snapshot-card">
+    <div class="snapshot-head">
+      <div>
+        <div class="snapshot-title">Снимок недели</div>
+        <div class="snapshot-sub" id="weekly-snapshot-sub">Короткое резюме по поведению, состоянию и health markers.</div>
+      </div>
+      <div class="snapshot-badge" id="weekly-snapshot-badge">7 дней</div>
+    </div>
+    <div class="snapshot-grid">
+      <div class="snapshot-item">
+        <div class="snapshot-label">Поведение</div>
+        <div class="snapshot-value" id="weekly-behavior-value">Индекс 0</div>
+        <div class="snapshot-copy" id="weekly-behavior-copy">Пока только собираем первые сигналы.</div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Состояние</div>
+        <div class="snapshot-value" id="weekly-state-value">Данных пока мало</div>
+        <div class="snapshot-copy" id="weekly-state-copy">Когда появятся записи состояния, здесь будет видно фон недели.</div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Здоровье</div>
+        <div class="snapshot-value" id="weekly-health-value">0 маркеров</div>
+        <div class="snapshot-copy" id="weekly-health-copy">Можно начать хотя бы со сна и пульса в покое.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Сегодня</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Срывы</div>
+      <div class="card-value" id="today-slips">0</div>
+      <div class="card-sub">за текущий день</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Удержания</div>
+      <div class="card-value" id="today-resisted">0</div>
+      <div class="card-sub">успешные моменты</div>
+    </div>
+  </div>
+
+  <div class="section-title">Опора</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Главный триггер</div>
+      <div class="card-value" id="main-trigger">—</div>
+      <div class="card-sub">на что стоит смотреть внимательнее</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Риск-окно</div>
+      <div class="card-value" id="risk-window">—</div>
+      <div class="card-sub">лучшее время для профилактики</div>
+    </div>
+  </div>
+
+  <div class="wide-card">
+    <div class="wide-title">Активная привычка</div>
+    <div class="habit-picker">
+      <div class="habit-current">
+        <div>
+          <div class="habit-current-name" id="active-habit-name">Курение</div>
+          <div class="habit-current-meta" id="active-habit-meta">Сейчас приложение считает и анализирует только эту привычку</div>
+        </div>
+        <button class="habit-change" id="change-habit-btn" type="button">Изменить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide-card">
+    <div class="wide-title">Что важно помнить</div>
+    <div class="wide-text" id="profile-message">Профиль собирает в одно место личный индекс, текущую нагрузку и главные точки внимания. Это не диагноз, а твоя рабочая карта поведения.</div>
+  </div>
+
+  <div class="detail-card" id="guidance-detail-card">
+    <button class="detail-toggle" type="button" data-detail-card="guidance-detail-card">
+      <div class="detail-copy">
+        <div class="detail-title">Стиль сопровождения</div>
+        <div class="detail-sub" id="guidance-detail-summary">Поддержка · мягко и без давления</div>
+      </div>
+      <div class="detail-arrow">⌄</div>
+    </button>
+    <div class="detail-body">
+      <div class="wide-text">Это меняет не смысл аналитики, а голос приложения: как оно формулирует фокус дня, weekly review и маленькие шаги.</div>
+      <div class="tone-grid" id="guidance-tone-options"></div>
+      <div class="tone-preview">
+        <div class="tone-preview-label">Так это звучит сейчас</div>
+        <div class="tone-preview-copy" id="guidance-tone-preview">Профиль собирает в одно место личный индекс, текущую нагрузку и главные точки внимания.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="finance-detail-card">
+    <button class="detail-toggle" type="button" data-detail-card="finance-detail-card">
+      <div class="detail-copy">
+        <div class="detail-title">Финансы и здоровье</div>
+        <div class="detail-sub" id="finance-detail-summary">За 30 дней: 0 ₽ · маркеров: 0/7</div>
+      </div>
+      <div class="detail-arrow">⌄</div>
+    </button>
+    <div class="detail-body">
+      <div class="wide-text">Привычка тратит не только внимание. Здесь можно видеть прямые расходы, время и несколько простых health markers без медицинских диагнозов.</div>
+      <div class="finance-grid">
+        <div class="finance-metric">
+          <div class="finance-metric-label">За 30 дней</div>
+          <div class="finance-metric-value" id="finance-month-spent">0 ₽</div>
+          <div class="finance-metric-sub" id="finance-month-projection">Прогноз на месяц: 0 ₽</div>
+        </div>
+        <div class="finance-metric">
+          <div class="finance-metric-label">Время</div>
+          <div class="finance-metric-value" id="finance-month-hours">0 ч</div>
+          <div class="finance-metric-sub" id="finance-episode-meta">0 ₽ и 0 мин на эпизод</div>
+        </div>
+      </div>
+      <div class="finance-health-grid">
+        <div class="health-chip">
+          <div class="health-chip-label">Сон</div>
+          <div class="health-chip-value" id="health-sleep">не заполнено</div>
+        </div>
+        <div class="health-chip">
+          <div class="health-chip-label">Пульс</div>
+          <div class="health-chip-value" id="health-resting-hr">не заполнено</div>
+        </div>
+        <div class="health-chip">
+          <div class="health-chip-label">Давление</div>
+          <div class="health-chip-value" id="health-bp">не заполнено</div>
+        </div>
+        <div class="health-chip">
+          <div class="health-chip-label">Вес / талия</div>
+          <div class="health-chip-value" id="health-body">не заполнено</div>
+        </div>
+      </div>
+      <div class="finance-note" id="finance-health-note">Заполни стоимость эпизода и несколько маркеров, чтобы видеть более личную картину привычки.</div>
+      <div class="finance-actions">
+        <button class="export-btn secondary" id="open-finance-health-btn" type="button">Настроить</button>
+        <button class="export-btn secondary" id="reset-health-hint-btn" type="button">Обновить маркеры</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="assessment-detail-card">
+    <button class="detail-toggle" type="button" data-detail-card="assessment-detail-card">
+      <div class="detail-copy">
+        <div class="detail-title">Стартовый опрос</div>
+        <div class="detail-sub" id="assessment-detail-summary">4 коротких вопроса для стартовой точности</div>
+      </div>
+      <div class="detail-arrow">⌄</div>
+    </button>
+    <div class="detail-body">
+      <div class="onboarding-status">
+        <div class="onboarding-copy" id="assessment-copy"><strong>Опрос не заполнен</strong>Ответь на 4 коротких вопроса, чтобы аналитика точнее оценивала стартовую нагрузку.</div>
+        <button class="onboarding-btn" id="assessment-btn" type="button">Заполнить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="export-detail-card">
+    <button class="detail-toggle" type="button" data-detail-card="export-detail-card">
+      <div class="detail-copy">
+        <div class="detail-title">Экспорт и ИИ-разбор</div>
+        <div class="detail-sub" id="export-detail-summary">Имя включено · полный дневник · точное время</div>
+      </div>
+      <div class="detail-arrow">⌄</div>
+    </button>
+    <div class="detail-body">
+      <div class="wide-text">Главный путь здесь — живой разбор через Gemini по кнопке. Ручной режим оставили как запасной вариант, если захочется отправить prompt в другой чат или сервис.</div>
+      <div class="privacy-stack">
+        <div class="privacy-card">
+          <div class="privacy-row">
+            <div>
+              <div class="privacy-label">Скрыть имя и инициалы</div>
+              <div class="privacy-sub">В выгрузке пользователь будет показан как нейтральный профиль.</div>
+            </div>
+            <input class="privacy-switch" id="privacy-hide-name" type="checkbox">
+          </div>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-label">Дневник</div>
+          <div class="privacy-sub">Можно оставить полную историю или только последние 10 записей.</div>
+          <div class="privacy-options" id="diary-scope-options">
+            <button class="privacy-option active" type="button" data-setting="diaryScope" data-value="all">Весь дневник</button>
+            <button class="privacy-option" type="button" data-setting="diaryScope" data-value="recent">10 записей</button>
+          </div>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-label">Время</div>
+          <div class="privacy-sub">Точные моменты можно заменить на диапазоны времени.</div>
+          <div class="privacy-options" id="time-precision-options">
+            <button class="privacy-option active" type="button" data-setting="timePrecision" data-value="exact">Точное время</button>
+            <button class="privacy-option" type="button" data-setting="timePrecision" data-value="range">Диапазоны</button>
+          </div>
+        </div>
+      </div>
+      <div class="export-actions">
+        <button class="export-btn secondary" id="export-json-btn" type="button">Скачать JSON</button>
+        <button class="export-btn secondary" id="export-report-btn" type="button">Скачать отчёт</button>
+        <button class="export-btn primary full" id="open-gemini-sheet-btn" type="button">Запустить через Gemini</button>
+        <button class="export-btn secondary full" id="toggle-manual-ai-export-btn" type="button">Ручной режим</button>
+      </div>
+      <div class="manual-ai-panel" id="manual-ai-export-panel">
+        <div class="manual-ai-copy">Нужен только если хочешь отправить prompt во внешний чат вручную. В обычном сценарии через Gemini ничего копировать не нужно.</div>
+        <div class="manual-ai-actions">
+          <button class="export-btn secondary" id="open-ai-export-btn" type="button">Открыть prompt</button>
+          <button class="export-btn secondary" id="download-ai-prompt-inline-btn" type="button">Скачать prompt</button>
+        </div>
+      </div>
+      <div class="privacy-card" style="margin-top:12px;">
+        <div class="privacy-label">Данные приложения</div>
+        <div class="privacy-sub">Можно сохранить полную резервную копию приложения, восстановить её позже или очистить только активную привычку.</div>
+        <div class="export-actions">
+          <button class="export-btn secondary" id="backup-state-btn" type="button">Резервная копия</button>
+          <button class="export-btn secondary" id="restore-state-btn" type="button">Восстановить</button>
+          <button class="export-btn secondary full" id="open-reset-habit-btn" type="button">Очистить активную привычку</button>
+        </div>
+      </div>
+      <div class="export-note" id="export-status" data-tone="neutral">Экспортируется только активная привычка. Ничего никуда не отправляется автоматически.</div>
+    </div>
+  </div>
+
+  <div class="detail-card" id="ai-review-detail-card">
+    <button class="detail-toggle" type="button" data-detail-card="ai-review-detail-card">
+      <div class="detail-copy">
+        <div class="detail-title">Разбор ИИ</div>
+        <div class="detail-sub" id="ai-review-detail-summary">Последнего разбора пока нет</div>
+      </div>
+      <div class="detail-arrow">⌄</div>
+    </button>
+    <div class="detail-body">
+      <div class="wide-text">Если запускаешь Gemini из приложения, разбор сохранится сам. Ручная вставка нужна только для ответа из внешнего чата или другого ИИ-сервиса.</div>
+      <div class="review-meta" id="ai-review-meta">Разбор ещё не сохранён</div>
+      <div class="review-summary" id="ai-review-summary">Здесь появится краткое резюме последнего ответа ИИ по этой привычке.</div>
+      <div class="review-list" id="ai-review-actions">
+        <div class="review-empty">Пока нет сохранённых действий.</div>
+      </div>
+      <div class="review-actions">
+        <button class="export-btn secondary" id="toggle-manual-ai-review-btn" type="button">Ручная вставка</button>
+        <button class="export-btn primary full" id="open-ai-review-screen-btn" type="button">Полный AI-разбор</button>
+      </div>
+      <div class="manual-ai-panel" id="manual-ai-review-panel">
+        <div class="manual-ai-copy">Этот путь нужен только если ты уже получил ответ модели во внешнем чате и хочешь сохранить его здесь.</div>
+        <div class="manual-ai-actions">
+          <button class="export-btn secondary" id="open-ai-response-btn" type="button">Вставить ответ</button>
+          <button class="export-btn secondary" id="reopen-ai-prompt-btn" type="button">Открыть prompt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="habit-screen">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-habit-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Активная привычка</div>
+          <div class="context-screen-sub">Приложение анализирует одну привычку за раз. Позже её можно спокойно сменить без переустановки.</div>
+        </div>
+      </div>
+      <div class="context-screen-note">Выбери ту привычку, вокруг которой сейчас хочешь видеть дневник, инсайты и контекст. Остальные можно будет добавить позже.</div>
+      <div class="habit-options" id="habit-options"></div>
+      <input class="custom-input" id="custom-habit-input" type="text" maxlength="40" placeholder="Название своей привычки" style="display:none;">
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-habit-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="save-habit-btn" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="assessment-screen">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-assessment-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Короткий опрос по привычке</div>
+          <div class="context-screen-sub" id="assessment-sheet-sub">Ответы останутся внутри этой привычки и помогут точнее считать индекс нагрузки.</div>
+        </div>
+      </div>
+      <div class="context-screen-note">Это не тест и не оценка. Несколько коротких ответов помогают приложению мягче настроить стартовую аналитику под твою привычку.</div>
+      <div class="qa-stack" id="assessment-questions"></div>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-assessment-btn" type="button">Позже</button>
+        <button class="sheet-btn primary" id="save-assessment-btn" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="finance-health-screen">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-finance-health-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Добавить контекст</div>
+          <div class="context-screen-sub" id="finance-health-sub">Здесь можно спокойно задать, сколько обычно уходит денег, времени и как меняется самочувствие рядом с привычкой.</div>
+        </div>
+      </div>
+      <div class="context-screen-note" id="finance-health-note">Это не медицинская форма и не отчёт. Просто личный контекст: сколько обычно уходит за раз и что происходит с телом рядом с привычкой.</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="form-label" id="config-cost-label" for="config-cost-input">Цена эпизода</label>
+          <input class="form-input" id="config-cost-input" type="number" min="0" step="0.01" placeholder="Например, 22 ₽">
+        </div>
+        <div class="form-field">
+          <label class="form-label" id="config-minutes-label" for="config-minutes-input">Минут на эпизод</label>
+          <input class="form-input" id="config-minutes-input" type="number" min="0" step="1" placeholder="Например, 7 минут">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-sleep-input">Сколько в среднем спишь</label>
+          <input class="form-input" id="health-sleep-input" type="number" min="0" max="24" step="0.1" placeholder="Например, 7.5 часа">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-hr-input">Пульс в покое, если знаешь</label>
+          <input class="form-input" id="health-hr-input" type="number" min="0" step="1" placeholder="Например, 62">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-bp-sys-input">Верхнее давление, если знаешь</label>
+          <input class="form-input" id="health-bp-sys-input" type="number" min="0" step="1" placeholder="Например, 120">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-bp-dia-input">Нижнее давление, если знаешь</label>
+          <input class="form-input" id="health-bp-dia-input" type="number" min="0" step="1" placeholder="Например, 80">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-weight-input">Вес, если хочешь</label>
+          <input class="form-input" id="health-weight-input" type="number" min="0" step="0.1" placeholder="Например, 72 кг">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="health-waist-input">Талия, если хочешь</label>
+          <input class="form-input" id="health-waist-input" type="number" min="0" step="1" placeholder="Например, 84 см">
+        </div>
+      </div>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-finance-health-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="save-finance-health-btn" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="ai-export-sheet">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-ai-export-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Prompt для ИИ-разбора</div>
+          <div class="context-screen-sub">Ниже готовый текст для ручной отправки в ИИ. Он просит анализировать паттерны поведения без диагноза и без роли терапевта.</div>
+        </div>
+      </div>
+      <textarea class="prompt-preview" id="ai-prompt-preview" readonly></textarea>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="copy-ai-prompt-btn" type="button">Скопировать</button>
+        <button class="sheet-btn primary" id="download-ai-prompt-btn" type="button">Скачать .txt</button>
+      </div>
+      <div class="sheet-actions-single">
+        <button class="sheet-btn secondary" id="close-ai-export-btn" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="ai-response-sheet">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-ai-response-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Готовый ответ ИИ</div>
+          <div class="context-screen-sub">Вставь сюда уже полученный ответ модели. Мы сохраним его для активной привычки и выделим краткий вывод с действиями.</div>
+        </div>
+      </div>
+      <textarea class="review-textarea" id="ai-response-input" placeholder="Вставь сюда ответ ИИ..."></textarea>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-ai-response-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="save-ai-response-btn" type="button">Сохранить разбор</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="gemini-sheet">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-gemini-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Gemini по запросу</div>
+          <div class="context-screen-sub">Сводка по активной привычке уйдёт во внешний сервис Google Gemini только после явного подтверждения. Это опциональный разбор, а не ядро приложения.</div>
+        </div>
+      </div>
+      <div class="privacy-stack">
+        <div class="privacy-card">
+          <div class="privacy-label">Что отправится</div>
+          <div class="privacy-sub">Активная привычка, события, дневник и аналитическая summary по выбранным настройкам приватности.</div>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-label">API key Gemini</div>
+          <div class="privacy-sub">Для демо ключ можно хранить только на этом устройстве. В исходники он не записывается.</div>
+          <input class="custom-input" id="gemini-api-key-input" type="password" placeholder="AIza..." autocomplete="off">
+          <div class="privacy-row" style="margin-top:12px;">
+            <div>
+              <div class="privacy-label">Запомнить на этом устройстве</div>
+              <div class="privacy-sub">Чтобы не вставлять ключ перед каждым запуском.</div>
+            </div>
+            <input class="privacy-switch" id="gemini-remember-key" type="checkbox" checked>
+          </div>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-label">Модель</div>
+          <div class="privacy-sub">Для демо используем самый стабильный из проверенных быстрых вариантов Gemini Flash.</div>
+          <div class="privacy-options" id="gemini-model-options">
+            <button class="privacy-option active" type="button" data-gemini-model="gemini-flash-latest">Flash latest</button>
+          </div>
+        </div>
+      </div>
+      <div class="export-note" id="gemini-sheet-status" data-tone="neutral">Ничего не отправится, пока ты явно не нажмёшь кнопку ниже.</div>
+      <div class="sheet-actions-single">
+        <button class="sheet-btn secondary" id="toggle-gemini-preview-btn" type="button">Показать prompt</button>
+      </div>
+      <textarea class="prompt-preview" id="gemini-prompt-preview" readonly style="display:none;min-height:220px;margin-top:10px;"></textarea>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="close-gemini-sheet-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="run-gemini-btn" type="button">Отправить в Gemini</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="reset-habit-sheet">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-reset-habit-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Очистить активную привычку</div>
+          <div class="context-screen-sub" id="reset-habit-sub">Будут удалены события, дневник, опрос и health markers только для активной привычки. Остальные привычки останутся на месте.</div>
+        </div>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-label">Что сохранится</div>
+        <div class="privacy-sub">Профиль пользователя, остальные привычки, AI-разборы и сама структура приложения останутся без изменений.</div>
+      </div>
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-reset-habit-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="confirm-reset-habit-btn" type="button">Очистить</button>
+      </div>
+    </div>
+  </div>
+
+  <input id="restore-state-input" type="file" accept=".json,application/json" hidden>
+
+  <div class="sticky-bottom">
+    <div class="tab" data-route="main"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg><span class="tab-label">Главная</span></div></div>
+    <div class="tab" data-route="insights"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><span class="tab-label">Инсайты</span></div></div>
+    <div class="tab" data-route="diary"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="tab-label">Дневник</span></div></div>
+    <div class="tab active" data-route="profile"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-label">Профиль</span></div></div>
+  </div>
+</div>
+</div>
+
+<script src="../analytics/store.js"></script>
+<script src="../analytics/app-core.js"></script>
+<script src="../analytics/ui-flow.js"></script>
+<script src="../analytics/ui-feedback.js"></script>
+<script src="../analytics/narrative-engine.js"></script>
+<script src="../analytics/screen-view-models.js"></script>
+<script src="../analytics/screen-dom.js"></script>
+<script src="../analytics/runtime-browser-v2.js"></script>
+<script src="../analytics/export-utils-v2.js"></script>
+<script src="../analytics/gemini-client.js"></script>
+<script src="../analytics/ai-review-store-v2.js"></script>
+<script src="../analytics/navigation.js"></script>
+<script>
+if (window.self !== window.top) {
+  document.documentElement.classList.add("embedded-shell");
+}
+var selectedHabitId = null;
+var selectedAssessmentAnswers = {};
+var currentAiPrompt = "";
+var currentGeminiSettings = { apiKey: "", model: "gemini-flash-latest", rememberKey: true };
+var isGeminiPromptPreviewOpen = false;
+var isManualAiExportOpen = false;
+var isManualAiReviewOpen = false;
+var healthMarkerKeys = [
+  "sleepHours",
+  "restingHeartRate",
+  "bloodPressureSystolic",
+  "bloodPressureDiastolic",
+  "weightKg",
+  "waistCm",
+  "hba1c"
+];
+var exportSettings = {
+  includeName: true,
+  diaryScope: "all",
+  timePrecision: "exact"
+};
+var profileDetailState = {
+  "guidance-detail-card": false,
+  "finance-detail-card": false,
+  "assessment-detail-card": false,
+  "export-detail-card": false,
+  "ai-review-detail-card": false
+};
+
+function riskLabel(level) {
+  if (level === "very_high") return "очень высокая нагрузка";
+  if (level === "high") return "высокая нагрузка";
+  if (level === "moderate") return "умеренная нагрузка";
+  return "низкая нагрузка";
+}
+
+function getGuidanceToneOptions() {
+  if (window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.getGuidanceToneOptions) {
+    return window.HabitStore.helpers.getGuidanceToneOptions();
+  }
+  return [
+    { id: "supportive", label: "Поддержка", summary: "мягко и без давления" },
+    { id: "calm", label: "Спокойно", summary: "ровно и без лишнего шума" },
+    { id: "direct", label: "По делу", summary: "коротко и предельно конкретно" },
+    { id: "energetic", label: "Энергично", summary: "больше импульса и движения" },
+    { id: "light", label: "Легче", summary: "чуть живее и с мягкой лёгкостью" }
+  ];
+}
+
+function formatMoney(value, symbol) {
+  return new Intl.NumberFormat("ru-RU", {
+    maximumFractionDigits: value % 1 === 0 ? 0 : 2
+  }).format(Number(value) || 0) + " " + (symbol || "₽");
+}
+
+function formatHours(value) {
+  return new Intl.NumberFormat("ru-RU", {
+    maximumFractionDigits: value % 1 === 0 ? 0 : 1
+  }).format(Number(value) || 0) + " ч";
+}
+
+function compactTrendLabel(direction) {
+  if (direction === "up") return "фон тяжелее";
+  if (direction === "down") return "фон мягче";
+  if (direction === "stable") return "фон ровный";
+  return "данных мало";
+}
+
+function compactHealthLabel(direction) {
+  if (direction === "up") return "есть сдвиг";
+  if (direction === "down") return "нужна опора";
+  if (direction === "stable") return "без резких изменений";
+  return "нет динамики";
+}
+
+function shortenHealthSummary(text) {
+  var value = String(text || "").trim();
+  if (!value) return "Пока нет прошлого замера для сравнения.";
+  if (value.length <= 96) return value;
+  return value.slice(0, 93).trim() + "...";
+}
+
+function markerText(value, suffix) {
+  if (value === null || value === undefined || value === "") return "не заполнено";
+  return String(value) + (suffix ? " " + suffix : "");
+}
+
+function buildSetupModel(state) {
+  if (window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.getSetupProgress) {
+    return window.HabitStore.helpers.getSetupProgress(state);
+  }
+  return { steps: [], completed: 0, total: 3, progress: 0, nextStep: null };
+}
+
+function getFirstWeekModel(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getFirstWeekModel) {
+    return window.HabitUiFlow.getFirstWeekModel(state);
+  }
+  return { active: false, milestones: [], completed: 0, total: 4, progress: 0 };
+}
+
+function getFirstWeekSupport(state) {
+  if (window.HabitUiFlow && window.HabitUiFlow.getFirstWeekSupport) {
+    return window.HabitUiFlow.getFirstWeekSupport(state);
+  }
+  return { review: null };
+}
+
+function openSetupNextStep() {
+  if (window.HabitUiFlow && window.HabitUiFlow.openProfileSetupNextStep) {
+    return window.HabitUiFlow.openProfileSetupNextStep({
+      state: window.HabitStore.getState(),
+      openAssessment: openAssessmentSheet,
+      openContext: openFinanceHealthSheet,
+      openHabit: openHabitSheet
+    });
+  }
+}
+
+function getCurrentHabitConfig(state) {
+  if (window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.getCurrentHabitConfig) {
+    return window.HabitStore.helpers.getCurrentHabitConfig(state);
+  }
+  return (state.currentHabit && state.currentHabit.config) || state.habitConfig || window.HabitStore.helpers.getDefaultHabitConfig(state.currentHabit.id);
+}
+
+function renderHabitOptions(state) {
+  var root = document.getElementById("habit-options");
+  root.innerHTML = state.habits.map(function (habit) {
+    var isActive = habit.id === selectedHabitId;
+    var meta = habit.id === "custom"
+      ? "Свой сценарий с нейтральными подписями и советами"
+      : "Отдельный трек и аналитика для этой привычки";
+    return '<button class="habit-option ' + (isActive ? "active" : "") + '" type="button" data-habit-id="' + habit.id + '"><div class="habit-option-name">' + habit.name + '</div><div class="habit-option-meta">' + meta + '</div></button>';
+  }).join("");
+
+  root.querySelectorAll("[data-habit-id]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectedHabitId = button.dataset.habitId;
+      renderHabitOptions(window.HabitStore.getState());
+      document.getElementById("custom-habit-input").style.display = selectedHabitId === "custom" ? "block" : "none";
+    });
+  });
+}
+
+function scrollProfileDocumentToTop() {
+  try {
+    window.scrollTo(0, 0);
+  } catch (error) {}
+  try {
+    if (document.documentElement) {
+      document.documentElement.scrollTop = 0;
+    }
+    if (document.body) {
+      document.body.scrollTop = 0;
+    }
+    if (document.scrollingElement) {
+      document.scrollingElement.scrollTop = 0;
+    }
+  } catch (error) {}
+}
+
+function openContextScreen(screenId, focusSelector) {
+  var screen = document.getElementById(screenId);
+  if (!screen) return;
+  var inner = screen.querySelector(".context-screen-inner");
+
+  scrollProfileDocumentToTop();
+  screen.classList.add("open");
+
+  try {
+    screen.scrollTop = 0;
+    if (inner) {
+      inner.scrollTop = 0;
+    }
+  } catch (error) {}
+
+  requestAnimationFrame(function () {
+    scrollProfileDocumentToTop();
+    try {
+      screen.scrollTop = 0;
+      if (inner) {
+        inner.scrollTop = 0;
+      }
+    } catch (error) {}
+    if (focusSelector) {
+      var focusTarget = document.querySelector(focusSelector);
+      if (focusTarget && typeof focusTarget.focus === "function") {
+        focusTarget.focus();
+      }
+    }
+  });
+}
+
+function closeContextScreen(screenId) {
+  var screen = document.getElementById(screenId);
+  if (!screen) return;
+  screen.classList.remove("open");
+}
+
+function openHabitSheet() {
+  var state = window.HabitStore.getState();
+  selectedHabitId = state.currentHabit.id;
+  document.getElementById("custom-habit-input").value = state.profile.customHabitName || "";
+  document.getElementById("custom-habit-input").style.display = selectedHabitId === "custom" ? "block" : "none";
+  renderHabitOptions(state);
+  openContextScreen("habit-screen");
+}
+
+function closeHabitSheet() {
+  closeContextScreen("habit-screen");
+}
+
+function saveHabitSelection() {
+  var customName = document.getElementById("custom-habit-input").value.trim();
+  var nextHabitId = selectedHabitId || "smoking";
+  if (nextHabitId === "custom" && !customName) {
+    document.getElementById("custom-habit-input").focus();
+    return;
+  }
+  window.HabitStore.selectHabit(nextHabitId, customName);
+  closeHabitSheet();
+  openAssessmentSheet();
+}
+
+function renderAssessmentQuestions(state) {
+  var questions = window.HabitStore.helpers.getAssessmentQuestions(state.currentHabit.id);
+  var root = document.getElementById("assessment-questions");
+  root.innerHTML = questions.map(function (question) {
+    var currentValue = typeof selectedAssessmentAnswers[question.id] === "number" ? selectedAssessmentAnswers[question.id] : null;
+    return '<div class="qa-card"><div class="qa-title">' + question.title + '</div><div class="qa-options">' + question.options.map(function (option) {
+      var active = currentValue === option.value ? "active" : "";
+      return '<button class="qa-option ' + active + '" type="button" data-question-id="' + question.id + '" data-value="' + option.value + '">' + option.label + '</button>';
+    }).join("") + '</div></div>';
+  }).join("");
+
+  root.querySelectorAll("[data-question-id]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectedAssessmentAnswers[button.dataset.questionId] = Number(button.dataset.value);
+      renderAssessmentQuestions(window.HabitStore.getState());
+    });
+  });
+}
+
+function openAssessmentSheet() {
+  var state = window.HabitStore.getState();
+  selectedAssessmentAnswers = state.assessment && state.assessment.answers ? JSON.parse(JSON.stringify(state.assessment.answers)) : {};
+  document.getElementById("assessment-sheet-sub").textContent = "Ответы останутся внутри привычки: " + state.currentHabit.name + ". Они помогут точнее считать стартовую нагрузку.";
+  renderAssessmentQuestions(state);
+  openContextScreen("assessment-screen");
+}
+
+function closeAssessmentSheet() {
+  closeContextScreen("assessment-screen");
+}
+
+function saveAssessment() {
+  var state = window.HabitStore.getState();
+  var questions = window.HabitStore.helpers.getAssessmentQuestions(state.currentHabit.id);
+  var isComplete = questions.every(function (question) {
+    return typeof selectedAssessmentAnswers[question.id] === "number";
+  });
+  if (!isComplete) {
+    return;
+  }
+  window.HabitStore.saveAssessment({
+    habitId: state.currentHabit.id,
+    answers: selectedAssessmentAnswers
+  });
+  closeAssessmentSheet();
+}
+
+function openFinanceHealthSheet() {
+  var state = window.HabitStore.getState();
+  var config = getCurrentHabitConfig(state);
+  var markers = config.healthMarkers || {};
+  var habitId = state.currentHabit && state.currentHabit.id ? state.currentHabit.id : "smoking";
+  var costLabel = "Расходы за раз";
+  var costPlaceholder = "Если их нет — можно оставить 0";
+  var minutesLabel = "Минут за раз";
+  var minutesPlaceholder = "Например, 7 минут";
+  var sub = "Эти настройки сохраняются отдельно для привычки: " + state.currentHabit.name + ". Здесь можно задать время, простой телесный контекст и, если это уместно, прямые расходы.";
+  var note = "Это не медицинская форма и не отчёт. Если у привычки нет прямых денежных расходов, это нормально — можно оставить 0 и просто заполнить то, что тебе действительно откликается.";
+
+  if (habitId === "smoking") {
+    sub = "Это личный контекст для привычки «" + state.currentHabit.name + "»: деньги, время и самочувствие рядом с эпизодом.";
+    costLabel = "Цена сигареты";
+    costPlaceholder = "Например, 22 ₽";
+    minutesLabel = "Минут на перекур";
+    minutesPlaceholder = "Например, 7 минут";
+    note = "Это не отчёт и не медформа. Просто личный контекст: сколько стоит эпизод, сколько времени он занимает и как ты себя чувствуешь рядом с ним.";
+  } else if (habitId === "alcohol") {
+    sub = "Эти настройки сохраняются отдельно для привычки: " + state.currentHabit.name + ". Здесь можно спокойно задать, сколько обычно обходится один эпизод с алкоголем, сколько он длится и как ты себя потом чувствуешь.";
+    costLabel = "Цена эпизода";
+    costPlaceholder = "Например, 350 ₽";
+    minutesLabel = "Минут на эпизод";
+    minutesPlaceholder = "Например, 120 минут";
+    note = "Если прямые расходы бывают не всегда, это нормально — можно поставить примерную сумму или оставить 0. Важен не идеальный расчёт, а твоя реальная картина.";
+  } else if (habitId === "social") {
+    sub = "Эти настройки сохраняются отдельно для привычки: " + state.currentHabit.name + ". Здесь важнее время и телесный фон, а деньги — только если рядом бывают импульсивные траты.";
+    costLabel = "Расходы за раз";
+    costPlaceholder = "Если нет — можно оставить 0";
+    minutesLabel = "Минут на заход";
+    minutesPlaceholder = "Например, 25 минут";
+    note = "Для телефона или соцсетей деньги часто не главное. Если прямых расходов нет, просто оставь 0 и заполни то, что помогает понять твой ритм.";
+  } else if (habitId === "sweets" || habitId === "overeating") {
+    sub = "Эти настройки сохраняются отдельно для привычки: " + state.currentHabit.name + ". Здесь можно увидеть не только количество эпизодов, но и сколько они обычно забирают по деньгам, времени и самочувствию.";
+    if (habitId === "sweets") {
+      costLabel = "Цена эпизода";
+      costPlaceholder = "Например, 180 ₽";
+      minutesLabel = "Минут на эпизод";
+      minutesPlaceholder = "Например, 18 минут";
+      note = "Здесь не нужно быть точным до рубля. Достаточно примерно понять, сколько обычно уходит на сладкое и как это отражается на теле.";
+    } else {
+      costLabel = "Расходы за раз";
+      costPlaceholder = "Если нет — можно оставить 0";
+      minutesLabel = "Минут на эпизод";
+      minutesPlaceholder = "Например, 35 минут";
+      note = "Для переедания деньги могут быть не главным фактором. Если прямых расходов не хочется считать, это нормально — можно оставить 0 и заполнить только время и самочувствие.";
+    }
+  } else if (habitId === "custom") {
+    sub = "Эти настройки сохраняются отдельно для привычки: " + state.currentHabit.name + ". Здесь можно отметить только тот контекст, который реально помогает тебе понимать сценарий.";
+    costLabel = "Расходы за раз";
+    costPlaceholder = "Если их нет — можно оставить 0";
+    minutesLabel = "Минут на эпизод";
+    minutesPlaceholder = "Например, 15 минут";
+    note = "Это свободный контекст под твою привычку. Не нужно заполнять всё: достаточно того, что действительно помогает видеть картину.";
+  }
+
+  document.getElementById("finance-health-sub").textContent = sub;
+  document.getElementById("finance-health-note").textContent = note;
+  document.getElementById("config-cost-label").textContent = costLabel;
+  document.getElementById("config-minutes-label").textContent = minutesLabel;
+  document.getElementById("config-cost-input").placeholder = costPlaceholder;
+  document.getElementById("config-minutes-input").placeholder = minutesPlaceholder;
+  document.getElementById("config-cost-input").value = config.costPerEpisode != null ? config.costPerEpisode : "";
+  document.getElementById("config-minutes-input").value = config.minutesPerEpisode != null ? config.minutesPerEpisode : "";
+  document.getElementById("health-sleep-input").value = markers.sleepHours != null ? markers.sleepHours : "";
+  document.getElementById("health-hr-input").value = markers.restingHeartRate != null ? markers.restingHeartRate : "";
+  document.getElementById("health-bp-sys-input").value = markers.bloodPressureSystolic != null ? markers.bloodPressureSystolic : "";
+  document.getElementById("health-bp-dia-input").value = markers.bloodPressureDiastolic != null ? markers.bloodPressureDiastolic : "";
+  document.getElementById("health-weight-input").value = markers.weightKg != null ? markers.weightKg : "";
+  document.getElementById("health-waist-input").value = markers.waistCm != null ? markers.waistCm : "";
+  openContextScreen("finance-health-screen", "#config-cost-input");
+}
+
+function closeFinanceHealthSheet() {
+  closeContextScreen("finance-health-screen");
+}
+
+function consumeOnboardingIntent() {
+  if (window.HabitUiFlow && window.HabitUiFlow.applyProfileOnboardingIntent) {
+    window.HabitUiFlow.applyProfileOnboardingIntent({
+      openAssessment: openAssessmentSheet,
+      openContext: openFinanceHealthSheet,
+      openHabit: openHabitSheet
+    });
+  }
+}
+
+function saveFinanceHealth() {
+  var state = window.HabitStore.getState();
+  window.HabitStore.saveHabitConfig({
+    habitId: state.currentHabit.id,
+    costPerEpisode: document.getElementById("config-cost-input").value,
+    minutesPerEpisode: document.getElementById("config-minutes-input").value,
+    currencySymbol: config.currencySymbol || "₽"
+  });
+  window.HabitStore.saveHealthMarkers({
+    habitId: state.currentHabit.id,
+    markers: {
+      sleepHours: document.getElementById("health-sleep-input").value,
+      restingHeartRate: document.getElementById("health-hr-input").value,
+      bloodPressureSystolic: document.getElementById("health-bp-sys-input").value,
+      bloodPressureDiastolic: document.getElementById("health-bp-dia-input").value,
+      weightKg: document.getElementById("health-weight-input").value,
+      waistCm: document.getElementById("health-waist-input").value
+    }
+  });
+  closeFinanceHealthSheet();
+  setExportStatusKey("finance_saved");
+}
+
+function setExportStatus(message, tone) {
+  var node = document.getElementById("export-status");
+  if (window.HabitUiFeedback && window.HabitUiFeedback.applyStatus) {
+    window.HabitUiFeedback.applyStatus(node, message, tone);
+    return;
+  }
+  node.textContent = message;
+  node.dataset.tone = tone || "neutral";
+}
+
+function statusMessage(key, payload) {
+  if (window.HabitUiFeedback && window.HabitUiFeedback.getStatusMessage) {
+    return window.HabitUiFeedback.getStatusMessage(key, payload || {});
+  }
+  return "";
+}
+
+function statusTone(key) {
+  if (window.HabitUiFeedback && window.HabitUiFeedback.getStatusTone) {
+    return window.HabitUiFeedback.getStatusTone(key);
+  }
+  return "neutral";
+}
+
+function setExportStatusKey(key, payload) {
+  setExportStatus(statusMessage(key, payload), statusTone(key));
+}
+
+function getExportSettings() {
+  return {
+    includeName: !document.getElementById("privacy-hide-name").checked,
+    diaryScope: exportSettings.diaryScope,
+    timePrecision: exportSettings.timePrecision
+  };
+}
+
+function renderExportSettings() {
+  document.getElementById("privacy-hide-name").checked = !exportSettings.includeName;
+  document.querySelectorAll(".privacy-option").forEach(function (button) {
+    button.classList.toggle("active", exportSettings[button.dataset.setting] === button.dataset.value);
+  });
+}
+
+function describeExportSettings(settings) {
+  return "Приватность: имя " + (settings.includeName ? "включено" : "скрыто") + ", дневник " + (settings.diaryScope === "recent" ? "последние 10 записей" : "полный") + ", время " + (settings.timePrecision === "exact" ? "точное" : "диапазонами") + ".";
+}
+
+function buildExportFilename(prefix, extension) {
+  var state = window.HabitStore.getState();
+  var dateKey = window.HabitStore.helpers.formatDateKey(new Date());
+  return prefix + "-" + state.currentHabit.id + "-" + dateKey + "." + extension;
+}
+
+function downloadExportJson() {
+  var settings = getExportSettings();
+  var bundle = window.HabitExport.buildExportBundle(settings);
+  window.HabitExport.downloadFile(
+    buildExportFilename("habit-export", "json"),
+    JSON.stringify(bundle, null, 2),
+    "application/json;charset=utf-8"
+  );
+  setExportStatusKey("export_json_saved");
+}
+
+function downloadExportReport() {
+  var settings = getExportSettings();
+  var bundle = window.HabitExport.buildExportBundle(settings);
+  var report = window.HabitExport.buildMarkdownReport(bundle);
+  window.HabitExport.downloadFile(
+    buildExportFilename("habit-report", "md"),
+    report,
+    "text/markdown;charset=utf-8"
+  );
+  setExportStatusKey("export_report_saved");
+}
+
+function downloadStateBackup() {
+  var rawState = window.HabitStore.exportRawState();
+  window.HabitExport.downloadFile(
+    buildExportFilename("habit-backup", "json"),
+    JSON.stringify(rawState, null, 2),
+    "application/json;charset=utf-8"
+  );
+  setExportStatusKey("backup_saved");
+}
+
+function openRestorePicker() {
+  var input = document.getElementById("restore-state-input");
+  input.value = "";
+  input.click();
+}
+
+function restoreStateFromFile(event) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function () {
+    try {
+      var parsed = JSON.parse(String(reader.result || "{}"));
+      var result = window.HabitStore.tryReplaceState(parsed);
+      if (!result.ok) {
+        setExportStatusKey(result.errorCode === "invalid_backup" ? "restore_invalid_backup" : "restore_failed");
+        return;
+      }
+      setExportStatusKey("restore_success");
+    } catch (error) {
+      setExportStatusKey("restore_parse_failed");
+    }
+  };
+  reader.onerror = function () {
+    setExportStatusKey("restore_read_failed");
+  };
+  reader.readAsText(file, "utf-8");
+}
+
+function openAiExportSheet() {
+  var settings = getExportSettings();
+  var bundle = window.HabitExport.buildExportBundle(settings);
+  currentAiPrompt = window.HabitExport.buildAiPrompt(bundle);
+  document.getElementById("ai-prompt-preview").value = currentAiPrompt;
+  openContextScreen("ai-export-sheet");
+  setExportStatusKey("ai_prompt_ready");
+}
+
+function closeAiExportSheet() {
+  closeContextScreen("ai-export-sheet");
+}
+
+function copyAiPrompt() {
+  if (!currentAiPrompt) {
+    openAiExportSheet();
+  }
+  window.HabitExport.copyText(currentAiPrompt).then(function () {
+    setExportStatusKey("ai_prompt_copied");
+  }).catch(function () {
+    setExportStatusKey("ai_prompt_copy_failed");
+  });
+}
+
+function downloadAiPrompt() {
+  if (!currentAiPrompt) {
+    openAiExportSheet();
+  }
+  window.HabitExport.downloadFile(
+    buildExportFilename("habit-ai-brief", "txt"),
+    currentAiPrompt,
+    "text/plain;charset=utf-8"
+  );
+  setExportStatusKey("ai_prompt_saved");
+}
+
+function setGeminiSheetStatus(message, tone) {
+  var node = document.getElementById("gemini-sheet-status");
+  if (!node) return;
+  node.textContent = message || "";
+  node.dataset.tone = tone || "neutral";
+}
+
+function renderManualAiPanels() {
+  var exportPanel = document.getElementById("manual-ai-export-panel");
+  var reviewPanel = document.getElementById("manual-ai-review-panel");
+  var exportButton = document.getElementById("toggle-manual-ai-export-btn");
+  var reviewButton = document.getElementById("toggle-manual-ai-review-btn");
+
+  if (exportPanel) exportPanel.classList.toggle("open", !!isManualAiExportOpen);
+  if (reviewPanel) reviewPanel.classList.toggle("open", !!isManualAiReviewOpen);
+  if (exportButton) exportButton.textContent = isManualAiExportOpen ? "Скрыть ручной режим" : "Ручной режим";
+  if (reviewButton) reviewButton.textContent = isManualAiReviewOpen ? "Скрыть ручную вставку" : "Ручная вставка";
+}
+
+function toggleManualAiExport() {
+  isManualAiExportOpen = !isManualAiExportOpen;
+  renderManualAiPanels();
+}
+
+function toggleManualAiReview() {
+  isManualAiReviewOpen = !isManualAiReviewOpen;
+  renderManualAiPanels();
+}
+
+function renderGeminiSettings(sourceSettings) {
+  if (!window.HabitGemini) return;
+  var saved = window.HabitGemini.readSettings();
+  currentGeminiSettings = {
+    apiKey: sourceSettings && typeof sourceSettings.apiKey === "string" ? sourceSettings.apiKey : saved.apiKey,
+    model: sourceSettings && sourceSettings.model ? sourceSettings.model : (saved.model || "gemini-flash-latest"),
+    rememberKey: sourceSettings && typeof sourceSettings.rememberKey === "boolean" ? sourceSettings.rememberKey : (saved.rememberKey !== false)
+  };
+  document.getElementById("gemini-api-key-input").value = currentGeminiSettings.apiKey || "";
+  document.getElementById("gemini-remember-key").checked = currentGeminiSettings.rememberKey !== false;
+  document.querySelectorAll("[data-gemini-model]").forEach(function (button) {
+    button.classList.toggle("active", button.dataset.geminiModel === currentGeminiSettings.model);
+  });
+}
+
+function renderGeminiPromptPreview() {
+  var preview = document.getElementById("gemini-prompt-preview");
+  var button = document.getElementById("toggle-gemini-preview-btn");
+  if (!preview || !button || !window.HabitGemini || !window.HabitExport) return;
+
+  if (!isGeminiPromptPreviewOpen) {
+    preview.style.display = "none";
+    button.textContent = "Показать prompt";
+    return;
+  }
+
+  var bundle = window.HabitExport.buildExportBundle(getExportSettings());
+  currentAiPrompt = window.HabitGemini.buildUserPrompt(bundle);
+  preview.value = currentAiPrompt;
+  preview.style.display = "block";
+  button.textContent = "Скрыть prompt";
+}
+
+function openGeminiSheet() {
+  renderGeminiSettings();
+  isGeminiPromptPreviewOpen = false;
+  renderGeminiPromptPreview();
+  setGeminiSheetStatus("Ничего не отправится, пока ты явно не нажмёшь кнопку ниже.", "neutral");
+  openContextScreen("gemini-sheet", "#gemini-api-key-input");
+}
+
+function closeGeminiSheet() {
+  isGeminiPromptPreviewOpen = false;
+  renderGeminiPromptPreview();
+  closeContextScreen("gemini-sheet");
+}
+
+function toggleGeminiPromptPreview() {
+  isGeminiPromptPreviewOpen = !isGeminiPromptPreviewOpen;
+  renderGeminiPromptPreview();
+}
+
+function saveGeminiSettingsFromSheet() {
+  if (!window.HabitGemini) return { apiKey: "", model: "gemini-flash-latest", rememberKey: true };
+  var apiKey = document.getElementById("gemini-api-key-input").value.trim();
+  var rememberKey = document.getElementById("gemini-remember-key").checked;
+  var settings = {
+    apiKey: rememberKey ? apiKey : "",
+    model: currentGeminiSettings.model || "gemini-flash-latest",
+    rememberKey: rememberKey
+  };
+  currentGeminiSettings = window.HabitGemini.writeSettings(settings);
+  if (!rememberKey) {
+    currentGeminiSettings.apiKey = apiKey;
+  }
+  return {
+    apiKey: apiKey,
+    model: currentGeminiSettings.model || "gemini-flash-latest",
+    rememberKey: rememberKey
+  };
+}
+
+function runGeminiReview() {
+  if (!window.HabitGemini) return;
+  var settings = saveGeminiSettingsFromSheet();
+  var apiKey = String(settings.apiKey || "").trim();
+  if (!apiKey) {
+    setGeminiSheetStatus("Нужен API key Gemini. Его можно вставить для демо и сохранить только на этом устройстве.", "error");
+    setExportStatus("Нужен API key Gemini. Его можно вставить для демо и сохранить только на этом устройстве.", "error");
+    document.getElementById("gemini-api-key-input").focus();
+    return;
+  }
+
+  var bundle = window.HabitExport.buildExportBundle(getExportSettings());
+  currentAiPrompt = window.HabitGemini.buildUserPrompt(bundle);
+  setGeminiSheetStatus("Отправляем сводку в Gemini. Это займёт несколько секунд.", "neutral");
+  setExportStatus("Отправляем сводку в Gemini. Это займёт несколько секунд.", "neutral");
+
+  window.HabitGemini.generateAnalysis(bundle, {
+    apiKey: apiKey,
+    model: settings.model
+  }).then(function (result) {
+    var state = window.HabitStore.getState();
+    var review = window.HabitAiReviewStore.saveReview(state.currentHabit.id, {
+      promptText: currentAiPrompt || window.HabitGemini.buildUserPrompt(bundle),
+      responseText: result.reviewText
+    });
+    closeGeminiSheet();
+    renderProfile();
+    setExportStatus("Gemini-разбор сохранён. Краткий вывод и действия уже появились в профиле.", "success");
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: "demo:ai-review-ready",
+          text: review && review.summary ? review.summary : "Gemini-разбор уже готов и сохранён в профиле."
+        }, "*");
+      }
+    } catch (error) {}
+  }).catch(function (error) {
+    var message = error && error.message
+      ? "Gemini не ответил корректно: " + error.message
+      : "Gemini не ответил корректно. Проверь ключ, сеть или попробуй ещё раз позже.";
+    setGeminiSheetStatus(message, "error");
+    setExportStatus(message, "error");
+  });
+}
+
+function openAiResponseSheet() {
+  openContextScreen("ai-response-sheet", "#ai-response-input");
+}
+
+function closeAiResponseSheet() {
+  closeContextScreen("ai-response-sheet");
+}
+
+function openResetHabitSheet() {
+  var state = window.HabitStore.getState();
+  document.getElementById("reset-habit-sub").textContent = "Будут удалены события, дневник, опрос и health markers только для привычки: " + state.currentHabit.name + ". Остальные привычки останутся на месте.";
+  openContextScreen("reset-habit-sheet");
+}
+
+function closeResetHabitSheet() {
+  closeContextScreen("reset-habit-sheet");
+}
+
+function confirmResetHabitData() {
+  var state = window.HabitStore.getState();
+  window.HabitStore.resetActiveHabitData();
+  closeResetHabitSheet();
+  setExportStatusKey("reset_habit_done", { habitName: state.currentHabit.name });
+}
+
+function openAiReviewScreen() {
+  window.DemoNavigation.navigate("ai-review");
+}
+
+function renderAiReview(state) {
+  var review = window.HabitAiReviewStore.getLatestReview(state.currentHabit.id);
+  var metaNode = document.getElementById("ai-review-meta");
+  var summaryNode = document.getElementById("ai-review-summary");
+  var actionsNode = document.getElementById("ai-review-actions");
+
+  if (!review) {
+    metaNode.textContent = "Разбор ещё не сохранён";
+    summaryNode.textContent = "Здесь появится краткое резюме последнего ответа ИИ по этой привычке.";
+    actionsNode.innerHTML = '<div class="review-empty">Пока нет сохранённых действий.</div>';
+    return;
+  }
+
+  metaNode.textContent = "Последний разбор: " + window.HabitStore.helpers.todayLabel(new Date(review.createdAt));
+  summaryNode.textContent = review.summary || "Ответ сохранён, но краткое резюме не выделилось автоматически.";
+  actionsNode.innerHTML = (review.actionItems && review.actionItems.length
+    ? review.actionItems.slice(0, 5).map(function (item) {
+        return '<div class="review-item">' + item.replace(/</g, "&lt;") + '</div>';
+      }).join("")
+    : '<div class="review-empty">ИИ-ответ сохранён, но явные действия не нашлись. Можно перечитать исходный текст через prompt и вставить более структурированный ответ.</div>');
+}
+
+function renderGuidanceTone(state, vm) {
+  var options = getGuidanceToneOptions();
+  var activeId = state.profile.guidanceTone || "supportive";
+  var active = options.filter(function (item) { return item.id === activeId; })[0] || options[0];
+  var root = document.getElementById("guidance-tone-options");
+  document.getElementById("guidance-detail-summary").textContent = active.label + " · " + active.summary;
+  document.getElementById("guidance-tone-preview").textContent =
+    vm && vm.details && vm.details.guidancePreview
+      ? vm.details.guidancePreview
+      : "Здесь будет видно, как меняется голос приложения.";
+
+  root.innerHTML = options.map(function (item) {
+    return '<button class="tone-option ' + (item.id === activeId ? 'active' : '') + '" type="button" data-guidance-tone="' + item.id + '">' +
+      '<div class="tone-option-label">' + item.label + '</div>' +
+      '<div class="tone-option-copy">' + item.summary + '</div>' +
+      '</button>';
+  }).join("");
+}
+
+function updateDetailCard(cardId, open) {
+  var card = document.getElementById(cardId);
+  if (!card) return;
+  card.classList.toggle("open", !!open);
+}
+
+function setProfileDetailSummaries(state, analytics) {
+  var finance = analytics.finance || {};
+  var health = analytics.health || { filledCount: 0, totalCount: 0 };
+  var review = window.HabitAiReviewStore.getLatestReview(state.currentHabit.id);
+
+  document.getElementById("finance-detail-summary").textContent =
+    "30 дней: " + formatMoney(finance.monthSpent || 0, finance.currencySymbol || "₽") +
+    " · маркеров: " + (health.filledCount || 0) + "/" + (health.totalCount || healthMarkerKeys.length);
+
+  document.getElementById("assessment-detail-summary").textContent = state.currentHabit.assessmentComplete
+    ? "Заполнен: " + state.currentHabit.assessmentSummary
+    : "4 коротких вопроса для стартовой точности";
+
+  document.getElementById("export-detail-summary").textContent =
+    "Имя " + (exportSettings.includeName ? "включено" : "скрыто") +
+    " · " + (exportSettings.diaryScope === "recent" ? "10 записей" : "полный дневник") +
+    " · " + (exportSettings.timePrecision === "exact" ? "точное время" : "диапазоны");
+
+  document.getElementById("ai-review-detail-summary").textContent = review
+    ? "Последний разбор: " + window.HabitStore.helpers.todayLabel(new Date(review.createdAt)) + " · действий: " + ((review.actionItems && review.actionItems.length) || 0)
+    : "Последнего разбора пока нет";
+}
+
+function renderFinanceHealth(state, analytics) {
+  if (analytics && analytics.monthSpent && analytics.monthProjection && analytics.episodeMeta) {
+    document.getElementById("finance-month-spent").textContent = analytics.monthSpent;
+    document.getElementById("finance-month-projection").textContent = analytics.monthProjection;
+    document.getElementById("finance-month-hours").textContent = analytics.monthHours;
+    document.getElementById("finance-episode-meta").textContent = analytics.episodeMeta;
+    document.getElementById("health-sleep").textContent = analytics.sleep;
+    document.getElementById("health-resting-hr").textContent = analytics.restingHr;
+    document.getElementById("health-bp").textContent = analytics.bp;
+    document.getElementById("health-body").textContent = analytics.body;
+    document.getElementById("finance-health-note").textContent = analytics.note;
+    return;
+  }
+  var config = getCurrentHabitConfig(state);
+  var health = analytics.health || { markers: {}, filledCount: 0, totalCount: 0 };
+  var finance = analytics.finance || {};
+  var markers = health.markers || {};
+  var bpReady = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null;
+
+  document.getElementById("finance-month-spent").textContent = formatMoney(finance.monthSpent || 0, finance.currencySymbol || config.currencySymbol);
+  document.getElementById("finance-month-projection").textContent = "Прогноз на месяц: " + formatMoney(finance.monthProjection || 0, finance.currencySymbol || config.currencySymbol);
+  document.getElementById("finance-month-hours").textContent = formatHours(finance.monthHours || 0);
+  document.getElementById("finance-episode-meta").textContent = formatMoney(finance.costPerEpisode || 0, finance.currencySymbol || config.currencySymbol) + " и " + (finance.minutesPerEpisode || 0) + " мин на эпизод";
+  document.getElementById("health-sleep").textContent = markerText(markers.sleepHours, "ч");
+  document.getElementById("health-resting-hr").textContent = markerText(markers.restingHeartRate, "уд/мин");
+  document.getElementById("health-bp").textContent = bpReady ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic) : "не заполнено";
+  document.getElementById("health-body").textContent = (markers.weightKg != null || markers.waistCm != null)
+    ? [markers.weightKg != null ? String(markers.weightKg) + " кг" : null, markers.waistCm != null ? String(markers.waistCm) + " см" : null].filter(Boolean).join(" · ")
+    : "не заполнено";
+  document.getElementById("finance-health-note").textContent = health.filledCount
+    ? "Заполнено " + health.filledCount + " из " + health.totalCount + " health markers. Аналитика их не диагностирует, а только хранит как личный контекст."
+    : "Пока health markers пустые. Можно начать хотя бы со сна, пульса в покое и давления.";
+}
+
+function renderWeeklySnapshot(weeklyAnalytics) {
+  if (weeklyAnalytics && weeklyAnalytics.behaviorValue && weeklyAnalytics.stateValue && weeklyAnalytics.healthValue) {
+    document.getElementById("weekly-snapshot-sub").textContent = weeklyAnalytics.sub;
+    document.getElementById("weekly-snapshot-badge").textContent = weeklyAnalytics.badge;
+    document.getElementById("weekly-behavior-value").textContent = weeklyAnalytics.behaviorValue;
+    document.getElementById("weekly-behavior-copy").textContent = weeklyAnalytics.behaviorCopy;
+    document.getElementById("weekly-state-value").textContent = weeklyAnalytics.stateValue;
+    document.getElementById("weekly-state-copy").textContent = weeklyAnalytics.stateCopy;
+    document.getElementById("weekly-health-value").textContent = weeklyAnalytics.healthValue;
+    document.getElementById("weekly-health-copy").textContent = weeklyAnalytics.healthCopy;
+    return;
+  }
+  var summary = weeklyAnalytics.summary || {};
+  var wellbeing = weeklyAnalytics.wellbeing || {};
+  var health = weeklyAnalytics.health || {};
+  var observedDays = Number(summary.observedDays) || 0;
+
+  document.getElementById("weekly-snapshot-sub").textContent = observedDays >= 4
+    ? "Самое важное за последние 7 дней одним взглядом."
+    : "Неделя ещё собирает основу, но первые сигналы уже можно замечать.";
+  document.getElementById("weekly-snapshot-badge").textContent = observedDays >= 4
+    ? "есть ритм"
+    : "ранний период";
+
+  document.getElementById("weekly-behavior-value").textContent =
+    "Индекс " + summary.dependencyIndex + " · " + riskLabel(summary.riskLevel);
+  document.getElementById("weekly-behavior-copy").textContent =
+    "Главный триггер: " + String(summary.mainTrigger || "Другое").toLowerCase() + ". Окно внимания: " + (summary.riskWindow || "—") + ".";
+
+  if (wellbeing.stateEntryCount) {
+    var stress = wellbeing.averages && wellbeing.averages.stress ? wellbeing.averages.stress.toFixed(1) : "0.0";
+    var energy = wellbeing.averages && wellbeing.averages.energy ? wellbeing.averages.energy.toFixed(1) : "0.0";
+    document.getElementById("weekly-state-value").textContent =
+      "Стресс " + stress + "/5 · энергия " + energy + "/5";
+    document.getElementById("weekly-state-copy").textContent =
+      "Записей состояния: " + wellbeing.stateEntryCount + " · " + compactTrendLabel(wellbeing.trend && wellbeing.trend.direction) +
+      (wellbeing.contextLabel ? " · чаще фон связан с \"" + wellbeing.contextLabel + "\"." : ".");
+  } else {
+    document.getElementById("weekly-state-value").textContent = "Данных пока мало";
+    document.getElementById("weekly-state-copy").textContent = "Когда появятся записи состояния, здесь станет видно фон недели и его ритм.";
+  }
+
+  document.getElementById("weekly-health-value").textContent =
+    (health.filledCount || 0) + " из " + (health.totalCount || 0) + " маркеров";
+  document.getElementById("weekly-health-copy").textContent =
+    compactHealthLabel(health.trendDirection) + " · " + shortenHealthSummary(health.trendSummary);
+}
+
+function renderSetup(state) {
+  var setup = buildSetupModel(state);
+  var card = document.getElementById("setup-card");
+  var copy = document.getElementById("setup-copy");
+  var list = document.getElementById("setup-list");
+  var action = document.getElementById("setup-action-btn");
+  var fill = document.getElementById("setup-progress-fill");
+
+  if (setup.completed >= setup.total) {
+    card.style.display = "none";
+    return;
+  }
+
+  card.style.display = "block";
+  fill.style.width = setup.progress + "%";
+  copy.textContent = setup.completed === 0
+    ? "Три коротких шага, чтобы приложение стало по-настоящему личным и полезным."
+    : "Готово " + setup.completed + " из " + setup.total + ". Остался следующий шаг, и аналитика станет заметно точнее.";
+
+  list.innerHTML = setup.steps.map(function (step) {
+    return '<div class="setup-item"><div class="setup-mark ' + (step.done ? 'done' : 'pending') + '">' + (step.done ? '✓' : (step.id === 'first_event' ? '1' : step.id === 'assessment' ? '2' : '3')) + '</div><div class="setup-copy"><div class="setup-step-title">' + step.title + '</div><div class="setup-step-sub">' + step.sub + '</div></div></div>';
+  }).join("");
+
+  if (setup.nextStep) {
+    action.style.display = "block";
+    action.textContent = setup.nextStep.id === "first_event"
+      ? "Сделать первую запись"
+      : setup.nextStep.id === "assessment"
+        ? "Пройти опрос"
+        : "Добавить контекст";
+  } else {
+    action.style.display = "none";
+  }
+}
+
+function saveAiResponse() {
+  var state = window.HabitStore.getState();
+  var text = document.getElementById("ai-response-input").value.trim();
+  if (!text) {
+    document.getElementById("ai-response-input").focus();
+    return;
+  }
+
+  var review = window.HabitAiReviewStore.saveReview(state.currentHabit.id, {
+    promptText: currentAiPrompt || "",
+    responseText: text
+  });
+
+  document.getElementById("ai-response-input").value = "";
+  closeAiResponseSheet();
+  renderProfile();
+  setExportStatusKey("ai_response_saved");
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: "demo:ai-review-ready",
+        text: review && review.summary ? review.summary : "Новый AI-разбор уже сохранён в профиле."
+      }, "*");
+    }
+  } catch (error) {}
+}
+
+function initExportControls() {
+  document.getElementById("privacy-hide-name").addEventListener("change", function (event) {
+    exportSettings.includeName = !event.target.checked;
+    setProfileDetailSummaries(window.HabitStore.getState(), window.HabitAnalytics.getInsightViewModel("30d"));
+    setExportStatus(describeExportSettings(getExportSettings()), "neutral");
+  });
+  document.querySelectorAll("[data-setting]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      exportSettings[button.dataset.setting] = button.dataset.value;
+      renderExportSettings();
+      setProfileDetailSummaries(window.HabitStore.getState(), window.HabitAnalytics.getInsightViewModel("30d"));
+      setExportStatus(describeExportSettings(getExportSettings()), "neutral");
+    });
+  });
+
+  renderExportSettings();
+  setProfileDetailSummaries(window.HabitStore.getState(), window.HabitAnalytics.getInsightViewModel("30d"));
+  setExportStatus(describeExportSettings(getExportSettings()), "neutral");
+}
+
+function renderProfile() {
+  var state = window.HabitStore.getState();
+  var analytics = window.HabitAnalytics.getInsightViewModel("30d");
+  var weeklyAnalytics = window.HabitAnalytics.getInsightViewModel("7d");
+  var vm = window.HabitScreenModels && window.HabitScreenModels.buildProfileScreenModel
+    ? window.HabitScreenModels.buildProfileScreenModel(state, { analytics30: analytics, analytics7: weeklyAnalytics })
+    : null;
+
+  if (vm && window.HabitScreenDom && window.HabitScreenDom.applyProfileScreenViewModel) {
+    window.HabitScreenDom.applyProfileScreenViewModel(vm);
+  } else {
+    document.getElementById("profile-avatar").textContent = state.profile.initials;
+    document.getElementById("profile-name").textContent = state.profile.userName;
+    document.getElementById("profile-habit").textContent = state.currentHabit.name + " · поведенческий индекс";
+    document.getElementById("profile-index").textContent = analytics.summary.dependencyIndex;
+    document.getElementById("profile-index-meta").textContent = riskLabel(analytics.summary.riskLevel);
+    document.getElementById("today-slips").textContent = state.slips.filter(function (item) { return item.localDate === window.HabitStore.helpers.formatDateKey(new Date()); }).length;
+    document.getElementById("today-resisted").textContent = state.resisted.filter(function (item) { return item.localDate === window.HabitStore.helpers.formatDateKey(new Date()); }).length;
+    document.getElementById("main-trigger").textContent = analytics.summary.mainTrigger;
+    document.getElementById("risk-window").textContent = analytics.summary.riskWindow;
+    document.getElementById("profile-message").textContent = analytics.summary.narrative;
+  }
+  document.getElementById("active-habit-name").textContent = state.currentHabit.name;
+  renderGuidanceTone(state, vm);
+  renderSetup(state);
+  renderFirstWeek(state);
+  if (!vm) {
+    renderWeeklySnapshot(weeklyAnalytics);
+    renderFinanceHealth(state, analytics);
+  }
+  if (state.currentHabit.assessmentComplete) {
+    document.getElementById("assessment-copy").innerHTML = "<strong>Опрос заполнен</strong> Стартовый профиль для привычки <b>" + state.currentHabit.name + "</b>: " + state.currentHabit.assessmentSummary + ". Можешь обновить ответы в любой момент.";
+    document.getElementById("assessment-btn").textContent = "Обновить";
+  } else {
+    document.getElementById("assessment-copy").innerHTML = "<strong>Опрос не заполнен</strong> Ответь на 4 коротких вопроса, чтобы аналитика точнее считала стартовую нагрузку для привычки <b>" + state.currentHabit.name + "</b>.";
+    document.getElementById("assessment-btn").textContent = "Заполнить";
+  }
+  document.getElementById("active-habit-meta").textContent = "Сейчас приложение считает и анализирует только эту привычку";
+  renderAiReview(state);
+  setProfileDetailSummaries(state, analytics);
+  Object.keys(profileDetailState).forEach(function (cardId) {
+    updateDetailCard(cardId, profileDetailState[cardId]);
+  });
+}
+
+function renderFirstWeek(state) {
+  var model = getFirstWeekModel(state);
+  var support = getFirstWeekSupport(state);
+  var root = document.getElementById("first-week-card");
+  if (!model.active) {
+    root.classList.remove("open");
+    return;
+  }
+
+  root.classList.add("open");
+  document.getElementById("first-week-kicker").textContent = "Первая неделя · день " + model.dayNumber;
+  document.getElementById("first-week-title").textContent = model.headline;
+  document.getElementById("first-week-badge").textContent = model.stageLabel;
+  document.getElementById("first-week-copy").textContent = model.narrative;
+  document.getElementById("first-week-progress").style.width = model.progress + "%";
+  document.getElementById("first-week-meta").textContent = model.completed + " из " + model.total + " опор уже есть";
+  document.getElementById("first-week-chips").innerHTML = model.milestones.map(function (item) {
+    return '<div class="week-chip ' + (item.done ? "done" : "") + '">' + item.shortTitle + '</div>';
+  }).join("");
+  if (support.review) {
+    document.getElementById("first-week-review-title").textContent = support.review.headline;
+    document.getElementById("first-week-review-copy").textContent = support.review.text;
+    document.getElementById("first-week-review-meta").textContent = "Сигналов: " + support.review.signals + " · дней с активностью: " + support.review.days + " · удержаний: " + support.review.resisted;
+  }
+}
+
+document.getElementById("change-habit-btn").addEventListener("click", openHabitSheet);
+document.getElementById("setup-action-btn").addEventListener("click", openSetupNextStep);
+document.getElementById("cancel-habit-btn").addEventListener("click", closeHabitSheet);
+document.getElementById("close-habit-screen-btn").addEventListener("click", closeHabitSheet);
+document.getElementById("save-habit-btn").addEventListener("click", saveHabitSelection);
+document.getElementById("open-finance-health-btn").addEventListener("click", openFinanceHealthSheet);
+document.getElementById("reset-health-hint-btn").addEventListener("click", openFinanceHealthSheet);
+document.getElementById("cancel-finance-health-btn").addEventListener("click", closeFinanceHealthSheet);
+document.getElementById("close-finance-health-screen-btn").addEventListener("click", closeFinanceHealthSheet);
+document.getElementById("save-finance-health-btn").addEventListener("click", saveFinanceHealth);
+document.getElementById("assessment-btn").addEventListener("click", openAssessmentSheet);
+document.getElementById("cancel-assessment-btn").addEventListener("click", closeAssessmentSheet);
+document.getElementById("close-assessment-screen-btn").addEventListener("click", closeAssessmentSheet);
+document.getElementById("save-assessment-btn").addEventListener("click", saveAssessment);
+document.getElementById("open-ai-response-btn").addEventListener("click", openAiResponseSheet);
+document.getElementById("reopen-ai-prompt-btn").addEventListener("click", openAiExportSheet);
+document.getElementById("open-ai-review-screen-btn").addEventListener("click", openAiReviewScreen);
+document.getElementById("cancel-ai-response-btn").addEventListener("click", closeAiResponseSheet);
+document.getElementById("save-ai-response-btn").addEventListener("click", saveAiResponse);
+document.getElementById("export-json-btn").addEventListener("click", downloadExportJson);
+document.getElementById("export-report-btn").addEventListener("click", downloadExportReport);
+document.getElementById("toggle-manual-ai-export-btn").addEventListener("click", toggleManualAiExport);
+document.getElementById("toggle-manual-ai-review-btn").addEventListener("click", toggleManualAiReview);
+document.getElementById("open-ai-export-btn").addEventListener("click", openAiExportSheet);
+document.getElementById("download-ai-prompt-inline-btn").addEventListener("click", downloadAiPrompt);
+document.getElementById("close-ai-export-screen-btn").addEventListener("click", closeAiExportSheet);
+document.getElementById("close-ai-response-screen-btn").addEventListener("click", closeAiResponseSheet);
+document.getElementById("open-gemini-sheet-btn").addEventListener("click", openGeminiSheet);
+document.getElementById("close-gemini-screen-btn").addEventListener("click", closeGeminiSheet);
+document.getElementById("close-gemini-sheet-btn").addEventListener("click", closeGeminiSheet);
+document.getElementById("toggle-gemini-preview-btn").addEventListener("click", toggleGeminiPromptPreview);
+document.getElementById("run-gemini-btn").addEventListener("click", runGeminiReview);
+document.getElementById("backup-state-btn").addEventListener("click", downloadStateBackup);
+document.getElementById("restore-state-btn").addEventListener("click", openRestorePicker);
+document.getElementById("restore-state-input").addEventListener("change", restoreStateFromFile);
+document.getElementById("open-reset-habit-btn").addEventListener("click", openResetHabitSheet);
+document.getElementById("cancel-reset-habit-btn").addEventListener("click", closeResetHabitSheet);
+document.getElementById("close-reset-habit-screen-btn").addEventListener("click", closeResetHabitSheet);
+document.getElementById("confirm-reset-habit-btn").addEventListener("click", confirmResetHabitData);
+document.getElementById("copy-ai-prompt-btn").addEventListener("click", copyAiPrompt);
+document.getElementById("download-ai-prompt-btn").addEventListener("click", downloadAiPrompt);
+document.getElementById("close-ai-export-btn").addEventListener("click", closeAiExportSheet);
+document.getElementById("guidance-tone-options").addEventListener("click", function (event) {
+  var button = event.target.closest("[data-guidance-tone]");
+  if (!button) return;
+  window.HabitStore.setGuidanceTone(button.dataset.guidanceTone);
+});
+document.querySelectorAll("[data-gemini-model]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    currentGeminiSettings.model = button.dataset.geminiModel || "gemini-flash-latest";
+    renderGeminiSettings(currentGeminiSettings);
+  });
+});
+document.querySelectorAll("[data-detail-card]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    var cardId = button.dataset.detailCard;
+    profileDetailState[cardId] = !profileDetailState[cardId];
+    updateDetailCard(cardId, profileDetailState[cardId]);
+  });
+});
+
+window.HabitStore.subscribe(renderProfile);
+window.DemoNavigation.initBottomTabs();
+initExportControls();
+renderGeminiSettings();
+renderManualAiPanels();
+renderProfile();
+consumeOnboardingIntent();
+</script>
+</body>
+</html>

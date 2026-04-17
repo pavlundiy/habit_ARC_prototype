@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Инсайты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:"Manrope","Segoe UI",sans-serif;
+  --color-border-tertiary:#e8e5e0;
+  --color-text-secondary:#8a8880;
+}
+html,body{min-height:100%;background:#efece6;}
+body{padding:14px;font-family:var(--font-sans);}
+.app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
+.screen{background:#faf9f6;border-radius:28px;border:0.5px solid var(--color-border-tertiary);overflow:hidden;}
+.lbl{text-align:center;font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;}
+.topbar{padding:16px 20px 4px;display:flex;justify-content:space-between;align-items:flex-start;}
+.topbar-title{font-size:17px;font-weight:500;color:#1e1c18;}
+.topbar-sub{font-size:11px;color:#8a8880;margin-top:2px;}
+.period-pills{display:flex;gap:5px;padding:12px 20px 14px;}
+.pp{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:0.5px solid #e0ddd8;color:#8a8880;background:#fff;transition:all .15s;}
+.pp.active{background:#1e1c18;color:#faf9f6;border-color:#1e1c18;}
+.section-lbl{font-size:10px;font-weight:500;color:#8a8880;letter-spacing:0.5px;text-transform:uppercase;padding:0 20px 8px;}
+.insight-card{margin:0 16px 10px;background:#fff;border:0.5px solid #e8e5e0;border-radius:16px;padding:14px 16px;}
+.ic-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ic-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ic-title{font-size:13px;font-weight:500;color:#1e1c18;flex:1;}
+.ic-badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:500;}
+.ic-text{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;}
+.ic-highlight{background:#faf9f6;border-radius:10px;padding:10px 12px;border-left:3px solid #1D9E75;}
+.ic-hl-text{font-size:12px;color:#085041;line-height:1.5;}
+.heatmap-grid{display:grid;grid-template-columns:36px repeat(7,1fr);gap:3px;padding:0 16px 14px;}
+.hm-label{font-size:10px;color:#8a8880;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;}
+.hm-cell{height:20px;border-radius:4px;cursor:pointer;transition:opacity .1s;position:relative;}
+.hm-cell:hover{opacity:.75;}
+.hm-col-label{font-size:10px;color:#8a8880;text-align:center;}
+.trigger-bars{padding:0 16px 14px;}
+.tbar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.tbar-label{font-size:12px;color:#333;width:80px;flex-shrink:0;}
+.tbar-track{flex:1;height:8px;background:#f0ede8;border-radius:4px;overflow:hidden;}
+.tbar-fill{height:100%;border-radius:4px;}
+.tbar-val{font-size:12px;font-weight:500;color:#333;width:24px;text-align:right;}
+.stat-row{display:flex;gap:8px;padding:0 16px 14px;}
+.stat-card{flex:1;background:#fff;border:0.5px solid #e8e5e0;border-radius:12px;padding:12px;text-align:center;}
+.stat-num{font-size:20px;font-weight:500;color:#1e1c18;line-height:1;}
+.stat-sub{font-size:10px;color:#8a8880;margin-top:3px;line-height:1.3;}
+.stat-trend{font-size:11px;margin-top:4px;}
+.sticky-bottom{background:#faf9f6;border-top:0.5px solid #e8e5e0;display:flex;padding:8px 0 12px;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#b0ada8;cursor:pointer;}
+.tab.active{color:#1D9E75;}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:#1D9E75;margin:0 auto;}
+.tooltip-box{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);background:#1e1c18;color:#faf9f6;font-size:10px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;display:none;z-index:5;}
+.hm-cell:hover .tooltip-box{display:block;}
+</style>
+</head>
+<body>
+
+<div class="app">
+<div class="lbl">Экран «Инсайты» — данные подаются из аналитического слоя</div>
+<div class="screen">
+
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Инсайты</div>
+      <div class="topbar-sub">Что стоит за твоей привычкой</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.05 5.05l1.41 1.41M13.54 13.54l1.41 1.41M5.05 14.95l1.41-1.41M13.54 6.46l1.41-1.41" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="period-pills">
+    <div class="pp" data-period="7d">7 дней</div>
+    <div class="pp active" data-period="30d">30 дней</div>
+    <div class="pp" data-period="90d">3 месяца</div>
+  </div>
+
+  <div class="section-lbl">Главный инсайт</div>
+  <div class="insight-card">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#FAEEDA;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4M6 14h4" stroke="#854F0B" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="ic-title" id="summary-title"></div>
+      <div class="ic-badge" id="summary-badge"></div>
+    </div>
+    <div class="ic-text" id="summary-text"></div>
+    <div class="ic-highlight">
+      <div class="ic-hl-text" id="summary-recommendation"></div>
+    </div>
+  </div>
+
+  <div class="section-lbl">Тепловая карта по часам</div>
+  <div class="heatmap-grid" id="heatmap"></div>
+
+  <div class="section-lbl">Триггеры этого периода</div>
+  <div class="trigger-bars" id="trigger-bars"></div>
+
+  <div class="section-lbl" id="stats-caption">За 30 дней</div>
+  <div class="stat-row" id="stat-row"></div>
+
+  <div class="section-lbl">Паттерн недели</div>
+  <div class="insight-card" style="margin-bottom:14px;">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#E1F5EE;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="#0F6E56" stroke-width="1.3"/><path d="M5 3V2M11 3V2M2 7h12" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="ic-title" id="daypattern-title"></div>
+      <div class="ic-badge" id="daypattern-badge"></div>
+    </div>
+    <div class="ic-text" id="daypattern-text"></div>
+    <div class="ic-highlight">
+      <div class="ic-hl-text" id="daypattern-highlight"></div>
+    </div>
+  </div>
+
+  <div class="sticky-bottom">
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#b0ada8"/></svg>
+      Главная
+    </div>
+    <div class="tab active">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="#1D9E75"/></svg>
+      Инсайты
+      <div class="tab-dot"></div>
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="#b0ada8" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="#b0ada8" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Дневник
+    </div>
+    <div class="tab">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#b0ada8" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="#b0ada8" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Профиль
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script type="module">
+import { getInsightViewModel } from "../analytics/runtime.js";
+
+const heatmapRoot = document.getElementById("heatmap");
+const triggerBarsRoot = document.getElementById("trigger-bars");
+const statRowRoot = document.getElementById("stat-row");
+const statsCaption = document.getElementById("stats-caption");
+const summaryTitle = document.getElementById("summary-title");
+const summaryBadge = document.getElementById("summary-badge");
+const summaryText = document.getElementById("summary-text");
+const summaryRecommendation = document.getElementById("summary-recommendation");
+const dayPatternTitle = document.getElementById("daypattern-title");
+const dayPatternBadge = document.getElementById("daypattern-badge");
+const dayPatternText = document.getElementById("daypattern-text");
+const dayPatternHighlight = document.getElementById("daypattern-highlight");
+const periodButtons = Array.from(document.querySelectorAll(".pp"));
+
+function getColor(value, maxValue) {
+  if (value === 0) return "#f0ede8";
+  const t = value / Math.max(maxValue, 1);
+  if (t < 0.3) return "#9FE1CB";
+  if (t < 0.6) return "#EF9F27";
+  return "#D85A30";
+}
+
+function periodCaption(period) {
+  if (period === "7d") return "За 7 дней";
+  if (period === "90d") return "За 3 месяца";
+  return "За 30 дней";
+}
+
+function renderHeatmap(model) {
+  const maxValue = Math.max(...model.heatmap.values.flat());
+  heatmapRoot.innerHTML = "";
+
+  const spacer = document.createElement("div");
+  heatmapRoot.appendChild(spacer);
+
+  model.heatmap.days.forEach((day) => {
+    const label = document.createElement("div");
+    label.className = "hm-col-label";
+    label.textContent = day;
+    heatmapRoot.appendChild(label);
+  });
+
+  model.heatmap.values.forEach((row, rowIndex) => {
+    const rowLabel = document.createElement("div");
+    rowLabel.className = "hm-label";
+    rowLabel.textContent = model.heatmap.hours[rowIndex];
+    heatmapRoot.appendChild(rowLabel);
+
+    row.forEach((value, colIndex) => {
+      const cell = document.createElement("div");
+      cell.className = "hm-cell";
+      cell.style.background = getColor(value, maxValue);
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "tooltip-box";
+      tooltip.textContent = `${model.heatmap.days[colIndex]} ${model.heatmap.hours[rowIndex]}: ${value} раза`;
+      cell.appendChild(tooltip);
+      heatmapRoot.appendChild(cell);
+    });
+  });
+}
+
+function renderTriggers(model) {
+  triggerBarsRoot.innerHTML = model.triggers.map((item) => `
+    <div class="tbar-row">
+      <div class="tbar-label">${item.label}</div>
+      <div class="tbar-track"><div class="tbar-fill" style="width:${Math.round(item.share * 100)}%;background:${item.color};"></div></div>
+      <div class="tbar-val">${item.count}</div>
+    </div>
+  `).join("");
+}
+
+function renderStats(model) {
+  statRowRoot.innerHTML = model.stats.map((item) => `
+    <div class="stat-card">
+      <div class="stat-num">${item.value}</div>
+      <div class="stat-sub">${item.label}</div>
+      <div class="stat-trend" style="color:${item.trendColor};">${item.trend}</div>
+    </div>
+  `).join("");
+}
+
+function renderSummary(model) {
+  summaryTitle.textContent = model.summary.headline;
+  summaryBadge.textContent = model.summary.badge;
+  summaryBadge.style.background = "#FAEEDA";
+  summaryBadge.style.color = "#633806";
+  summaryText.textContent = model.summary.narrative;
+  summaryRecommendation.textContent = model.summary.recommendation;
+}
+
+function renderDayPattern(model) {
+  dayPatternTitle.textContent = model.dayPattern.title;
+  dayPatternBadge.textContent = model.dayPattern.badge;
+  dayPatternBadge.style.background = model.dayPattern.badgeBg;
+  dayPatternBadge.style.color = model.dayPattern.badgeColor;
+  dayPatternText.textContent = model.dayPattern.text;
+  dayPatternHighlight.textContent = model.dayPattern.highlight;
+}
+
+function render(period) {
+  const model = getInsightViewModel(period);
+  statsCaption.textContent = periodCaption(period);
+  renderSummary(model);
+  renderHeatmap(model);
+  renderTriggers(model);
+  renderStats(model);
+  renderDayPattern(model);
+}
+
+periodButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    periodButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    render(button.dataset.period);
+  });
+});
+
+render("30d");
+</script>
+</body>
+</html>
