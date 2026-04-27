@@ -215,7 +215,7 @@ html.embedded-shell .sticky-bottom{display:none;}
     </div>
   </div>
 
-  <div class="section-lbl" id="summary-section-label">Главный инсайт</div>
+  <div class="section-lbl" id="summary-section-label">Главный вывод</div>
   <div class="insight-card observation" id="summary-card">
     <div class="ic-header">
       <div class="ic-icon" style="background:#FAEEDA;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4M6 14h4" stroke="#854F0B" stroke-width="1.4" stroke-linecap="round"/></svg></div>
@@ -252,6 +252,17 @@ html.embedded-shell .sticky-bottom{display:none;}
   <div class="section-lbl" id="supports-section-label">Что работало</div>
   <div class="panel-card" id="supports-card">
     <div class="supports-list" id="supports-list"></div>
+  </div>
+
+  <div class="section-lbl" id="carryforward-section-label">Что можно взять с собой</div>
+  <div class="insight-card" id="carryforward-card" style="margin-bottom:12px;">
+    <div class="ic-header">
+      <div class="ic-icon" style="background:#E1F5EE;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8h8M9 4l4 4-4 4" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="ic-title" id="carryforward-title"></div>
+      <div class="ic-badge" id="carryforward-badge"></div>
+    </div>
+    <div class="ic-text" id="carryforward-text"></div>
+    <div class="ic-highlight"><div class="ic-hl-text" id="carryforward-highlight"></div></div>
   </div>
 
   <div class="section-lbl" id="stats-caption" style="display:none;">За 30 дней</div>
@@ -367,19 +378,21 @@ function setInsightsVisibility(showAnalytics) {
   document.getElementById("summary-card").style.display = showAnalytics ? "" : "none";
   document.getElementById("wellbeing-section-label").style.display = "none";
   document.getElementById("wellbeing-card").style.display = "none";
-  document.getElementById("heatmap-section-label").style.display = showAnalytics ? "" : "none";
-  document.getElementById("heatmap-card").style.display = showAnalytics ? "" : "none";
-  document.getElementById("triggers-section-label").style.display = showAnalytics ? "" : "none";
-  document.getElementById("triggers-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("heatmap-section-label").style.display = "none";
+  document.getElementById("heatmap-card").style.display = "none";
+  document.getElementById("triggers-section-label").style.display = "none";
+  document.getElementById("triggers-card").style.display = "none";
   document.getElementById("supports-section-label").style.display = showAnalytics ? "" : "none";
   document.getElementById("supports-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("carryforward-section-label").style.display = showAnalytics ? "" : "none";
+  document.getElementById("carryforward-card").style.display = showAnalytics ? "" : "none";
   document.getElementById("stats-caption").style.display = "none";
   document.getElementById("stat-row").style.display = "none";
   document.getElementById("index-detail-card").style.display = "none";
   document.getElementById("finance-detail-card").style.display = "none";
-  document.getElementById("period-detail-card").style.display = "none";
-  document.getElementById("daypattern-section-label").style.display = showAnalytics ? "" : "none";
-  document.getElementById("daypattern-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("period-detail-card").style.display = showAnalytics ? "" : "none";
+  document.getElementById("daypattern-section-label").style.display = "none";
+  document.getElementById("daypattern-card").style.display = "none";
 }
 
 function renderSetupCard(state, hasBehaviorData) {
@@ -522,7 +535,7 @@ function renderSummary(model, state) {
   var recommendationCard = recommendationNode.closest(".ic-highlight");
   var metaNode = document.getElementById("summary-meta");
   document.getElementById("summary-title").textContent = summaryVm.headline;
-  document.getElementById("summary-badge").textContent = "наблюдение";
+  document.getElementById("summary-badge").textContent = summaryVm.badgeLabel || "наблюдение";
   document.getElementById("summary-badge").style.background = "#E1F5EE";
   document.getElementById("summary-badge").style.color = "#085041";
   document.getElementById("summary-text").textContent = summaryVm.narrative;
@@ -579,6 +592,26 @@ function renderSupports(vm) {
       '<div class="support-meta"><div class="support-badge ' + item.tone + '">' + item.toneLabel + '</div><div class="support-count">' + item.countLabel + '</div></div>' +
       '</div>';
   }).join("");
+}
+
+function renderCarryForward(vm) {
+  var model = vm && vm.carryForward ? vm.carryForward : null;
+  var section = document.getElementById("carryforward-section-label");
+  var card = document.getElementById("carryforward-card");
+  if (!model || !model.visible) {
+    section.style.display = "none";
+    card.style.display = "none";
+    return;
+  }
+  section.style.display = "";
+  card.style.display = "";
+  document.getElementById("carryforward-title").textContent = model.title;
+  document.getElementById("carryforward-badge").textContent = model.badge;
+  document.getElementById("carryforward-badge").style.background = model.badgeBg || "#E1F5EE";
+  document.getElementById("carryforward-badge").style.color = model.badgeColor || "#085041";
+  document.getElementById("carryforward-text").textContent = model.text;
+  document.getElementById("carryforward-highlight").textContent = model.highlight || "";
+  document.getElementById("carryforward-highlight").closest(".ic-highlight").style.display = model.highlight ? "" : "none";
 }
 
 function getSubscoreItems(model) {
@@ -685,6 +718,19 @@ function renderMeta(model) {
   ].join("");
 }
 
+function renderPeriodDetailBody(model) {
+  var periodCard = document.getElementById("period-detail-card");
+  if (!periodCard) return;
+  var detailHeatmap = periodCard.querySelector(".heatmap-grid");
+  var detailTriggers = periodCard.querySelector(".trigger-bars");
+  if (detailHeatmap) {
+    detailHeatmap.innerHTML = heatmapRoot.innerHTML;
+  }
+  if (detailTriggers) {
+    detailTriggers.innerHTML = triggerBarsRoot.innerHTML;
+  }
+}
+
 function renderDayPattern(model) {
   document.getElementById("daypattern-title").textContent = model.dayPattern.title;
   document.getElementById("daypattern-badge").textContent = model.dayPattern.badge;
@@ -719,11 +765,13 @@ function render() {
   renderSummary(model, state);
   renderWellbeing(model);
   renderSupports(vm || {});
+  renderCarryForward(vm || {});
   if (!vm) {
     setDetailSummaries(model);
   }
   renderHeatmap(model);
   renderTriggers(model);
+  renderPeriodDetailBody(model);
   renderSubscores(model);
   renderStats(model);
   renderMeta(model);

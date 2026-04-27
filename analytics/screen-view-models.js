@@ -334,10 +334,10 @@
         hasEntry: false,
         actionLabel: "\u0422\u0435\u043f\u0435\u0440\u044c \u2014 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",
         carryoverDate: yesterdayKey,
-        carryoverQuestion: "\u041a\u0430\u043a \u0432\u0447\u0435\u0440\u0430 \u043f\u0440\u043e\u0448\u043b\u043e \u0441 \u044d\u0442\u0438\u043c?",
+        carryoverQuestion: "\u0423\u0434\u0430\u043b\u043e\u0441\u044c \u0443\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u0432\u0447\u0435\u0440\u0430\u0448\u043d\u0438\u0439 \u043e\u0440\u0438\u0435\u043d\u0442\u0438\u0440?",
         carryoverChoices: [
-          { id: "yes", label: "\u0414\u0430, \u0443\u0434\u0435\u0440\u0436\u0430\u043b" },
-          { id: "partial", label: "\u0427\u0430\u0441\u0442\u0438\u0447\u043d\u043e" },
+          { id: "yes", label: "\u0414\u0430 \u2014 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c" },
+          { id: "partial", label: "\u0427\u0430\u0441\u0442\u0438\u0447\u043d\u043e \u2014 \u043c\u0435\u0441\u0442\u0430\u043c\u0438 \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c" },
           { id: "present", label: "\u041d\u0435\u0442, \u044f \u0437\u0434\u0435\u0441\u044c" }
         ],
         carryoverFeedback: buildCarryoverFeedbackMap(guidanceTone, supportMode),
@@ -373,13 +373,40 @@
     var placeholder = type === "morning"
       ? "\u041d\u0430\u043f\u0440\u0438\u043c\u0435\u0440: \u043f\u0440\u043e\u0439\u0442\u0438 \u0447\u0435\u0440\u0435\u0437 14:00 \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u0435\u0435 \u0438 \u043d\u0435 \u0441\u043f\u043e\u0440\u0438\u0442\u044c \u0441 \u0441\u043e\u0431\u043e\u0439."
       : "\u041d\u0430\u043f\u0440\u0438\u043c\u0435\u0440: \u043f\u043e\u0441\u043b\u0435 \u0432\u0441\u0442\u0440\u0435\u0447 \u043c\u0435\u043d\u044f \u0441\u0438\u043b\u044c\u043d\u0435\u0435 \u0432\u0441\u0435\u0433\u043e \u0432\u044b\u0431\u0438\u0432\u0430\u0435\u0442 \u043d\u0430\u043f\u0440\u044f\u0436\u0435\u043d\u0438\u0435.";
+    var eveningChoices = type === "evening"
+      ? [
+        {
+          id: "yes",
+          label: "\u0414\u0430",
+          sub: "\u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c",
+          text: "\u0414\u0430 \u2014 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c."
+        },
+        {
+          id: "partial",
+          label: "\u0427\u0430\u0441\u0442\u0438\u0447\u043d\u043e",
+          sub: "\u043c\u0435\u0441\u0442\u0430\u043c\u0438 \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c, \u043d\u043e \u043d\u0435 \u0432\u0435\u0441\u044c \u0434\u0435\u043d\u044c",
+          text: "\u0427\u0430\u0441\u0442\u0438\u0447\u043d\u043e \u2014 \u043c\u0435\u0441\u0442\u0430\u043c\u0438 \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c."
+        },
+        {
+          id: "present",
+          label: "\u041d\u0435\u0442, \u043d\u043e \u044f \u0437\u0434\u0435\u0441\u044c",
+          sub: "\u0447\u0435\u0441\u0442\u043d\u044b\u0439 \u043e\u0442\u0432\u0435\u0442 \u0442\u043e\u0436\u0435 \u0432\u0430\u0436\u0435\u043d",
+          text: "\u041d\u0435\u0442, \u043d\u043e \u044f \u0437\u0434\u0435\u0441\u044c."
+        }
+      ]
+      : null;
+    var selectedEveningChoice = eveningChoices
+      ? eveningChoices.find(function (item) {
+        return existing && String(existing.text || "").trim() === item.text;
+      })
+      : null;
     var savedNote = existing
       ? (type === "morning"
         ? "\u041c\u044b\u0441\u043b\u044c \u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 \u0435\u0441\u0442\u044c. \u0415\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0448\u044c, \u0435\u0451 \u043c\u043e\u0436\u043d\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c."
-        : "\u0412\u0435\u0447\u0435\u0440\u043d\u044f\u044f \u0437\u0430\u043c\u0435\u0442\u043a\u0430 \u0443\u0436\u0435 \u0435\u0441\u0442\u044c. \u0415\u0441\u043b\u0438 \u0437\u0430\u0445\u043e\u0447\u0435\u0448\u044c, \u0435\u0451 \u043c\u043e\u0436\u043d\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c.")
+        : "\u0412\u0435\u0447\u0435\u0440 \u0443\u0436\u0435 \u0437\u0430\u043a\u0440\u044b\u0442. \u0415\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0448\u044c, \u043e\u0442\u0432\u0435\u0442 \u043c\u043e\u0436\u043d\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c.")
       : (type === "morning"
         ? "\u041e\u0434\u043d\u043e\u0439 \u0444\u0440\u0430\u0437\u044b \u0443\u0436\u0435 \u0434\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u043e."
-        : "\u0414\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u043e \u043e\u0434\u043d\u043e\u0439 \u0447\u0435\u0441\u0442\u043d\u043e\u0439 \u0444\u0440\u0430\u0437\u044b.");
+        : "\u0414\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u043e \u043e\u0434\u043d\u043e\u0433\u043e \u0447\u0435\u0441\u0442\u043d\u043e\u0433\u043e \u043e\u0442\u0432\u0435\u0442\u0430.");
     var saveToast = type === "morning"
       ? "\u0423\u0442\u0440\u0435\u043d\u043d\u044f\u044f \u043c\u044b\u0441\u043b\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0430. \u0422\u0435\u043f\u0435\u0440\u044c \u0443 \u0434\u043d\u044f \u0435\u0441\u0442\u044c \u043a\u043e\u0440\u043e\u0442\u043a\u0438\u0439 \u043e\u0440\u0438\u0435\u043d\u0442\u0438\u0440."
       : "\u0412\u0435\u0447\u0435\u0440\u043d\u044f\u044f \u043c\u044b\u0441\u043b\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0430. \u0422\u0430\u043a \u0440\u0438\u0442\u043c \u0434\u043d\u044f \u0441\u0442\u0430\u043d\u0435\u0442 \u043f\u043e\u043d\u044f\u0442\u043d\u0435\u0435 \u0443\u0436\u0435 \u0437\u0430\u0432\u0442\u0440\u0430.";
@@ -401,9 +428,15 @@
       note: savedNote,
       value: existing ? existing.text : "",
       hasEntry: !!existing,
+      eveningChoices: eveningChoices,
+      selectedEveningChoice: selectedEveningChoice ? selectedEveningChoice.id : "",
       actionLabel: existing
-        ? "\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c \u043c\u044b\u0441\u043b\u044c"
-        : "\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043c\u044b\u0441\u043b\u044c",
+        ? (type === "evening"
+          ? "\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c \u043e\u0442\u0432\u0435\u0442"
+          : "\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c \u043c\u044b\u0441\u043b\u044c")
+        : (type === "evening"
+          ? "\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u0434\u0435\u043d\u044c"
+          : "\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043c\u044b\u0441\u043b\u044c"),
       toast: saveToast
     };
     ritualModel.echo = buildRitualEchoModel(state, ritualModel);
@@ -624,17 +657,36 @@
       grouped[key].success += 1;
     });
 
+    function getTimesLabel(count) {
+      var value = Math.abs(Number(count) || 0);
+      var mod10 = value % 10;
+      var mod100 = value % 100;
+      if (mod10 === 1 && mod100 !== 11) return value + " раз";
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return value + " раза";
+      return value + " раз";
+    }
+
     var items = Object.keys(grouped).map(function (key) {
       var item = grouped[key];
       var tone = item.success >= item.partial ? "worked" : "sometimes";
+      var detail = "";
+      if (item.source === "resisted") {
+        detail = item.total > 1
+          ? "уже повторялось в удержанных моментах"
+          : "заметно по удержанному моменту";
+      } else if (item.success >= 2) {
+        detail = "повторялось в более ровные дни";
+      } else if (item.success > 0) {
+        detail = "сработало хотя бы в одном дне с ориентиром";
+      } else {
+        detail = "пока это скорее намёк, чем устойчивая опора";
+      }
       return {
         text: shortenText(item.text, 46),
-        detail: item.source === "resisted"
-          ? "из удержанных моментов"
-          : (item.success > 0 ? "из дней, где ориентир сработал" : "из повторяющихся ориентиров"),
+        detail: detail,
         tone: tone,
-        toneLabel: tone === "worked" ? "работало" : "иногда",
-        countLabel: item.total + "×",
+        toneLabel: tone === "worked" ? "опора" : "пробовать",
+        countLabel: getTimesLabel(item.total),
         total: item.total,
         success: item.success
       };
@@ -661,6 +713,14 @@
     if (hour < 12) return "Доброе утро,";
     if (hour < 17) return "Добрый день,";
     return "Добрый вечер,";
+  }
+
+  function getCurrentDayPhase(date) {
+    var target = date || new Date();
+    var hour = target.getHours();
+    if (hour >= 5 && hour < 11) return "morning";
+    if (hour >= 11 && hour < 17) return "day";
+    return "evening";
   }
 
   function getTodayResistedCount(state) {
@@ -708,7 +768,7 @@
         addItem({
           tone: support.tone === "worked" ? "positive" : "accent",
           text: (support.tone === "worked" ? "Тебе уже помогало: " : "Иногда срабатывает: ") + "«" + support.text + "»",
-          meta: support.countLabel + " · " + (support.tone === "worked" ? "из удачных дней" : "повторялось в ориентирах")
+          meta: support.countLabel + " · " + (support.tone === "worked" ? "уже похоже на опору" : "пока стоит понаблюдать")
         });
       });
     }
@@ -776,15 +836,26 @@
   function parseWindowRange(windowText) {
     var match = String(windowText || "").match(/(\d{1,2}):\d{2}\s*[-–]\s*(\d{1,2}):\d{2}/);
     if (!match) return null;
+    var startMinuteMatch = String(windowText || "").match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/);
+    var startHour = Number(match[1]);
+    var endHour = Number(match[2]);
+    var startMinute = startMinuteMatch ? Number(startMinuteMatch[2]) : 0;
+    var endMinute = startMinuteMatch ? Number(startMinuteMatch[4]) : 0;
     return {
-      start: Number(match[1]),
-      end: Number(match[2])
+      start: startHour,
+      end: endHour,
+      startMinute: startMinute,
+      endMinute: endMinute,
+      startTotal: startHour * 60 + startMinute,
+      endTotal: endHour * 60 + endMinute
     };
   }
 
   function buildLiveEventModel(state, weekly, setup, firstWeekSupport) {
     var now = new Date();
     var hour = now.getHours();
+    var minute = now.getMinutes();
+    var currentTotal = hour * 60 + minute;
     var summary = weekly.summary || {};
     var wellbeing = weekly.wellbeing || {};
     var todayResisted = getTodayResistedCount(state);
@@ -801,25 +872,26 @@
         badge: "сегодня",
         tone: "positive",
         title: "Сегодня уже есть точка опоры",
-        body: "Один удержанный момент уже появился в твоём ритме. Сейчас полезнее опереться на него, чем ждать идеального дня."
+        body: "Один удержанный момент уже появился. Сейчас полезнее держаться за него, чем ждать идеального дня."
       };
     }
 
     if (windowRange && observedDays >= 4) {
-      if (hour >= windowRange.start && hour < windowRange.end) {
+      if (currentTotal >= windowRange.startTotal && currentTotal < windowRange.endTotal) {
+        var minutesLeft = Math.max(10, windowRange.endTotal - currentTotal);
         return {
           badge: "сейчас",
           tone: "alert",
-          title: "Сейчас идёт твоё важное окно",
-          body: "Обычно именно в это время привычка собирается быстрее всего. Лучше держаться за один маленький шаг, а не спорить с собой на автопилоте."
+          title: "Сейчас твой риск-слот.",
+          body: "Подержись ещё " + minutesLeft + " минут."
         };
       }
-      if (hour < windowRange.start && (windowRange.start - hour) <= 3) {
+      if (currentTotal < windowRange.startTotal && (windowRange.startTotal - currentTotal) <= 180) {
         return {
           badge: "позже",
           tone: "alert",
           title: "Позже сегодня окно будет чувствительнее",
-          body: "Около " + summary.riskWindow + " тебе обычно тяжелее. Хорошо заранее оставить себе немного опоры, а не ждать пика."
+          body: "Около " + summary.riskWindow + " лучше заранее оставить себе одну опору."
         };
       }
     }
@@ -840,28 +912,28 @@
       recordLabel: "Зафиксировать срыв",
       resistedLabel: "Удержался",
       slipToast: "Событие сохранено. Лента и аналитика уже обновились.",
-      successToast: "Момент удержания сохранён. Это тоже важная часть твоего ритма."
+      successToast: "Момент удержания сохранён."
     };
 
     if (habitId === "alcohol") {
       copy.recordLabel = "Зафиксировать эпизод";
       copy.resistedLabel = "Не выпил";
       copy.slipToast = "Эпизод сохранён. Лента и аналитика уже подстроились под него.";
-      copy.successToast = "Момент, когда ты не выпил, сохранён как опора на будущее.";
+      copy.successToast = "Момент удержания сохранён.";
     } else if (habitId === "sweets") {
       copy.recordLabel = "Зафиксировать эпизод";
       copy.slipToast = "Эпизод сохранён. Теперь будет легче заметить, что именно запускает тягу.";
-      copy.successToast = "Момент удержания сохранён. Он усилит картину самоконтроля.";
+      copy.successToast = "Момент удержания сохранён.";
     } else if (habitId === "social") {
       copy.recordLabel = "Сорвался в ленту";
       copy.resistedLabel = "Вышел вовремя";
       copy.slipToast = "Заход в ленту сохранён. Это поможет точнее увидеть сценарий автопрокрутки.";
-      copy.successToast = "Момент выхода сохранён. Это тоже движение в нужную сторону.";
+      copy.successToast = "Момент удержания сохранён.";
     } else if (habitId === "overeating") {
       copy.recordLabel = "Зафиксировать эпизод";
       copy.resistedLabel = "Остановился вовремя";
       copy.slipToast = "Эпизод сохранён. Так будет легче заметить его реальную причину.";
-      copy.successToast = "Момент, когда ты остановился вовремя, тоже сохранён в ритме недели.";
+      copy.successToast = "Момент удержания сохранён.";
     } else if (habitId === "custom") {
       copy.recordLabel = "Зафиксировать эпизод";
       copy.slipToast = "Эпизод сохранён. Он уже попал в ленту и аналитику привычки.";
@@ -976,6 +1048,8 @@
     var todayCount = window.HabitStore.getTodaySlipCount(state);
     var limit = state.profile.dailyLimit;
     var todayMinutes = (config.minutesPerEpisode || 0) * todayCount;
+    var todayResisted = getTodayResistedCount(state);
+    var todaySavedMinutes = (config.minutesPerEpisode || 0) * todayResisted;
     var trackerCopy = getToneAwareTrackerCopy(state, getTrackerCopy(state.currentHabit.id));
     var trackerState = getTrackerStateCopy(state.currentHabit.id, todayCount, limit);
     var setup = getSetupModel(state);
@@ -992,19 +1066,26 @@
     var observedDays = Number(summary.observedDays) || 0;
 
     var ritual = buildRitualModel(state, narrative);
+    var phase = ritual && ritual.mode === "carryover"
+      ? "carryover"
+      : getCurrentDayPhase(new Date());
     var heroSub = "один ориентир на этот день";
     var showHeroProgress = true;
-    if (ritual && ritual.mode === "carryover") {
+    if (phase === "carryover") {
       heroSub = "сначала мягко закроем вчера";
       showHeroProgress = false;
-    } else if (ritual && ritual.type === "evening") {
+    } else if (phase === "evening") {
       heroSub = "вечером важен честный возврат";
       showHeroProgress = false;
-    } else if (ritual && ritual.type === "morning") {
+    } else if (phase === "day") {
+      heroSub = "сейчас важен следующий момент";
+      showHeroProgress = false;
+    } else if (phase === "morning") {
       heroSub = "один ориентир на этот день";
     }
 
     return {
+      phase: phase,
       hero: {
         greeting: getGreetingByTime(new Date()),
         userName: state.profile.userName,
@@ -1016,6 +1097,9 @@
         goalColor: todayCount >= limit ? "#D85A30" : "#1D9E75",
         goalLabel: "сегодня " + todayCount + " / " + limit,
         showProgress: showHeroProgress,
+        resistedMeta: todayResisted > 0
+          ? ("Удержаний сегодня: " + todayResisted + (todaySavedMinutes > 0 ? " · сохранено " + formatMinutes(todaySavedMinutes) : ""))
+          : "Удержаний сегодня: 0",
         badge: trackerState.badge || "спокойный день",
         moodTitle: (narrative.today && narrative.today.title) || trackerState.title,
         moodText: (narrative.today && narrative.today.body) || trackerState.text,
@@ -1089,7 +1173,7 @@
         showWeekRhythm: false,
         showQuickStats: false,
         showTips: false,
-        showRecentLog: false,
+        showRecentLog: phase === "day" || todayCount > 0 || todayResisted > 0,
         showFirstWeek: false,
         showCelebration: false
       }
@@ -1249,6 +1333,71 @@
     };
   }
 
+  function buildCarryForwardModel(state, period, workedSupports, orientationImpact, summary) {
+    var topSupport = workedSupports && workedSupports.items && workedSupports.items[0]
+      ? workedSupports.items[0]
+      : null;
+    var riskWindow = summary && summary.riskWindow ? summary.riskWindow : "";
+    var mainTrigger = summary && summary.mainTrigger && summary.mainTrigger !== "Другое"
+      ? String(summary.mainTrigger).toLowerCase()
+      : "";
+
+    if (topSupport && topSupport.tone === "worked") {
+      return {
+        visible: true,
+        badge: "опора",
+        badgeBg: "#E1F5EE",
+        badgeColor: "#085041",
+        title: "Это можно унести в следующий день",
+        text: "«" + topSupport.text + "» уже срабатывало " + topSupport.countLabel + ". Его можно снова взять с собой как короткую опору на завтра.",
+        highlight: topSupport.detail
+          ? topSupport.detail + ". Лучше один знакомый ход, чем большой план на весь день."
+          : "Лучше один знакомый ход, чем большой план на весь день."
+      };
+    }
+
+    if (topSupport) {
+      return {
+        visible: true,
+        badge: "попробовать",
+        badgeBg: "#FAEEDA",
+        badgeColor: "#8A5208",
+        title: "Это можно мягко проверить ещё раз",
+        text: "«" + topSupport.text + "» уже возвращалось " + topSupport.countLabel + ". Пока это не устойчивая опора, но это уже можно проверить ещё раз без давления.",
+        highlight: "Отнесись к этому как к спокойной пробе, а не как к тесту на силу воли."
+      };
+    }
+
+    if (orientationImpact && orientationImpact.headline) {
+      return {
+        visible: true,
+        badge: "ритм",
+        badgeBg: "#E6F1FB",
+        badgeColor: "#0C447C",
+        title: "В следующий день можно взять саму форму",
+        text: "Один утренний ориентир уже делает день ровнее. Сейчас полезнее не искать идеальную формулировку, а просто оставить себе одну короткую мысль.",
+        highlight: "Одна честная фраза утром полезнее, чем попытка удержать весь день в голове."
+      };
+    }
+
+    if (riskWindow || mainTrigger) {
+      return {
+        visible: true,
+        badge: "на завтра",
+        badgeBg: "#F3EFE7",
+        badgeColor: "#4F4A43",
+        title: "На следующий день лучше оставить себе одну опору заранее",
+        text: "Если заранее помнить про " +
+          (riskWindow ? "окно " + riskWindow : "сложный момент дня") +
+          (mainTrigger ? ", где чаще включается \"" + mainTrigger + "\"" : "") +
+          ", входить в него обычно легче.",
+        highlight: "Полезнее готовить одну точку опоры заранее, чем спорить с собой в самом пике."
+      };
+    }
+
+    return { visible: false };
+  }
+
   function buildInsightsScreenModel(state, period) {
     var model = analytics(period || "30d");
     var setup = getSetupModel(state);
@@ -1271,6 +1420,7 @@
     var physical = buildPhysicalSignalsModel(state);
     var orientationImpact = buildOrientationImpactModel(state, period || "30d");
     var workedSupports = buildWorkedSupportsModel(state, period || "30d");
+    var carryForward = buildCarryForwardModel(state, period || "30d", workedSupports, orientationImpact, summary);
     var markers = health.markers || {};
     var bp = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null
       ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic)
@@ -1288,27 +1438,40 @@
       : financeTrend.direction === "down"
         ? "снижается"
         : "стабильна";
+    var supportBadgeLabel = "наблюдение";
+    var supportRecommendation = (narrative.insight && narrative.insight.recommendation) || "";
+    if (workedSupports && workedSupports.items && workedSupports.items[0]) {
+      var topSupport = workedSupports.items[0];
+      supportBadgeLabel = topSupport.tone === "worked" ? "опора периода" : "важный сигнал";
+      supportRecommendation = topSupport.tone === "worked"
+        ? "Это уже не случайный ход. \"" + topSupport.text + "\" повторялся " + topSupport.countLabel + " и его уже можно брать с собой в следующий день."
+        : "\"" + topSupport.text + "\" уже возвращался несколько раз. До устойчивой опоры ещё рано, но это уже хороший кандидат на завтра.";
+    } else if (!supportRecommendation && orientationImpact && orientationImpact.headline) {
+      supportBadgeLabel = "ритм периода";
+      supportRecommendation = "Здесь уже видна логика твоего ритма. Не обязательно делать день идеальным — полезнее подхватить один рабочий ход вовремя.";
+    } else if (!supportRecommendation && hasBehaviorData) {
+      supportRecommendation = "Даже несколько честных сигналов уже дают опору: меньше угадывания, больше понятных повторов.";
+    }
 
     return {
       raw: model,
       summaryView: {
         headline: (orientationImpact && orientationImpact.headline) || (narrative.insight && narrative.insight.headline) || summary.headline,
         badge: summary.badge,
+        badgeLabel: supportBadgeLabel,
         narrative: (orientationImpact && orientationImpact.narrative) || (narrative.insight && narrative.insight.narrative) || summary.narrative,
         forecastText: summary.forecastText,
         confidenceText: summary.confidenceText,
-        recommendation: (narrative.insight && narrative.insight.recommendation) || (workedSupports && workedSupports.items && workedSupports.items[0]
-          ? "На этот период лучше всего опереться на: " + workedSupports.items[0].text + "."
-          : ""),
+        recommendation: supportRecommendation,
         meta: orientationImpact && orientationImpact.meta ? orientationImpact.meta : ("За " + model.daysLabel.toLowerCase())
       },
       hasBehaviorData: hasBehaviorData,
-      subtitle: "Что стоит за привычкой: " + state.currentHabit.name,
+      subtitle: "Что сейчас сильнее всего влияет на ритм \"" + state.currentHabit.name + "\"",
       setup: {
         model: setup,
         meta: "Готово " + setup.completed + " из " + setup.total + " шагов",
         title: !hasBehaviorData
-          ? "нсайтам нужны первые сигналы"
+          ? "Инсайтам нужны первые сигналы"
           : setup.nextStep && setup.nextStep.id === "assessment"
             ? "Теперь уточни стартовую нагрузку"
             : "Добавь личный контекст",
@@ -1334,6 +1497,7 @@
         period: "Окно риска: " + (summary.riskWindow || "—") + ". Главный триггер: " + String(summary.mainTrigger || "Другое").toLowerCase() + "." + (physical.topLabel ? " По телу чаще всего повторяется: " + physical.topLabel.toLowerCase() + "." : "")
       },
       workedSupports: workedSupports,
+      carryForward: carryForward,
       meta: {
         financialLoadText:
           (financialLoad.headline || "Финансовая нагрузка низкая") +

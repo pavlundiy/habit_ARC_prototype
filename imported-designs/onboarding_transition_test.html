@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onboarding Transition Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf9f6;
+      --shell:#ece7dd;
+      --surface:#ffffff;
+      --surface-soft:#f6f1e8;
+      --text:#1e1c18;
+      --muted:#8a8880;
+      --line:#e6ded2;
+      --line-strong:#d7d0c4;
+      --accent:#1D9E75;
+      --accent-soft:#E1F5EE;
+      --accent-soft-border:#aee4d2;
+      --accent-text:#0b6f58;
+      --hero:#22201c;
+      --shadow:0 18px 44px rgba(58,42,22,.10);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:#171512;
+      font-family:"DM Sans",system-ui,sans-serif;
+      color:var(--text);
+      padding:24px;
+    }
+
+    .phone{
+      width:390px;
+      min-height:844px;
+      background:linear-gradient(180deg,#f8f6f1 0%, #f7f4ed 100%);
+      border:14px solid #1f1b16;
+      border-radius:42px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 28px 72px rgba(0,0,0,.32);
+    }
+
+    .notch{
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:30px;
+      border-radius:0 0 16px 16px;
+      background:#0f0d0b;
+      z-index:3;
+    }
+
+    .screen{
+      min-height:100%;
+      padding:22px 22px 34px;
+      background:
+        radial-gradient(circle at 84% 14%, rgba(29,158,117,.08), transparent 22%),
+        radial-gradient(circle at 18% 80%, rgba(239,159,39,.06), transparent 16%),
+        var(--bg);
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#6b6860;
+      font-size:14px;
+      margin-bottom:14px;
+      padding:0 2px;
+    }
+
+    .flow-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:26px;
+    }
+
+    .ghost{
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      font:600 14px/1 "DM Sans",system-ui,sans-serif;
+      padding:0;
+      cursor:pointer;
+    }
+
+    .ghost[hidden]{display:none}
+
+    .progress{
+      flex:1;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+    }
+
+    .progress-bar{
+      height:4px;
+      border-radius:999px;
+      background:#ddd6ca;
+      overflow:hidden;
+    }
+
+    .progress-bar::after{
+      content:"";
+      display:block;
+      width:0;
+      height:100%;
+      background:var(--accent);
+      transition:width .24s ease;
+    }
+
+    .progress-bar.done::after,
+    .progress-bar.active::after{width:100%}
+
+    .panel{
+      display:none;
+      min-height:690px;
+      flex-direction:column;
+    }
+
+    .panel.active{display:flex}
+
+    .icon{
+      width:62px;
+      height:62px;
+      border-radius:18px;
+      background:rgba(225,245,238,.92);
+      border:1px solid rgba(174,228,210,.9);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--accent);
+      font-size:28px;
+      font-weight:700;
+      margin-bottom:22px;
+    }
+
+    .title{
+      font-size:34px;
+      line-height:1.06;
+      letter-spacing:-.05em;
+      font-weight:700;
+      margin:0 0 14px;
+      max-width:280px;
+    }
+
+    .copy{
+      font-size:15px;
+      line-height:1.58;
+      color:#666158;
+      max-width:300px;
+    }
+
+    .copy + .copy{margin-top:14px}
+
+    .option-stack{
+      display:grid;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .option{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
+      padding:16px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+    }
+
+    .option.active{
+      border-color:var(--accent-soft-border);
+      background:linear-gradient(180deg,#f7fdf9 0%, #f1faf6 100%);
+    }
+
+    .option-copy{min-width:0}
+    .option-title{font-size:17px;font-weight:700;letter-spacing:-.02em}
+    .option-meta{margin-top:4px;font-size:13px;line-height:1.45;color:var(--muted)}
+    .option-mark{
+      width:22px;height:22px;border-radius:999px;border:1.5px solid var(--line-strong);flex:0 0 auto;
+      position:relative;background:#fff;
+    }
+    .option.active .option-mark{border-color:var(--accent)}
+    .option.active .option-mark::after{
+      content:"";position:absolute;inset:4px;border-radius:999px;background:var(--accent);
+    }
+
+    .ritual-card{
+      margin-top:6px;
+      padding:18px 16px;
+      border-radius:24px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+
+    .ritual-field{
+      width:100%;
+      min-height:108px;
+      border-radius:18px;
+      border:2px solid var(--accent);
+      background:rgba(225,245,238,.55);
+      padding:16px 15px;
+      resize:none;
+      font:500 16px/1.46 "DM Sans",system-ui,sans-serif;
+      color:var(--text);
+      outline:none;
+    }
+
+    .ritual-meta{
+      margin-top:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      padding:10px 14px;
+      font:500 14px/1 "DM Sans",system-ui,sans-serif;
+      color:#49443c;
+      cursor:pointer;
+    }
+
+    .chip.active{
+      border-color:var(--accent);
+      background:var(--accent-soft);
+      color:var(--accent-text);
+    }
+
+    .finish-wrap{
+      margin:auto 0;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .finish-check{
+      width:72px;
+      height:72px;
+      border-radius:24px;
+      background:rgba(225,245,238,.94);
+      border:1px solid rgba(174,228,210,.95);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--accent);
+      font-size:40px;
+      margin-bottom:22px;
+    }
+
+    .finish-title{
+      font-size:34px;
+      line-height:1.08;
+      letter-spacing:-.05em;
+      font-weight:700;
+      margin:0 0 14px;
+      max-width:260px;
+    }
+
+    .finish-copy{
+      font-size:15px;
+      line-height:1.6;
+      color:#666158;
+      max-width:270px;
+    }
+
+    .finish-anchor{
+      width:100%;
+      margin-top:22px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--accent-soft-border);
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+
+    .finish-anchor-label{
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:800;
+      color:var(--accent);
+      margin-bottom:7px;
+    }
+
+    .finish-anchor-text{
+      font-size:18px;
+      line-height:1.35;
+      font-weight:500;
+      letter-spacing:-.02em;
+    }
+
+    .morning-card{
+      margin-top:2px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:18px 16px 16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .morning-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 84% 18%, rgba(29,158,117,.08), transparent 26%),
+        radial-gradient(circle at 22% 80%, rgba(29,158,117,.05), transparent 22%);
+      pointer-events:none;
+    }
+
+    .morning-dots{
+      position:absolute;
+      right:16px;
+      top:14px;
+      display:inline-flex;
+      gap:8px;
+      padding:8px 11px;
+      border-radius:999px;
+      background:rgba(225,245,238,.9);
+      border:1px solid rgba(174,228,210,.95);
+      z-index:1;
+    }
+
+    .morning-dot{width:8px;height:8px;border-radius:999px;background:#bfe6d8}
+    .morning-dot.is-on{width:10px;height:10px;background:var(--accent);box-shadow:0 0 0 4px rgba(29,158,117,.12)}
+
+    .morning-kicker,.morning-title,.morning-copy,.morning-summary{
+      position:relative;z-index:1;max-width:calc(100% - 96px);
+    }
+
+    .morning-kicker{
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:800;
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .morning-title{
+      font-size:21px;
+      line-height:1.2;
+      letter-spacing:-.03em;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .morning-copy{
+      font-size:14px;
+      line-height:1.52;
+      color:#69655d;
+      margin-bottom:12px;
+    }
+
+    .morning-summary{
+      padding:13px 14px;
+      border-radius:16px;
+      background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);
+      border:1px solid var(--accent-soft-border);
+    }
+
+    .morning-summary-label{
+      font-size:10px;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      font-weight:800;
+      color:var(--accent);
+      margin-bottom:6px;
+    }
+
+    .morning-summary-text{
+      font-size:16px;
+      line-height:1.42;
+      font-weight:500;
+      letter-spacing:-.02em;
+    }
+
+    .memory-card{
+      margin-top:14px;
+      padding:16px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:var(--surface);
+      box-shadow:var(--shadow);
+    }
+
+    .memory-title{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:800;
+      color:#aba296;
+      margin-bottom:10px;
+    }
+
+    .memory-item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .memory-item + .memory-item{margin-top:10px}
+    .memory-dot{
+      width:9px;height:9px;border-radius:999px;background:var(--accent);margin-top:6px;flex:0 0 auto;
+    }
+
+    .memory-text{font-size:14px;line-height:1.5;color:#3d3933}
+    .memory-meta{margin-top:2px;font-size:12px;color:#a29a8f}
+
+    .bottom{
+      margin-top:auto;
+      padding-top:22px;
+    }
+
+    .primary-btn{
+      width:100%;
+      border:0;
+      border-radius:18px;
+      background:var(--hero);
+      color:#f7f4ed;
+      font:700 18px/1 "DM Sans",system-ui,sans-serif;
+      padding:17px 18px;
+      cursor:pointer;
+      box-shadow:0 16px 28px rgba(34,29,23,.18);
+    }
+
+    .primary-btn.is-accent{
+      background:var(--accent);
+      color:#f4fff9;
+      box-shadow:0 16px 28px rgba(29,158,117,.18);
+    }
+
+    .meta-note{
+      text-align:center;
+      margin-top:12px;
+      font-size:12px;
+      color:#b1aaa0;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="status">
+        <span>11:24</span>
+        <span>● ● ●</span>
+      </div>
+
+      <div class="flow-head">
+        <button class="ghost" id="backBtn" hidden>Назад</button>
+        <div class="progress">
+          <div class="progress-bar active"></div>
+          <div class="progress-bar"></div>
+          <div class="progress-bar"></div>
+          <div class="progress-bar"></div>
+        </div>
+        <button class="ghost" id="skipBtn">Пропустить</button>
+      </div>
+
+      <section class="panel active" data-step="0">
+        <div class="icon">•</div>
+        <h1 class="title">Это не трекер. Это дневник с памятью.</h1>
+        <p class="copy">Ты фиксируешь моменты, а приложение возвращает рабочие опоры в нужный момент.</p>
+        <p class="copy">Без оценок и давления. Только честный контакт с собой.</p>
+        <div class="bottom">
+          <button class="primary-btn" id="step1Btn">Понятно, продолжим</button>
+          <div class="meta-note">шаг 1 из 4 · займёт 2 минуты</div>
+        </div>
+      </section>
+
+      <section class="panel" data-step="1">
+        <div class="icon">02</div>
+        <h1 class="title">С какой привычкой работаем?</h1>
+        <div class="option-stack">
+          <button class="option active" type="button">
+            <div class="option-copy">
+              <div class="option-title">Курение</div>
+              <div class="option-meta">сигареты, вейп</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+          <button class="option" type="button">
+            <div class="option-copy">
+              <div class="option-title">Алкоголь</div>
+              <div class="option-meta">пиво, вино, крепкое</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+          <button class="option" type="button">
+            <div class="option-copy">
+              <div class="option-title">Телефон</div>
+              <div class="option-meta">соцсети, скроллинг</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+        </div>
+        <div class="bottom">
+          <button class="primary-btn" id="step2Btn">Продолжить</button>
+          <div class="meta-note">шаг 2 из 4</div>
+        </div>
+      </section>
+
+      <section class="panel" data-step="2">
+        <div class="icon">03</div>
+        <h1 class="title">Какая цель на первый месяц?</h1>
+        <p class="copy">Не идеальная цель — честная цель.</p>
+        <div class="option-stack" style="margin-top:18px">
+          <button class="option" type="button">
+            <div class="option-copy">
+              <div class="option-title">Понять свои триггеры</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+          <button class="option active" type="button">
+            <div class="option-copy">
+              <div class="option-title">Снизить количество</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+          <button class="option" type="button">
+            <div class="option-copy">
+              <div class="option-title">Просто быть честным с собой</div>
+            </div>
+            <span class="option-mark"></span>
+          </button>
+        </div>
+        <div class="bottom">
+          <button class="primary-btn" id="step3Btn">Продолжить</button>
+          <div class="meta-note">шаг 3 из 4</div>
+        </div>
+      </section>
+
+      <section class="panel" data-step="3">
+        <div class="icon">04</div>
+        <h1 class="title">Первый ориентир.</h1>
+        <p class="copy">Что важно сохранить уже сегодня? Одной фразой.</p>
+        <div class="ritual-card">
+          <textarea class="ritual-field">Не реагировать автоматически</textarea>
+          <div class="ritual-meta">
+            <span>Можно изменить в любой момент</span>
+            <span>31 / 120</span>
+          </div>
+          <div class="chip-row">
+            <button class="chip">Замечать себя</button>
+            <button class="chip">Пауза перед порывом</button>
+            <button class="chip active">Не на автопилоте</button>
+          </div>
+        </div>
+        <div class="bottom">
+          <button class="primary-btn" id="step4Btn">Начать с этим ориентиром</button>
+          <div class="meta-note">шаг 4 из 4</div>
+        </div>
+      </section>
+
+      <section class="panel" data-step="4">
+        <div class="finish-wrap">
+          <div class="finish-check">✓</div>
+          <h1 class="finish-title">Всё готово. Начинаем.</h1>
+          <p class="finish-copy">Ориентир поставлен. Вечером вернёмся к нему и закроем первую дугу.</p>
+          <div class="finish-anchor">
+            <div class="finish-anchor-label">Твой ориентир сегодня</div>
+            <div class="finish-anchor-text">«Не реагировать автоматически»</div>
+          </div>
+          <div class="bottom" style="width:100%;padding-top:20px">
+            <button class="primary-btn is-accent" id="openAppBtn">Открыть приложение →</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-step="5">
+        <div class="status" style="margin-bottom:12px;padding:0">
+          <span>Доброе утро</span>
+          <span>12 дней</span>
+        </div>
+        <div class="morning-card">
+          <div class="morning-dots">
+            <span class="morning-dot is-on"></span>
+            <span class="morning-dot"></span>
+            <span class="morning-dot"></span>
+          </div>
+          <div class="morning-kicker">Утренний ритуал</div>
+          <div class="morning-title">Что сегодня важно удержать?</div>
+          <div class="morning-copy">Одна короткая мысль помогает не заходить в день на автопилоте.</div>
+          <div class="morning-summary">
+            <div class="morning-summary-label">Ориентир на сегодня</div>
+            <div class="morning-summary-text">Не реагировать автоматически</div>
+          </div>
+        </div>
+        <div class="memory-card">
+          <div class="memory-title">Приложение помнит</div>
+          <div class="memory-item">
+            <div class="memory-dot"></div>
+            <div>
+              <div class="memory-text">Тебе уже помогало выйти из автоматизма до первого порыва.</div>
+              <div class="memory-meta">это уже можно попробовать снова</div>
+            </div>
+          </div>
+          <div class="memory-item">
+            <div class="memory-dot"></div>
+            <div>
+              <div class="memory-text">С ориентиром день обычно проходит ровнее.</div>
+              <div class="memory-meta">даже если не идеально весь день</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom">
+          <button class="primary-btn is-accent" id="doneBtn">Вот это уже похоже</button>
+          <div class="meta-note">первое утро без пустого экрана</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const panels = Array.from(document.querySelectorAll(".panel"));
+    const progressBars = Array.from(document.querySelectorAll(".progress-bar"));
+    const backBtn = document.getElementById("backBtn");
+    const skipBtn = document.getElementById("skipBtn");
+    let step = 0;
+
+    function renderStep() {
+      panels.forEach((panel, index) => panel.classList.toggle("active", index === step));
+      progressBars.forEach((bar, index) => {
+        bar.classList.toggle("done", index < Math.min(step, 4));
+        bar.classList.toggle("active", index === Math.min(step, 3));
+      });
+      backBtn.hidden = step === 0 || step > 4;
+      skipBtn.hidden = step > 4;
+      if (step === 5) {
+        backBtn.hidden = false;
+        skipBtn.hidden = true;
+      }
+    }
+
+    function goTo(next) {
+      step = Math.max(0, Math.min(next, panels.length - 1));
+      renderStep();
+    }
+
+    document.getElementById("step1Btn").addEventListener("click", () => goTo(1));
+    document.getElementById("step2Btn").addEventListener("click", () => goTo(2));
+    document.getElementById("step3Btn").addEventListener("click", () => goTo(3));
+    document.getElementById("step4Btn").addEventListener("click", () => goTo(4));
+    document.getElementById("openAppBtn").addEventListener("click", () => goTo(5));
+    document.getElementById("doneBtn").addEventListener("click", () => goTo(4));
+    backBtn.addEventListener("click", () => goTo(step - 1));
+    skipBtn.addEventListener("click", () => goTo(4));
+    renderStep();
+  </script>
+</body>
+</html>

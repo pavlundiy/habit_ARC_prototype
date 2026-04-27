@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evening Ritual Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf9f6;
+      --shell:#ece7dd;
+      --surface:#ffffff;
+      --surface-soft:#f6f1e8;
+      --text:#1e1c18;
+      --muted:#8a8880;
+      --line:#e6ded2;
+      --line-strong:#d7d0c4;
+      --accent:#1D9E75;
+      --accent-soft:#E1F5EE;
+      --accent-text:#0b6f58;
+      --accent-soft-border:#aee4d2;
+      --hero:#1f1b16;
+      --warn:#ef9f27;
+      --shadow:0 18px 44px rgba(58,42,22,.10);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:#171512;
+      font-family:"DM Sans",system-ui,sans-serif;
+      color:var(--text);
+    }
+
+    .phone{
+      width:390px;
+      min-height:844px;
+      background:linear-gradient(180deg,#f8f6f1 0%, #f7f4ed 100%);
+      border:14px solid #1f1b16;
+      border-radius:42px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 28px 72px rgba(0,0,0,.32);
+    }
+
+    .notch{
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:30px;
+      border-radius:0 0 16px 16px;
+      background:#0f0d0b;
+      z-index:2;
+    }
+
+    .screen{
+      min-height:100%;
+      padding:26px 22px 34px;
+      background:
+        radial-gradient(circle at 84% 18%, rgba(29,158,117,.07), transparent 22%),
+        radial-gradient(circle at 24% 72%, rgba(239,159,39,.06), transparent 20%),
+        var(--bg);
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#6b6860;
+      font-size:14px;
+      margin-bottom:18px;
+      padding:0 2px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .header-copy{
+      min-width:0;
+    }
+
+    .header-time{
+      font-size:13px;
+      color:#a5a097;
+      margin-bottom:4px;
+    }
+
+    .header-title{
+      font-size:38px;
+      line-height:1.02;
+      letter-spacing:-.05em;
+      font-weight:700;
+      margin:0;
+    }
+
+    .phase-pill{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#edf8f3;
+      border:1px solid #d6eee5;
+      color:var(--accent-text);
+      box-shadow:0 1px 0 rgba(255,255,255,.75) inset;
+    }
+
+    .phase-dots{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .phase-dot{
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:#bfe6d8;
+    }
+
+    .phase-dot.is-done{background:#31b486}
+    .phase-dot.is-now{
+      width:10px;
+      height:10px;
+      background:var(--accent);
+      box-shadow:0 0 0 4px rgba(29,158,117,.12);
+    }
+
+    .phase-label{
+      font-size:11.5px;
+      font-weight:700;
+      letter-spacing:-.01em;
+      white-space:nowrap;
+    }
+
+    .anchor-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:14px 15px 15px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+      margin-bottom:18px;
+    }
+
+    .anchor-card::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:14px;
+      bottom:14px;
+      width:3px;
+      border-radius:99px;
+      background:linear-gradient(180deg,#1D9E75 0%, #7fd6b7 100%);
+    }
+
+    .anchor-kicker{
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#c29f62;
+      margin-left:12px;
+      margin-bottom:8px;
+    }
+
+    .anchor-text{
+      margin-left:12px;
+      font-size:17px;
+      line-height:1.36;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .anchor-meta{
+      margin-left:12px;
+      margin-top:7px;
+      font-size:12.5px;
+      color:#9f998f;
+    }
+
+    .question-block{
+      margin-top:6px;
+    }
+
+    .question-title{
+      font-size:30px;
+      line-height:1.14;
+      letter-spacing:-.05em;
+      font-weight:800;
+      margin:0 0 10px;
+    }
+
+    .question-copy{
+      font-size:14.5px;
+      line-height:1.52;
+      color:#716d65;
+      margin:0 0 16px;
+      max-width:320px;
+    }
+
+    .option-list{
+      display:grid;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .option{
+      width:100%;
+      border:none;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 15px;
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      text-align:left;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:border-color .18s ease, background .18s ease, transform .15s ease, box-shadow .18s ease;
+    }
+
+    .option:hover{border-color:#d8d1c5}
+    .option:active{transform:translateY(1px) scale(.995)}
+    .option.is-selected{
+      background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);
+      border-color:var(--accent-soft-border);
+      box-shadow:0 10px 24px rgba(29,158,117,.10);
+    }
+
+    .option-radio{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      border:1.5px solid #d7d0c4;
+      margin-top:2px;
+      position:relative;
+      flex:0 0 auto;
+      background:#fff;
+    }
+
+    .option.is-selected .option-radio{
+      border-color:var(--accent);
+      background:#effaf5;
+    }
+
+    .option.is-selected .option-radio::after{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border-radius:999px;
+      background:var(--accent);
+    }
+
+    .option-copy{
+      min-width:0;
+      flex:1 1 auto;
+    }
+
+    .option-title{
+      font-size:18px;
+      line-height:1.18;
+      letter-spacing:-.03em;
+      font-weight:700;
+      margin-bottom:3px;
+    }
+
+    .option-sub{
+      font-size:13.5px;
+      line-height:1.42;
+      color:#868177;
+    }
+
+    .cta{
+      width:100%;
+      border:none;
+      border-radius:16px;
+      padding:15px 18px;
+      background:var(--hero);
+      color:#fff;
+      font:inherit;
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      cursor:pointer;
+      box-shadow:0 16px 30px rgba(31,27,22,.18);
+      transition:transform .16s ease, filter .16s ease;
+    }
+
+    .cta:active{transform:translateY(1px) scale(.995)}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="status">
+        <span>21:08</span>
+        <span>пн</span>
+      </div>
+
+      <div class="header">
+        <div class="header-copy">
+          <div class="header-time">21:08 · вечер</div>
+          <h1 class="header-title">Добрый вечер</h1>
+        </div>
+
+        <div class="phase-pill" aria-hidden="true">
+          <div class="phase-dots">
+            <div class="phase-dot is-done"></div>
+            <div class="phase-dot is-done"></div>
+            <div class="phase-dot is-now"></div>
+          </div>
+          <div class="phase-label">вечер</div>
+        </div>
+      </div>
+
+      <div class="anchor-card">
+        <div class="anchor-kicker">Ориентир сегодня</div>
+        <div class="anchor-text">«Спокойствие после обеда — не реагировать на первый порыв»</div>
+        <div class="anchor-meta">поставил утром в 08:14</div>
+      </div>
+
+      <div class="question-block">
+        <h2 class="question-title">Удалось удержать ориентир?</h2>
+        <p class="question-copy">Один честный ответ важнее красивого. Мы просто закрываем день и видим его яснее.</p>
+
+        <div class="option-list">
+          <button class="option" type="button" data-answer="yes">
+            <div class="option-radio"></div>
+            <div class="option-copy">
+              <div class="option-title">Да</div>
+              <div class="option-sub">в основном получилось</div>
+            </div>
+          </button>
+
+          <button class="option" type="button" data-answer="partial">
+            <div class="option-radio"></div>
+            <div class="option-copy">
+              <div class="option-title">Частично</div>
+              <div class="option-sub">были моменты, но день не развалился полностью</div>
+            </div>
+          </button>
+
+          <button class="option" type="button" data-answer="present">
+            <div class="option-radio"></div>
+            <div class="option-copy">
+              <div class="option-title">Нет, но я здесь</div>
+              <div class="option-sub">честный ответ тоже важен</div>
+            </div>
+          </button>
+        </div>
+
+        <button class="cta" type="button" id="close-day-btn">Закрыть день</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var selected = "";
+      var options = Array.prototype.slice.call(document.querySelectorAll(".option"));
+      var closeBtn = document.getElementById("close-day-btn");
+
+      function sync() {
+        options.forEach(function (node) {
+          node.classList.toggle("is-selected", node.getAttribute("data-answer") === selected);
+        });
+        closeBtn.textContent = selected ? "Закрыть день" : "Выбрать ответ";
+      }
+
+      options.forEach(function (node) {
+        node.addEventListener("click", function () {
+          selected = node.getAttribute("data-answer") || "";
+          sync();
+        });
+      });
+
+      sync();
+    })();
+  </script>
+</body>
+</html>

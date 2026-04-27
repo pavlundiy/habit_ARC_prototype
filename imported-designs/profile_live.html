@@ -1125,14 +1125,16 @@ function consumeOnboardingIntent() {
 
 function saveFinanceHealth() {
   var state = window.HabitStore.getState();
+  var currentHabit = state.currentHabit || { id: "smoking" };
+  var config = getCurrentHabitConfig(state);
   window.HabitStore.saveHabitConfig({
-    habitId: state.currentHabit.id,
+    habitId: currentHabit.id,
     costPerEpisode: document.getElementById("config-cost-input").value,
     minutesPerEpisode: document.getElementById("config-minutes-input").value,
     currencySymbol: config.currencySymbol || "₽"
   });
   window.HabitStore.saveHealthMarkers({
-    habitId: state.currentHabit.id,
+    habitId: currentHabit.id,
     markers: {
       sleepHours: document.getElementById("health-sleep-input").value,
       restingHeartRate: document.getElementById("health-hr-input").value,
@@ -1142,7 +1144,9 @@ function saveFinanceHealth() {
       waistCm: document.getElementById("health-waist-input").value
     }
   });
+  profileDetailState["finance-detail-card"] = true;
   closeFinanceHealthSheet();
+  renderProfile();
   setExportStatusKey("finance_saved");
 }
 
@@ -1544,6 +1548,28 @@ function setProfileDetailSummaries(state, analytics) {
 }
 
 function renderFinanceHealth(state, analytics) {
+  var openFinanceBtn = document.getElementById("open-finance-health-btn");
+  var refreshHealthBtn = document.getElementById("reset-health-hint-btn");
+  var config = getCurrentHabitConfig(state);
+  var savedContext = !!(
+    (config.costPerEpisode || config.costPerEpisode === 0) &&
+    String(config.costPerEpisode).trim() !== ""
+  ) || !!(
+    (config.minutesPerEpisode || config.minutesPerEpisode === 0) &&
+    String(config.minutesPerEpisode).trim() !== ""
+  ) || !!(
+    config.healthMarkers && Object.keys(config.healthMarkers).some(function (key) {
+      return config.healthMarkers[key] != null && String(config.healthMarkers[key]).trim() !== "";
+    })
+  );
+
+  if (openFinanceBtn) {
+    openFinanceBtn.textContent = savedContext ? "Изменить контекст" : "Настроить";
+  }
+  if (refreshHealthBtn) {
+    refreshHealthBtn.textContent = savedContext ? "Обновить маркеры" : "Заполнить маркеры";
+  }
+
   if (analytics && analytics.monthSpent && analytics.monthProjection && analytics.episodeMeta) {
     document.getElementById("finance-month-spent").textContent = analytics.monthSpent;
     document.getElementById("finance-month-projection").textContent = analytics.monthProjection;
@@ -1556,7 +1582,6 @@ function renderFinanceHealth(state, analytics) {
     document.getElementById("finance-health-note").textContent = analytics.note;
     return;
   }
-  var config = getCurrentHabitConfig(state);
   var health = analytics.health || { markers: {}, filledCount: 0, totalCount: 0 };
   var finance = analytics.finance || {};
   var markers = health.markers || {};

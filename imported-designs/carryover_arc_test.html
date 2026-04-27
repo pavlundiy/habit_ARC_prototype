@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carryover Arc Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf9f6;
+      --shell:#ece7dd;
+      --surface:#ffffff;
+      --surface-soft:#f6f1e8;
+      --text:#1e1c18;
+      --muted:#8a8880;
+      --line:#e6ded2;
+      --line-strong:#d7d0c4;
+      --accent:#1D9E75;
+      --accent-soft:#E1F5EE;
+      --accent-text:#0b6f58;
+      --warn:#ef9f27;
+      --warn-soft:#fff7ec;
+      --shadow:0 18px 42px rgba(58,42,22,.10);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:#171512;
+      color:var(--text);
+      font-family:"DM Sans",system-ui,sans-serif;
+    }
+
+    .phone{
+      width:390px;
+      min-height:844px;
+      background:linear-gradient(180deg,#f8f6f1 0%, #f7f4ed 100%);
+      border:14px solid #1f1b16;
+      border-radius:42px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 28px 72px rgba(0,0,0,.32);
+    }
+
+    .notch{
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:30px;
+      border-radius:0 0 16px 16px;
+      background:#0f0d0b;
+      z-index:2;
+    }
+
+    .screen{
+      min-height:100%;
+      padding:26px 22px 34px;
+      background:
+        radial-gradient(circle at 84% 20%, rgba(29,158,117,.06), transparent 22%),
+        radial-gradient(circle at 18% 76%, rgba(239,159,39,.06), transparent 18%),
+        var(--bg);
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#6b6860;
+      font-size:14px;
+      margin-bottom:18px;
+      padding:0 2px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .header-copy{min-width:0}
+    .header-time{font-size:13px;color:#a5a097;margin-bottom:4px}
+    .header-title{
+      margin:0;
+      font-size:38px;
+      line-height:1.02;
+      letter-spacing:-.05em;
+      font-weight:700;
+    }
+
+    .phase-pill{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#edf8f3;
+      border:1px solid #d6eee5;
+      color:var(--accent-text);
+      box-shadow:0 1px 0 rgba(255,255,255,.75) inset;
+    }
+
+    .phase-dots{display:flex;align-items:center;gap:6px}
+    .phase-dot{width:7px;height:7px;border-radius:999px;background:#bfe6d8}
+    .phase-dot.is-now{width:10px;height:10px;background:var(--accent);box-shadow:0 0 0 4px rgba(29,158,117,.12)}
+    .phase-dot.is-soft{background:#d7efe6}
+    .phase-label{font-size:11.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+
+    .carry-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .carry-kicker{
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#b19564;
+      margin-bottom:10px;
+    }
+
+    .carry-title{
+      font-size:30px;
+      line-height:1.12;
+      letter-spacing:-.05em;
+      font-weight:800;
+      margin:0 0 10px;
+    }
+
+    .carry-copy{
+      font-size:14.5px;
+      line-height:1.52;
+      color:#6f6b63;
+      margin:0 0 14px;
+      max-width:320px;
+    }
+
+    .anchor-card{
+      position:relative;
+      background:linear-gradient(180deg,#fffaf0 0%, #f8f0e3 100%);
+      border:1px solid #ecd8b6;
+      border-radius:18px;
+      padding:14px 14px 14px 16px;
+      margin-bottom:16px;
+      overflow:hidden;
+    }
+
+    .anchor-card::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:14px;
+      bottom:14px;
+      width:3px;
+      border-radius:99px;
+      background:linear-gradient(180deg,#ef9f27 0%, #f5ca78 100%);
+    }
+
+    .anchor-label{
+      margin-left:10px;
+      font-size:10.5px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#b19564;
+      margin-bottom:7px;
+    }
+
+    .anchor-text{
+      margin-left:10px;
+      font-size:18px;
+      line-height:1.36;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .question{
+      font-size:22px;
+      line-height:1.18;
+      letter-spacing:-.03em;
+      font-weight:700;
+      margin:0 0 12px;
+    }
+
+    .choices{
+      display:grid;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .choice{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--surface);
+      padding:14px 14px;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      text-align:left;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:border-color .16s ease, background .16s ease, transform .14s ease;
+    }
+
+    .choice:active{transform:translateY(1px)}
+    .choice.is-selected{
+      background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);
+      border-color:#aee4d2;
+    }
+
+    .choice-radio{
+      width:20px;
+      height:20px;
+      border-radius:999px;
+      border:1.5px solid #d7d0c4;
+      background:#fff;
+      margin-top:2px;
+      position:relative;
+      flex:0 0 auto;
+    }
+
+    .choice.is-selected .choice-radio{border-color:var(--accent)}
+    .choice.is-selected .choice-radio::after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border-radius:999px;
+      background:var(--accent);
+    }
+
+    .choice-copy{min-width:0;flex:1 1 auto}
+    .choice-title{
+      font-size:17px;
+      line-height:1.18;
+      font-weight:700;
+      letter-spacing:-.02em;
+      margin-bottom:3px;
+    }
+    .choice-sub{
+      font-size:12.5px;
+      line-height:1.42;
+      color:#898379;
+    }
+
+    .carry-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:4px;
+    }
+
+    .carry-note{
+      font-size:12.5px;
+      line-height:1.45;
+      color:#868177;
+      flex:1 1 auto;
+    }
+
+    .carry-btn{
+      border:none;
+      border-radius:16px;
+      padding:14px 18px;
+      background:#1f1b16;
+      color:#fff;
+      font:inherit;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      cursor:pointer;
+      white-space:nowrap;
+      box-shadow:0 16px 30px rgba(31,27,22,.18);
+    }
+
+    .carry-btn:disabled{
+      background:#c8c2b8;
+      color:#faf9f6;
+      box-shadow:none;
+      cursor:default;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="status">
+        <span>08:09</span>
+        <span>сб</span>
+      </div>
+
+      <div class="header">
+        <div class="header-copy">
+          <div class="header-time">08:09 · утро</div>
+          <h1 class="header-title">Доброе утро</h1>
+        </div>
+
+        <div class="phase-pill">
+          <div class="phase-dots">
+            <div class="phase-dot is-now"></div>
+            <div class="phase-dot is-soft"></div>
+            <div class="phase-dot is-soft"></div>
+          </div>
+          <div class="phase-label">дуга</div>
+        </div>
+      </div>
+
+      <div class="carry-card">
+        <div class="carry-kicker">Сначала — вчера</div>
+        <h2 class="carry-title">Вчера осталось открытым</h2>
+        <p class="carry-copy">Один короткий ответ, и вчера мягко закроется. Потом можно спокойно перейти к сегодняшнему дню.</p>
+
+        <div class="anchor-card">
+          <div class="anchor-label">Вчерашний ориентир</div>
+          <div class="anchor-text">«Спокойствие после обеда — не реагировать на первый порыв»</div>
+        </div>
+
+        <div class="question">Как вчера прошло с этим?</div>
+
+        <div class="choices" id="carry-choices">
+          <button class="choice" type="button" data-choice="yes">
+            <div class="choice-radio"></div>
+            <div class="choice-copy">
+              <div class="choice-title">Да, удержал</div>
+              <div class="choice-sub">в целом получилось</div>
+            </div>
+          </button>
+
+          <button class="choice" type="button" data-choice="partial">
+            <div class="choice-radio"></div>
+            <div class="choice-copy">
+              <div class="choice-title">Частично</div>
+              <div class="choice-sub">были сложные моменты</div>
+            </div>
+          </button>
+
+          <button class="choice" type="button" data-choice="present">
+            <div class="choice-radio"></div>
+            <div class="choice-copy">
+              <div class="choice-title">Нет, я здесь</div>
+              <div class="choice-sub">честный ответ тоже закрывает дугу</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="carry-footer">
+          <div class="carry-note">Сначала закрываем вчера. Сегодня начнётся следующим шагом.</div>
+          <button class="carry-btn" id="carry-btn" type="button" disabled>Выбрать ответ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var selected = "";
+      var root = document.getElementById("carry-choices");
+      var button = document.getElementById("carry-btn");
+
+      function sync() {
+        root.querySelectorAll("[data-choice]").forEach(function (node) {
+          node.classList.toggle("is-selected", node.dataset.choice === selected);
+        });
+        button.disabled = !selected;
+        button.textContent = selected ? "Теперь — сегодня" : "Выбрать ответ";
+      }
+
+      root.addEventListener("click", function (event) {
+        var target = event.target.closest("[data-choice]");
+        if (!target) return;
+        selected = target.dataset.choice || "";
+        sync();
+      });
+
+      sync();
+    })();
+  </script>
+</body>
+</html>

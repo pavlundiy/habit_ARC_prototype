@@ -154,6 +154,18 @@
     return slips.length ? slips.join("\n") : "- эпизодов пока мало";
   }
 
+  function buildSavedTimeLine(bundle) {
+    var derived = bundle && bundle.derived ? bundle.derived : {};
+    var label = normalizeText(derived.savedTimeLabel || "");
+    if (label) return label;
+    var minutes = Math.max(0, Math.round(Number(derived.savedTimeMinutes) || 0));
+    if (!minutes) return "0 минут";
+    if (minutes < 60) return minutes + " минут";
+    var hours = Math.floor(minutes / 60);
+    var rest = minutes % 60;
+    return rest ? (hours + " ч " + rest + " мин") : (hours + " ч");
+  }
+
   function buildUserPrompt(bundle) {
     var analytics30 = bundle.analytics && bundle.analytics["30d"] ? bundle.analytics["30d"] : {};
     var summary30 = analytics30.summary || {};
@@ -196,6 +208,8 @@
       "- Уровень риска: " + normalizeText(summary30.riskLevel || "данных мало"),
       "- Окно риска: " + normalizeText(summary30.riskWindow || "данных мало"),
       "- Главный триггер: " + normalizeText(summary30.mainTrigger || "данных мало"),
+      "- Удержанных моментов: " + Math.max(0, Number(bundle.derived && bundle.derived.resistedCount) || 0),
+      "- Сохранённое время: " + buildSavedTimeLine(bundle),
       "- Инсайт: " + (insight || "данных пока мало"),
       "- Контекст: " + (narrative || "данных пока мало") + " " + wellbeingLine,
       "",

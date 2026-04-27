@@ -62,6 +62,15 @@
     return getDateLabel(date) + ", " + getTimeBucket(date.getHours());
   }
 
+  function formatSavedTime(minutes) {
+    var total = Math.max(0, Math.round(Number(minutes) || 0));
+    if (!total) return "0 минут";
+    if (total < 60) return total + " минут";
+    var hours = Math.floor(total / 60);
+    var rest = total % 60;
+    return rest ? (hours + " ч " + rest + " мин") : (hours + " ч");
+  }
+
   function compactSlip(item, helpers, profile, options) {
     var date = new Date(item.timestamp);
     return {
@@ -131,6 +140,10 @@
     var analytics90d = window.HabitAnalytics.getInsightViewModel("90d");
     var now = new Date();
     var diaryEntries = applyDiaryScope(state.diaryEntries, options);
+    var config = state.habitConfig || state.currentHabit.config || {};
+    var minutesPerEpisode = Number(config.minutesPerEpisode || 0);
+    var resistedCount = Array.isArray(state.resisted) ? state.resisted.length : 0;
+    var savedTimeMinutes = resistedCount * minutesPerEpisode;
 
     return {
       meta: {
@@ -151,6 +164,12 @@
         name: state.currentHabit.name,
         dailyLimit: state.profile.dailyLimit,
         config: state.habitConfig || state.currentHabit.config || null
+      },
+      derived: {
+        resistedCount: resistedCount,
+        minutesPerEpisode: minutesPerEpisode,
+        savedTimeMinutes: savedTimeMinutes,
+        savedTimeLabel: formatSavedTime(savedTimeMinutes)
       },
       assessment: state.assessment,
       analytics: {
@@ -188,6 +207,8 @@
       "- Уровень риска: " + analytics.summary.riskLevel,
       "- Главное окно риска: " + analytics.summary.riskWindow,
       "- Главный триггер: " + topTriggerLabel(analytics),
+      "- Удержанных моментов: " + ((bundle.derived && bundle.derived.resistedCount) || 0),
+      "- Сохранённое время: " + ((bundle.derived && bundle.derived.savedTimeLabel) || "0 минут"),
       "- Главный инсайт: " + analytics.summary.headline,
       "- Контекст: " + analytics.summary.narrative,
       "",
@@ -256,6 +277,8 @@
       "- Уровень риска: " + analytics.summary.riskLevel,
       "- Окно риска: " + analytics.summary.riskWindow,
       "- Главный триггер: " + topTriggerLabel(analytics),
+      "- Удержанных моментов: " + ((bundle.derived && bundle.derived.resistedCount) || 0),
+      "- Сохранённое время: " + ((bundle.derived && bundle.derived.savedTimeLabel) || "0 минут"),
       "- Инсайт: " + analytics.summary.headline,
       "- Контекст: " + analytics.summary.narrative,
       "",

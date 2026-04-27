@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Р“Р»Р°РІРЅР°СЏ</title>
+<title>Главная</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -95,6 +95,82 @@
   button:disabled{transform:none;cursor:default;}
   .app{max-width:360px;margin:0 auto;font-family:var(--font-sans);}
   .screen{background:var(--surface);border-radius:30px;border:1px solid var(--color-border-tertiary);overflow:hidden;box-shadow:var(--shadow-card);padding-bottom:112px;min-height:calc(100dvh - 24px);}
+  .screen.is-day-phase .ritual-card,
+  .screen.is-day-phase .live-event-card,
+  .screen.is-day-phase .hero,
+  .screen.is-day-phase .memory-card{margin-bottom:10px;}
+  .screen.is-evening-phase .ritual-card,
+  .screen.is-evening-phase .hero,
+  .screen.is-evening-phase .memory-card{margin-bottom:10px;}
+  .screen.is-day-phase .ritual-card{padding:13px 14px 12px;}
+  .screen.is-day-phase .ritual-title{font-size:14px;}
+  .screen.is-day-phase .ritual-copy{font-size:12px;line-height:1.54;}
+  .screen.is-day-phase .ritual-note{margin-top:8px;}
+  .screen.is-day-phase .hero{
+    padding:14px 12px 12px;
+    border-radius:22px;
+    background:linear-gradient(180deg, #2a251f 0%, #221d18 100%);
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 12px 24px rgba(28,22,15,0.18);
+  }
+  .screen.is-evening-phase .hero{
+    padding:14px 12px 12px;
+    border-radius:22px;
+    background:linear-gradient(180deg, #2a251f 0%, #221d18 100%);
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 12px 24px rgba(28,22,15,0.18);
+  }
+  .screen.is-day-phase .hero-top,
+  .screen.is-day-phase .hero-goal{display:none;}
+  .screen.is-evening-phase .hero-top,
+  .screen.is-evening-phase .hero-goal{display:none;}
+  .screen.is-day-phase .actions{gap:8px;}
+  .screen.is-day-phase .action-meta{margin-top:2px;}
+  .screen.is-evening-phase .actions{gap:8px;}
+  .screen.is-evening-phase .action-meta{margin-top:2px;}
+  .screen.is-day-phase .big-record-btn{
+    min-height:44px;
+    padding:7px 9px;
+    border-radius:16px;
+    border-color:rgba(255,255,255,0.07);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .screen.is-day-phase .secondary-btn{
+    min-height:38px;
+    padding:7px 9px;
+    border-radius:16px;
+    border-color:rgba(255,255,255,0.10);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .screen.is-evening-phase .big-record-btn{
+    min-height:44px;
+    padding:7px 9px;
+    border-radius:16px;
+    border-color:rgba(255,255,255,0.07);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .screen.is-evening-phase .secondary-btn{
+    min-height:38px;
+    padding:7px 9px;
+    border-radius:16px;
+    border-color:rgba(255,255,255,0.10);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .screen.is-day-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
+  .screen.is-day-phase .record-cta-title{font-size:12.5px;}
+  .screen.is-day-phase .record-cta-sub{font-size:10px;}
+  .screen.is-day-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
+  .screen.is-day-phase .record-cta-arrow{font-size:14px;}
+  .screen.is-day-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
+  .screen.is-day-phase .record-cta-title{font-size:12px;}
+  .screen.is-day-phase .record-cta-sub{font-size:9.5px;}
+  .screen.is-day-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
+  .screen.is-day-phase .record-cta-arrow{font-size:14px;}
+  .screen.is-evening-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
+  .screen.is-evening-phase .record-cta-title{font-size:12px;}
+  .screen.is-evening-phase .record-cta-sub{font-size:9.5px;}
+  .screen.is-evening-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
+  .screen.is-evening-phase .record-cta-arrow{font-size:14px;}
   html.embedded-shell .sticky-bottom{display:none;}
   .topbar{padding:18px 20px 12px;display:flex;justify-content:space-between;align-items:center;background:var(--surface);}
   .topbar-left .hello{font-size:11px;font-weight:600;letter-spacing:0.02em;color:var(--color-text-secondary);}
@@ -105,13 +181,13 @@
 .mood-text{flex:1;font-size:12px;color:var(--accent-text);line-height:1.55;}
 .mood-inline-badge{display:inline-flex;align-items:center;margin-bottom:6px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,0.42);border:1px solid rgba(29,158,117,0.18);color:#2b7f66;font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
 .mood-text strong{font-family:var(--font-display);font-weight:700;display:block;margin-bottom:3px;font-size:15px;line-height:1.2;letter-spacing:var(--tracking-tight);}
-.ritual-card{position:relative;isolation:isolate;margin:0 16px 14px;background:var(--surface-elevated);border-radius:18px;padding:14px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);display:block;overflow:hidden;}
+  .ritual-card{position:relative;isolation:isolate;margin:0 16px 12px;background:var(--surface-elevated);border-radius:18px;padding:13px 14px 12px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);display:block;overflow:hidden;}
 .ritual-card > *{position:relative;z-index:1;}
 .ritual-echo-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;opacity:0;transition:opacity .22s ease;}
 .ritual-echo-layer::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 72% 18%, rgba(29,158,117,.08), transparent 34%), radial-gradient(circle at 28% 62%, rgba(29,158,117,.05), transparent 42%);opacity:.9;}
 .ritual-card.echo-active .ritual-echo-layer{opacity:1;}
 .ritual-echo-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
-.ritual-echo-path{fill:none;stroke:rgba(29,158,117,.24);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:var(--opacity,.22);transform:rotate(var(--rot));transform-origin:160px 110px;}
+.ritual-echo-path{fill:none;stroke:rgba(29,158,117,.24);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:var(--opacity,.22);}
 .ritual-echo-path[data-tone="base"]{stroke:rgba(29,158,117,.28);}
 .ritual-echo-path[data-tone="worked"]{stroke:rgba(29,158,117,.36);}
 .ritual-echo-path[data-tone="soft"]{stroke:rgba(239,159,39,.28);}
@@ -132,22 +208,38 @@
   0%,100%{transform:scale(1.08);box-shadow:0 0 0 5px rgba(29,158,117,.1);}
   50%{transform:scale(1.2);box-shadow:0 0 0 8px rgba(29,158,117,.14);}
 }
-.ritual-kicker,.ritual-title,.ritual-copy{max-width:calc(100% - 92px);}
-.ritual-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);font-weight:700;min-height:22px;padding-right:4px;}
-.ritual-title{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-top:8px;}
-.ritual-copy{font-size:12.5px;color:var(--color-body);line-height:1.62;margin-top:6px;}
+  .ritual-kicker,.ritual-title,.ritual-copy{max-width:calc(100% - 92px);}
+  .ritual-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);font-weight:700;min-height:20px;padding-right:4px;}
+  .ritual-title{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:var(--tracking-tight);color:var(--color-text);margin-top:6px;line-height:1.3;}
+  .ritual-copy{font-size:12px;color:var(--color-body);line-height:1.56;margin-top:5px;}
 .ritual-copy-main{color:var(--color-body);}
-.ritual-context{margin-top:10px;padding:10px 11px;border-radius:12px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
+  .ritual-context{margin-top:9px;padding:9px 11px;border-radius:12px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);}
 .ritual-context-label{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--color-text-secondary);}
-.ritual-context-text{font-size:12px;line-height:1.5;color:var(--color-text);margin-top:5px;}
-.ritual-input{width:100%;min-height:84px;border-radius:14px;border:1px solid var(--color-border-secondary);background:var(--surface-soft);padding:12px 13px;font:inherit;font-size:13px;line-height:1.55;color:var(--color-text);margin-top:12px;resize:vertical;}
+  .ritual-context-text{font-size:11.5px;line-height:1.48;color:var(--color-text);margin-top:4px;}
+.ritual-input{width:100%;min-height:68px;border-radius:14px;border:1px solid var(--color-border-secondary);background:var(--surface-soft);padding:11px 12px;font:inherit;font-size:12.5px;line-height:1.5;color:var(--color-text);margin-top:10px;resize:vertical;}
 .ritual-input::placeholder{color:var(--color-text-secondary);}
-.ritual-note{font-size:11px;color:var(--color-text-secondary);margin-top:10px;line-height:1.45;}
-.ritual-footer{display:flex;justify-content:flex-end;align-items:center;margin-top:12px;}
-.ritual-btn{border:none;border-radius:12px;background:var(--accent);color:var(--accent-soft);padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-sans);transition:transform .14s ease, opacity .16s ease, background-color .16s ease;}
+.ritual-entry-summary{display:none;margin-top:10px;padding:12px 13px;border-radius:16px;border:1px solid var(--accent-soft-border);background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);color:var(--color-text);font-size:13px;line-height:1.5;cursor:pointer;box-shadow:var(--shadow-card);}
+.ritual-entry-summary.visible{display:block;}
+.ritual-entry-summary-label{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.ritual-entry-summary-text{font-size:13px;line-height:1.5;color:var(--color-text);}
+.ritual-note{font-size:10.5px;color:var(--color-text-secondary);margin-top:8px;line-height:1.4;}
+.ritual-footer{display:flex;justify-content:flex-end;align-items:center;margin-top:10px;}
+.ritual-btn{border:none;border-radius:12px;background:var(--accent);color:var(--accent-soft);padding:9px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-sans);transition:transform .14s ease, opacity .16s ease, background-color .16s ease;}
 .ritual-btn:active{transform:translateY(1px);}
 .ritual-btn:disabled{background:#c7c0b5;color:#faf9f6;cursor:default;opacity:.9;transform:none;}
 .ritual-entry-block{display:block;}
+.ritual-evening-block{display:none;margin-top:10px;}
+.ritual-evening-block.visible{display:block;}
+.ritual-evening-options{display:grid;gap:10px;margin-top:2px;}
+.ritual-evening-option{width:100%;border:1px solid var(--color-border-tertiary);border-radius:18px;background:var(--surface-elevated);padding:13px 14px;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--shadow-card);cursor:pointer;transition:border-color .16s ease, background .16s ease, transform .14s ease;}
+.ritual-evening-option:active{transform:translateY(1px);}
+.ritual-evening-option.active{background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);border-color:var(--accent-soft-border);}
+.ritual-evening-radio{width:20px;height:20px;border-radius:999px;border:1.5px solid var(--color-border-secondary);background:#fff;flex:0 0 auto;margin-top:2px;position:relative;}
+.ritual-evening-option.active .ritual-evening-radio{border-color:var(--accent);}
+.ritual-evening-option.active .ritual-evening-radio::after{content:"";position:absolute;inset:4px;border-radius:999px;background:var(--accent);}
+.ritual-evening-copy{min-width:0;flex:1 1 auto;}
+.ritual-evening-title{font-size:16px;line-height:1.2;font-weight:700;color:var(--color-text);letter-spacing:-.02em;}
+.ritual-evening-sub{font-size:12.5px;line-height:1.42;color:var(--color-text-secondary);margin-top:3px;}
 .ritual-carryover-block{display:none;margin-top:12px;}
 .ritual-carryover-question{font-size:12px;font-weight:700;color:var(--color-text);margin-top:2px;}
 .ritual-choice-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;}
@@ -238,28 +330,31 @@
   .week-snapshot-label{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-secondary);}
   .week-snapshot-value{font-size:14px;font-weight:700;color:var(--color-text);line-height:1.2;margin-top:6px;}
   .week-snapshot-copy{font-size:11px;color:var(--color-body);line-height:1.45;margin-top:4px;}
-  .hero{margin:0 16px 14px;background:linear-gradient(180deg, var(--hero) 0%, var(--hero-elevated) 100%);border-radius:22px;padding:18px 18px 15px;box-shadow:0 14px 30px rgba(28,22,15,0.18);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
+  .hero{margin:0 16px 14px;background:linear-gradient(180deg, var(--hero) 0%, var(--hero-elevated) 100%);border-radius:22px;padding:14px 12px 12px;box-shadow:0 14px 30px rgba(28,22,15,0.18);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
   .hero.is-confirmed{background:linear-gradient(180deg, rgba(18,51,40,0.98) 0%, rgba(11,30,23,0.98) 100%);border-color:rgba(51,184,135,0.34);box-shadow:0 18px 34px rgba(8,26,20,0.26);}
-  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-  .hero-badge{min-width:78px;font-size:10px;color:var(--accent-soft-border);background:rgba(29,158,117,0.18);padding:4px 10px;border-radius:20px;font-weight:600;text-align:center;}
-  .hero-habit{font-size:11px;font-weight:600;letter-spacing:0.02em;color:var(--hero-muted);margin-bottom:4px;}
-  .hero-count{font-family:var(--font-display);font-size:50px;font-weight:800;letter-spacing:-0.05em;color:#fff;line-height:0.96;}
-  .hero-sub{font-size:12.5px;color:var(--hero-muted);line-height:1.55;margin-bottom:15px;}
-  .hero-goal{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-  .goal-track{flex:1;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+  .hero-badge{min-width:72px;font-size:9.5px;color:var(--accent-soft-border);background:rgba(29,158,117,0.18);padding:4px 9px;border-radius:18px;font-weight:600;text-align:center;}
+  .hero-habit{font-size:10.5px;font-weight:600;letter-spacing:0.02em;color:var(--hero-muted);margin-bottom:3px;}
+  .hero-count{font-family:var(--font-display);font-size:44px;font-weight:800;letter-spacing:-0.05em;color:#fff;line-height:0.94;}
+  .hero-sub{font-size:12px;color:var(--hero-muted);line-height:1.45;margin-bottom:11px;}
+  .hero-goal{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .goal-track{flex:1;height:4px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
   .goal-fill{height:100%;background:#1D9E75;border-radius:3px;}
-  .goal-label{font-size:11px;color:var(--accent-soft-border);}
-  .actions{display:flex;flex-direction:column;gap:10px;}
-  .big-record-btn,.secondary-btn{border-radius:15px;padding:12px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s, transform .15s;}
-  .big-record-btn{background:#1f1b17;color:#faf9f6;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;border-radius:18px;min-height:72px;}
+  .goal-label{font-size:10.5px;color:var(--accent-soft-border);}
+  .actions{display:flex;flex-direction:column;gap:8px;}
+  .action-meta{font-size:10.5px;line-height:1.3;color:var(--hero-muted);padding:0 2px;}
+  .big-record-btn,.secondary-btn{border-radius:15px;padding:8px 10px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s, transform .15s;}
+  .big-record-btn{background:#1f1b17;color:#faf9f6;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px;padding:8px 10px;text-align:left;border-radius:15px;min-height:46px;}
   .big-record-btn.open{border-bottom-left-radius:14px;border-bottom-right-radius:14px;}
-  .record-cta-icon{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:24px;line-height:1;color:#f4efe7;}
+  .record-cta-icon{width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:16px;line-height:1;color:#f4efe7;}
   .record-cta-copy{min-width:0;flex:1;}
-  .record-cta-title{font-size:14px;font-weight:700;letter-spacing:var(--tracking-tight);color:#faf9f6;line-height:1.28;}
-  .record-cta-sub{font-size:11.5px;color:#9f9588;line-height:1.42;margin-top:4px;}
-  .record-cta-arrow{font-size:18px;color:#b4aa9d;flex:0 0 auto;transition:transform .18s ease;line-height:1;}
+  .record-cta-title{font-size:13px;font-weight:700;letter-spacing:var(--tracking-tight);color:#faf9f6;line-height:1.16;}
+  .record-cta-sub{font-size:10.5px;color:#9f9588;line-height:1.18;margin-top:1px;}
+  .record-cta-meta{display:flex;align-items:center;gap:6px;flex:0 0 auto;margin-left:auto;padding-left:4px;}
+  .record-cta-limit{min-width:29px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.06);font-size:9px;font-weight:700;line-height:1;color:var(--accent-soft-border);text-align:center;letter-spacing:0.02em;}
+  .record-cta-arrow{font-size:14px;color:#b4aa9d;flex:0 0 auto;transition:transform .18s ease;line-height:1;}
   .big-record-btn.open .record-cta-arrow{transform:rotate(90deg);}
-  .secondary-btn{position:relative;overflow:hidden;isolation:isolate;background:rgba(255,255,255,0.08);color:#faf9f6;border:1px solid rgba(255,255,255,0.09);}
+  .secondary-btn{position:relative;overflow:hidden;isolation:isolate;background:rgba(255,255,255,0.08);color:#faf9f6;border:1px solid rgba(255,255,255,0.09);min-height:40px;border-radius:15px;font-size:12.5px;font-weight:700;}
   .secondary-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg, rgba(184,240,219,0) 0%, rgba(184,240,219,.24) 44%, rgba(255,255,255,.34) 50%, rgba(184,240,219,.24) 56%, rgba(184,240,219,0) 100%);transform:translateX(-120%);opacity:0;pointer-events:none;z-index:1;}
   .big-record-btn:active{opacity:.92;box-shadow:0 12px 24px rgba(17,14,11,0.24);}
   .secondary-btn:active{opacity:.92;box-shadow:0 10px 20px rgba(17,14,11,0.16);}
@@ -286,30 +381,32 @@
   .slip-sheet-title{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:var(--tracking-tight);line-height:1.06;color:#1D1915;}
   .slip-sheet-sub{font-size:12px;color:#9B9388;line-height:1.45;margin-top:4px;}
   .slip-sheet-meta{font-size:12px;color:#A0978C;line-height:1.35;text-align:right;flex:0 0 auto;padding-top:4px;}
-  .slip-sheet-anchor{background:#fff;border:1px solid #DED4C5;border-radius:18px;padding:14px 16px 14px 18px;position:relative;box-shadow:0 10px 20px rgba(37,31,25,0.05);overflow:hidden;}
+  .slip-sheet-anchor{background:#fff;border:1px solid #DED4C5;border-radius:18px;padding:12px 14px 12px 16px;position:relative;box-shadow:0 10px 20px rgba(37,31,25,0.05);overflow:hidden;}
   .slip-sheet-anchor::before{content:"";position:absolute;left:12px;top:16px;bottom:16px;width:3px;border-radius:999px;background:var(--accent);}
   .slip-sheet-anchor-label{font-size:10px;font-weight:700;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:#A79E93;padding-left:12px;}
-  .slip-sheet-anchor-value{font-size:17px;font-weight:600;line-height:1.42;color:#1D1915;padding-left:12px;margin-top:8px;}
-  .slip-sheet-section-label{font-size:11px;font-weight:700;color:#A0978C;text-transform:uppercase;letter-spacing:var(--tracking-caps);margin-top:20px;}
-  .slip-trigger-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
-  .slip-trigger-card{border:1px solid #DFD6C9;border-radius:18px;background:#fff;padding:14px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .slip-sheet-anchor-value{font-size:16px;font-weight:600;line-height:1.38;color:#1D1915;padding-left:12px;margin-top:7px;}
+  .slip-sheet-section-label{font-size:10.5px;font-weight:700;color:#A0978C;text-transform:uppercase;letter-spacing:var(--tracking-caps);margin-top:16px;}
+  .slip-trigger-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px;}
+  .slip-trigger-card{position:relative;border:1px solid #DFD6C9;border-radius:15px;background:#fff;padding:9px 10px;display:flex;align-items:flex-start;gap:8px;cursor:pointer;transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
   .slip-trigger-card:active{transform:translateY(1px);}
   .slip-trigger-card.active{border-color:var(--accent);box-shadow:0 10px 18px rgba(29,158,117,0.10);}
-  .slip-trigger-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:20px;line-height:1;}
+  .slip-trigger-icon{width:28px;height:28px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:15px;line-height:1;}
   .slip-trigger-copy{min-width:0;}
-  .slip-trigger-title{font-size:14px;font-weight:700;line-height:1.22;color:#1D1915;}
-  .slip-trigger-sub{font-size:11px;line-height:1.32;color:#8B8377;margin-top:4px;}
-  .slip-intensity-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
-  .slip-intensity-card{border:1px solid #DED6CB;border-radius:18px;background:#fff;padding:14px 10px 13px;text-align:center;cursor:pointer;transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .slip-trigger-title{font-size:12.5px;font-weight:700;line-height:1.18;color:#1D1915;}
+  .slip-trigger-sub{font-size:10px;line-height:1.2;color:#8B8377;margin-top:2px;}
+  .slip-trigger-check{position:absolute;right:9px;top:9px;width:16px;height:16px;border-radius:50%;border:1px solid #D8D0C3;background:#fff;box-shadow:inset 0 0 0 2px #fff;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease;}
+  .slip-trigger-card.active .slip-trigger-check{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 4px #fff;}
+  .slip-intensity-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px;}
+  .slip-intensity-card{border:1px solid #DED6CB;border-radius:15px;background:#fff;padding:10px 8px 9px;text-align:center;cursor:pointer;transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
   .slip-intensity-card:active{transform:translateY(1px);}
   .slip-intensity-card.active{border-color:var(--accent);box-shadow:0 10px 18px rgba(29,158,117,0.10);}
-  .slip-intensity-dot{width:18px;height:18px;border-radius:50%;margin:0 auto 12px;}
-  .slip-intensity-title{font-size:12px;font-weight:700;color:#2A241D;line-height:1.25;}
-  .slip-intensity-sub{font-size:11px;color:#8E8578;line-height:1.32;margin-top:6px;}
-  .slip-compose-label{font-size:11px;font-weight:700;color:#A0978C;text-transform:uppercase;letter-spacing:var(--tracking-caps);margin-top:20px;}
-  .slip-note{width:100%;min-height:96px;border-radius:16px;border:1px solid #DDD5C8;background:#fff;padding:14px 15px;font:inherit;font-size:14px;line-height:1.55;color:#1e1c18;margin-top:12px;resize:none;}
+  .slip-intensity-dot{width:15px;height:15px;border-radius:50%;margin:0 auto 8px;}
+  .slip-intensity-title{font-size:11px;font-weight:700;color:#2A241D;line-height:1.18;}
+  .slip-intensity-sub{font-size:10px;color:#8E8578;line-height:1.18;margin-top:4px;}
+  .slip-compose-label{font-size:10.5px;font-weight:700;color:#A0978C;text-transform:uppercase;letter-spacing:var(--tracking-caps);margin-top:16px;}
+  .slip-note{width:100%;min-height:76px;border-radius:15px;border:1px solid #DDD5C8;background:#fff;padding:11px 13px;font:inherit;font-size:12.5px;line-height:1.42;color:#1e1c18;margin-top:9px;resize:none;}
   .slip-note::placeholder{color:#A49B8F;}
-  .slip-save{margin-top:14px;width:100%;border:1px solid #D7CEC0;border-radius:16px;background:#fff;color:#1F1B17;padding:13px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:transform .14s ease,box-shadow .18s ease,background-color .18s ease,color .18s ease,border-color .18s ease,opacity .18s ease;}
+  .slip-save{margin-top:11px;width:100%;border:1px solid #D7CEC0;border-radius:15px;background:#fff;color:#1F1B17;padding:11px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:transform .14s ease,box-shadow .18s ease,background-color .18s ease,color .18s ease,border-color .18s ease,opacity .18s ease;}
   .slip-save:active{transform:translateY(1px) scale(.992);}
   .slip-save.is-saving{background:var(--accent-soft);border-color:var(--accent-soft-border);color:var(--accent-text);box-shadow:0 10px 20px rgba(29,158,117,0.12);}
   .slip-save:disabled{cursor:default;opacity:.96;transform:none;}
@@ -331,11 +428,25 @@
   .tip-btn:active{background:var(--surface-soft);}
   .tip-icon{width:28px;height:28px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;}
   .tip-label{font-size:11px;color:var(--color-body);line-height:1.3;}
-  .log-section{padding:0 16px 84px;}
-  .log-item{background:var(--surface-elevated);border-radius:14px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);}
-  .log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .log-text{flex:1;font-size:12px;color:var(--color-body);}
-  .log-time{font-size:11px;color:var(--color-text-muted);}
+  .log-section{padding:0 14px 14px;}
+  .day-details-list{display:grid;gap:10px;}
+  .day-log-row{display:flex;align-items:flex-start;gap:10px;background:var(--surface-elevated);border-radius:16px;padding:12px 12px 11px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);}
+  .day-log-row.is-resisted{background:linear-gradient(180deg,#fcfdfb 0%, #f5fbf8 100%);border-color:#d5ece4;}
+  .day-log-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+  .day-log-main{min-width:0;flex:1 1 auto;}
+  .day-log-line{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .day-log-text{min-width:0;font-size:14px;line-height:1.36;color:var(--color-body);}
+  .day-log-text strong{font-weight:700;color:var(--color-text);}
+  .day-log-time{font-size:12px;color:var(--color-text-muted);white-space:nowrap;padding-top:1px;}
+  .day-log-sub{margin-top:4px;font-size:12px;line-height:1.4;color:var(--color-text-secondary);}
+  .day-log-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;border-radius:999px;padding:5px 10px;font-size:11.5px;font-weight:700;letter-spacing:-.01em;background:var(--accent-soft);color:var(--accent-text);}
+  .day-details-summary{margin-top:16px;padding-top:14px;border-top:1px solid rgba(30,28,24,0.06);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .day-summary-card{min-width:0;background:linear-gradient(180deg,#fbf9f4 0%, #f5efe6 100%);border:1px solid #e9dfd0;border-radius:16px;padding:10px 10px 11px;box-shadow:0 1px 0 rgba(255,255,255,.72) inset;}
+  .day-summary-card.is-safe{background:linear-gradient(180deg,#f3fbf8 0%, #e8f7f1 100%);border-color:#cfe8de;}
+  .day-summary-label{font-size:10px;line-height:1.2;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#aaa59b;margin-bottom:8px;}
+  .day-summary-value{font-size:23px;line-height:1;font-weight:800;letter-spacing:-.04em;color:var(--color-text);margin-bottom:5px;}
+  .day-summary-note{font-size:11.5px;line-height:1.35;color:#77736a;}
+  .day-details-empty{background:var(--surface-elevated);border-radius:16px;padding:13px 14px;border:1px solid var(--color-border-tertiary);box-shadow:var(--shadow-card);font-size:12.5px;line-height:1.55;color:var(--color-body);}
   .sticky-bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:296px;max-width:calc(100% - 32px);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid var(--color-border-tertiary);border-radius:24px;background:var(--tab-bg);backdrop-filter:blur(20px);box-shadow:0 18px 36px rgba(34,29,23,0.12);z-index:15;}
   .tab{display:flex;align-items:center;justify-content:center;min-width:0;color:var(--color-text-muted);cursor:pointer;}
   .tab-chip{width:100%;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:18px;transition:background .16s ease,color .16s ease,transform .16s ease;}
@@ -354,7 +465,7 @@
   .modal-tip-title{font-size:12px;font-weight:600;color:var(--color-text);margin-bottom:3px;}
   .modal-tip-text{font-size:12px;color:var(--color-body);line-height:1.5;}
   .modal-close{width:100%;background:var(--hero);color:#e8e5e0;border-radius:12px;padding:12px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;}
-  .toast{position:absolute;bottom:80px;left:16px;right:16px;background:var(--hero);color:#e8e5e0;border-radius:14px;padding:12px 16px;font-size:12px;line-height:1.5;z-index:20;transition:opacity .3s;}
+  .toast{position:absolute;bottom:80px;left:16px;right:16px;background:var(--hero);color:#e8e5e0;border-radius:14px;padding:12px 16px;font-size:12px;line-height:1.5;text-align:center;z-index:20;transition:opacity .3s;}
   .toast.hidden{opacity:0;pointer-events:none;}
   .detail-card{margin:0 16px 14px;background:var(--surface-elevated);border:1px solid var(--color-border-tertiary);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;}
   .detail-toggle{width:100%;border:none;background:none;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;cursor:pointer;font-family:var(--font-sans);}
@@ -375,10 +486,10 @@
   <div class="screen" style="position:relative;">
     <div class="topbar">
       <div class="topbar-left">
-        <div class="hello" id="user-greeting">Р”РѕР±СЂС‹Р№ РґРµРЅСЊ,</div>
-        <div class="name" id="user-name">РРІР°РЅ</div>
+        <div class="hello" id="user-greeting">Добрый день,</div>
+        <div class="name" id="user-name">Иван</div>
       </div>
-      <div class="avatar" id="avatar">РР’</div>
+      <div class="avatar" id="avatar">ИВ</div>
     </div>
 
     <div class="mood-banner">
@@ -399,17 +510,24 @@
       </div>
       <div class="ritual-kicker" id="ritual-kicker">Утренний ритуал</div>
       <div class="ritual-title" id="ritual-title">Что сегодня важно удержать?</div>
-      <div class="ritual-copy" id="ritual-copy">Одна утренняя мысль помогает войти в день чуть осознаннее и мягче.</div>
+      <div class="ritual-copy" id="ritual-copy">Одна короткая мысль помогает не заходить в день на автопилоте.</div>
       <div class="ritual-entry-block" id="ritual-entry-block">
         <textarea class="ritual-input" id="ritual-input" placeholder="Например: пройти через 14:00 спокойнее и не спорить с собой."></textarea>
-        <div class="ritual-note" id="ritual-note">Одной фразы уже достаточно.</div>
+        <div class="ritual-entry-summary" id="ritual-entry-summary" role="button" tabindex="0">
+          <div class="ritual-entry-summary-label">Ориентир на сегодня</div>
+          <div class="ritual-entry-summary-text" id="ritual-entry-summary-text"></div>
+        </div>
       </div>
+      <div class="ritual-evening-block" id="ritual-evening-block">
+        <div class="ritual-evening-options" id="ritual-evening-options"></div>
+      </div>
+      <div class="ritual-note" id="ritual-note">Одной фразы уже достаточно.</div>
       <div class="ritual-carryover-block" id="ritual-carryover-block">
         <div class="ritual-carryover-question" id="ritual-carryover-question"></div>
         <div class="ritual-choice-row" id="ritual-carryover-options"></div>
         <div class="ritual-feedback" id="ritual-carryover-feedback"></div>
         <div class="ritual-carryover-note-wrap" id="ritual-carryover-note-wrap">
-          <div class="ritual-carryover-note-label" id="ritual-carryover-note-label">Вчера главным было</div>
+          <div class="ritual-carryover-note-label" id="ritual-carryover-note-label">Если хочешь, можно одной фразой</div>
           <textarea class="ritual-carryover-note" id="ritual-carryover-note" placeholder=""></textarea>
         </div>
       </div>
@@ -418,18 +536,18 @@
       </div>
     </div>
     <div class="mission-card" id="mission-card">
-      <div class="mission-kicker">РњР°Р»РµРЅСЊРєРёР№ С€Р°Рі РЅР° СЃРµРіРѕРґРЅСЏ</div>
-      <div class="mission-title" id="mission-title">РњРёСЃСЃРёСЏ РґРЅСЏ: РѕРґРЅР° С‡РµСЃС‚РЅР°СЏ Р·Р°РїРёСЃСЊ</div>
-      <div class="mission-copy" id="mission-copy">РћРґРЅР° РєРѕСЂРѕС‚РєР°СЏ РјС‹СЃР»СЊ Рѕ СЃРµРіРѕРґРЅСЏС€РЅРµРј РґРЅРµ СѓР¶Рµ СЃРґРµР»Р°РµС‚ РїР°С‚С‚РµСЂРЅ РїРѕРЅСЏС‚РЅРµРµ, С‡РµРј РїРѕРїС‹С‚РєР° РІСЃС‘ РґРµСЂР¶Р°С‚СЊ РІ РіРѕР»РѕРІРµ.</div>
+      <div class="mission-kicker">Маленький шаг на сегодня</div>
+      <div class="mission-title" id="mission-title">Миссия дня: одна честная запись</div>
+      <div class="mission-copy" id="mission-copy">Одна короткая мысль о сегодняшнем дне уже сделает паттерн понятнее, чем попытка всё держать в голове.</div>
       <div class="mission-footer">
-        <div class="mission-chip">СЃРµРіРѕРґРЅСЏ</div>
-        <button class="mission-btn" id="mission-btn" type="button">РћС‚РєСЂС‹С‚СЊ РґРЅРµРІРЅРёРє</button>
+        <div class="mission-chip">сегодня</div>
+        <button class="mission-btn" id="mission-btn" type="button">Открыть дневник</button>
       </div>
     </div>
 
     <div class="live-event-card" id="live-event-card">
       <div class="live-event-head">
-        <div class="mission-kicker">РЎРµРіРѕРґРЅСЏ РїСЂРѕРёСЃС…РѕРґРёС‚</div>
+        <div class="mission-kicker">Сегодня происходит</div>
         <div class="live-event-badge" id="live-event-badge"></div>
       </div>
       <div class="live-event-title" id="live-event-title"></div>
@@ -515,10 +633,14 @@
             <div class="record-cta-title" id="record-btn-title">Зафиксировать срыв</div>
             <div class="record-cta-sub">быстро · два касания</div>
           </div>
-          <div class="record-cta-arrow">›</div>
+          <div class="record-cta-meta">
+            <div class="record-cta-limit" id="record-btn-limit">0/5</div>
+            <div class="record-cta-arrow">›</div>
+          </div>
         </div>
         <div class="secondary-btn" id="resisted-btn">Удержался</div>
       </div>
+      <div class="action-meta" id="action-meta">Удержаний сегодня: 0</div>
     </div>
 
     <div class="memory-card collapsed" id="memory-card">
@@ -535,8 +657,35 @@
       </div>
     </div>
 
-    <div class="section-title" id="week-rhythm-title">Ритм недели</div>
-    <div class="week-row" id="week-row"></div>
+    <div class="detail-card" id="main-more-card">
+      <button class="detail-toggle" type="button" data-detail-card="main-more-card">
+        <div class="detail-copy">
+          <div class="detail-title" id="main-more-title">Ещё сегодня</div>
+          <div class="detail-sub" id="main-more-summary">Ритм недели и короткие опоры на сейчас</div>
+        </div>
+        <div class="detail-arrow">⌄</div>
+      </button>
+      <div class="detail-body">
+        <div class="section-title" id="week-rhythm-title">Ритм недели</div>
+        <div class="week-row" id="week-row"></div>
+        <div class="section-title" id="tips-title">Опора на сейчас</div>
+        <div class="tips-row" id="tips-row">
+          <div class="tip-btn" id="tip-btn-1">
+            <div class="tip-icon" style="background:#FAEEDA;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="8" width="9" height="2.5" rx="1.25" fill="#854F0B"/><rect x="11" y="8" width="2" height="2.5" rx="1" fill="#854F0B"/><path d="M9 6c0-2 2-2 2-4" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div class="tip-label" style="color:#633806;">РџСЂРё РєСѓСЂРµРЅРёРё</div>
+          </div>
+          <div class="tip-btn" id="tip-btn-2">
+            <div class="tip-icon" style="background:#E6F1FB;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2h4l1 4H4L5 2z" fill="#185FA5"/><path d="M4 6v5a1 1 0 001 1h4a1 1 0 001-1V6" stroke="#185FA5" stroke-width="1.2"/></svg></div>
+            <div class="tip-label" style="color:#0C447C;">РџСЂРё Р°Р»РєРѕРіРѕР»Рµ</div>
+          </div>
+          <div class="tip-btn" id="tip-btn-3">
+            <div class="tip-icon" style="background:#EEEDFE;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="tip-label" style="color:#3C3489;">РќРµ Р±СЂРѕСЃР°С‚СЊ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="detail-card" id="day-cost-card">
       <button class="detail-toggle" type="button" data-detail-card="day-cost-card">
         <div class="detail-copy">
@@ -566,29 +715,13 @@
       </div>
     </div>
 
-    <div class="section-title" id="tips-title">Опора на сейчас</div>
-    <div class="tips-row" id="tips-row">
-      <div class="tip-btn" id="tip-btn-1">
-        <div class="tip-icon" style="background:#FAEEDA;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="8" width="9" height="2.5" rx="1.25" fill="#854F0B"/><rect x="11" y="8" width="2" height="2.5" rx="1" fill="#854F0B"/><path d="M9 6c0-2 2-2 2-4" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-        <div class="tip-label" style="color:#633806;">РџСЂРё РєСѓСЂРµРЅРёРё</div>
-      </div>
-      <div class="tip-btn" id="tip-btn-2">
-        <div class="tip-icon" style="background:#E6F1FB;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2h4l1 4H4L5 2z" fill="#185FA5"/><path d="M4 6v5a1 1 0 001 1h4a1 1 0 001-1V6" stroke="#185FA5" stroke-width="1.2"/></svg></div>
-        <div class="tip-label" style="color:#0C447C;">РџСЂРё Р°Р»РєРѕРіРѕР»Рµ</div>
-      </div>
-      <div class="tip-btn" id="tip-btn-3">
-        <div class="tip-icon" style="background:#EEEDFE;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="tip-label" style="color:#3C3489;">РќРµ Р±СЂРѕСЃР°С‚СЊ</div>
-      </div>
-    </div>
-
     <div class="detail-card" id="recent-log-card">
       <button class="detail-toggle" type="button" data-detail-card="recent-log-card">
         <div class="detail-copy">
-          <div class="detail-title">Последние записи</div>
+          <div class="detail-title">Детали дня</div>
           <div class="detail-sub" id="recent-log-summary">Что уже успело случиться сегодня</div>
         </div>
-        <div class="detail-arrow">вЊ„</div>
+        <div class="detail-arrow">⌄</div>
       </button>
       <div class="detail-body">
         <div class="log-section" id="log-section"></div>
@@ -657,6 +790,7 @@ if (window.self !== window.top) {
 var demoEventIndexes = {};
 var activeTips = {};
 var mainDetailState = {
+  "main-more-card": false,
   "day-cost-card": false,
   "recent-log-card": false
 };
@@ -664,6 +798,13 @@ var currentMainViewModel = null;
 var ritualCarryoverState = {
   status: "",
   note: ""
+};
+var ritualEveningState = {
+  status: "",
+  expanded: false
+};
+var ritualMorningState = {
+  expanded: false
 };
 var slipComposerState = {
   open: false,
@@ -713,8 +854,8 @@ function getRecentTriggerTags(state) {
 
 function getAdviceMetaText(advice) {
   var source = advice.verificationStatus === "reviewed" || advice.verificationStatus === "verified"
-    ? "РСЃС‚РѕС‡РЅРёРє: " + advice.sourceLabel
-    : "РџРѕРєР° СЌС‚Рѕ РїСЂРѕРґСѓРєС‚РѕРІР°СЏ РїРѕРґСЃРєР°Р·РєР°, РЅРµ РєР»РёРЅРёС‡РµСЃРєР°СЏ СЂРµРєРѕРјРµРЅРґР°С†РёСЏ";
+    ? "\u0418\u0441\u0442\u043e\u0447\u043d\u0438\u043a: " + advice.sourceLabel
+    : "\u041f\u043e\u043a\u0430 \u044d\u0442\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432\u0430\u044f \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0430, \u043d\u0435 \u043a\u043b\u0438\u043d\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u044f";
   return source;
 }
 
@@ -952,6 +1093,7 @@ function renderSlipComposer(state) {
   var meta = document.getElementById("slip-sheet-meta");
   var anchorValue = document.getElementById("slip-sheet-anchor-value");
   var saveBtn = document.getElementById("slip-save-btn");
+  var triggerLabel = document.getElementById("slip-trigger-label");
   if (!root || !triggerRow || !intensityRow || !noteInput || !toggle) return;
 
   var choices = getSlipComposeChoices(state.currentHabit.id);
@@ -964,6 +1106,7 @@ function renderSlipComposer(state) {
   if (sub) sub.textContent = "Один быстрый шаг, чтобы сохранить момент без лишней анкеты.";
   if (meta) meta.textContent = "сегодня: " + window.HabitStore.getTodaySlipCount(state);
   if (anchorValue) anchorValue.textContent = "«" + getActiveSlipAnchorText(state) + "»";
+  if (triggerLabel) triggerLabel.textContent = "Что спровоцировало? · можно несколько";
   if (saveBtn) {
     saveBtn.textContent = slipComposerState.saving ? "Сохраняем..." : "Сохранить";
     saveBtn.disabled = !!slipComposerState.saving;
@@ -977,6 +1120,7 @@ function renderSlipComposer(state) {
       '<div class="slip-trigger-icon" style="background:' + details.bg + ';color:' + details.fg + ';">' + details.icon + '</div>' +
       '<div class="slip-trigger-copy"><div class="slip-trigger-title">' + window.HabitStore.helpers.triggerLabel(tag) + '</div>' +
       '<div class="slip-trigger-sub">' + details.sub + '</div></div>' +
+      '<div class="slip-trigger-check"></div>' +
       '</button>';
   }).join("");
   intensityRow.innerHTML = intensityChoices.map(function (item) {
@@ -1027,7 +1171,7 @@ function renderWeek(state) {
   var day = now.getDay() || 7;
   start.setDate(now.getDate() - day + 1);
   start.setHours(0,0,0,0);
-  var labels = ["РїРЅ","РІС‚","СЃСЂ","С‡С‚","РїС‚","СЃР±","РІСЃ"];
+  var labels = ["пн","вт","ср","чт","пт","сб","вс"];
   var counts = labels.map(function (_, index) {
     var date = new Date(start);
     date.setDate(start.getDate() + index);
@@ -1041,26 +1185,102 @@ function renderWeek(state) {
     var height = Math.max(3, count * 6 + 8);
     var color = count === worst && count > 0 ? "#F0997B" : count <= 2 ? "#9FE1CB" : "#5DCAA5";
     var className = count === worst && count > 0 ? "worst" : count === best ? "best" : "";
-    return '<div class="week-col"><div class="w-day">' + label + '</div><div class="w-bar" style="height:' + height + 'px;background:' + color + ';"></div><div class="w-num ' + className + '">' + (count || "вЂ”") + '</div></div>';
+    return '<div class="week-col"><div class="w-day">' + label + '</div><div class="w-bar" style="height:' + height + 'px;background:' + color + ';"></div><div class="w-num ' + className + '">' + (count || "—") + '</div></div>';
   }).join("");
 }
 
 function renderLogs(state) {
   var root = document.getElementById("log-section");
-  var recent = state.slips.slice().sort(function (a, b) {
+  var helpers = window.HabitStore.helpers;
+  var config = helpers.getCurrentHabitConfig ? helpers.getCurrentHabitConfig(state) : ((state.currentHabit && state.currentHabit.config) || state.habitConfig || {});
+  var todayKey = helpers.formatDateKey(new Date());
+  var todaySlips = (state.slips || []).filter(function (item) { return item.localDate === todayKey; });
+  var todayResisted = (state.resisted || []).filter(function (item) { return item.localDate === todayKey; });
+  var todaySavedMinutes = (Number(config.minutesPerEpisode) || 0) * todayResisted.length;
+  var events = todaySlips.map(function (item) {
+    return {
+      kind: "slip",
+      timestamp: item.timestamp,
+      primaryTag: item.triggerTag || (item.triggerTags && item.triggerTags[0]) || "other",
+      note: item.note || "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d \u043c\u043e\u043c\u0435\u043d\u0442",
+      cravingLevel: item.cravingLevel || null
+    };
+  }).concat(todayResisted.map(function (item) {
+    return {
+      kind: "resisted",
+      timestamp: item.timestamp,
+      primaryTag: (item.triggerTags && item.triggerTags[0]) || "other",
+      triggerTags: Array.isArray(item.triggerTags) ? item.triggerTags : [],
+      copingTool: item.copingTool || "",
+      cravingLevel: item.cravingLevel || null
+    };
+  })).sort(function (a, b) {
     return new Date(b.timestamp) - new Date(a.timestamp);
   }).slice(0, 6);
-  document.getElementById("recent-log-summary").textContent = recent.length
-    ? window.HabitStore.helpers.triggerLabel(recent[0].triggerTag) + " В· " + window.HabitStore.helpers.formatTime(new Date(recent[0].timestamp))
-    : "Р—Р°РїРёСЃРё РїРѕСЏРІСЏС‚СЃСЏ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ СЃРѕР±С‹С‚РёСЏ";
-  if (!recent.length) {
-    root.innerHTML = '<div class="log-item"><div class="log-dot" style="background:#9FE1CB;"></div><div class="log-text">РџРѕРєР° Р·РґРµСЃСЊ СЃРїРѕРєРѕР№РЅРѕ. РџРµСЂРІС‹Р№ СЌРїРёР·РѕРґ РёР»Рё РјРѕРјРµРЅС‚ СѓРґРµСЂР¶Р°РЅРёСЏ СЃСЂР°Р·Сѓ РїРѕСЏРІРёС‚СЃСЏ РІ Р»РµРЅС‚Рµ.</div><div class="log-time">СЃРµР№С‡Р°СЃ</div></div>';
+
+  function getResistedCopingLabel(tool) {
+    var labels = {
+      walk: "\u043f\u0440\u043e\u0433\u0443\u043b\u043a\u0430",
+      sparkling_water: "\u0433\u0430\u0437\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u0430\u044f \u0432\u043e\u0434\u0430",
+      tea: "\u0447\u0430\u0439",
+      timer: "\u0442\u0430\u0439\u043c\u0435\u0440",
+      water_pause: "\u0441\u0442\u0430\u043a\u0430\u043d \u0432\u043e\u0434\u044b",
+      pause: "\u043f\u0430\u0443\u0437\u0430"
+    };
+    return labels[tool] || "";
+  }
+
+  document.getElementById("recent-log-summary").textContent = events.length
+    ? "\u0421\u0440\u044b\u0432\u044b: " + todaySlips.length + " \u00b7 \u0423\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f: " + todayResisted.length
+    : "\u041f\u043e\u043a\u0430 \u0434\u0435\u043d\u044c \u0438\u0434\u0451\u0442 \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u043e";
+
+  if (!events.length) {
+    root.innerHTML = '<div class="day-details-empty">\u041f\u043e\u043a\u0430 \u0437\u0434\u0435\u0441\u044c \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u043e. \u041f\u0435\u0440\u0432\u044b\u0439 \u0441\u0440\u044b\u0432 \u0438\u043b\u0438 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435 \u0441\u0440\u0430\u0437\u0443 \u043f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u0437\u0434\u0435\u0441\u044c.</div>' +
+      '<div class="day-details-summary">' +
+      '<div class="day-summary-card"><div class="day-summary-label">\u0421\u0440\u044b\u0432\u044b</div><div class="day-summary-value">0</div><div class="day-summary-note">\u043c\u043e\u043c\u0435\u043d\u0442\u043e\u0432 \u0437\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f</div></div>' +
+      '<div class="day-summary-card is-safe"><div class="day-summary-label">\u0423\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f</div><div class="day-summary-value">0</div><div class="day-summary-note">\u043f\u043e\u043a\u0430 \u0431\u0435\u0437 \u0444\u0438\u043a\u0441\u0430\u0446\u0438\u0438</div></div>' +
+      '<div class="day-summary-card is-safe"><div class="day-summary-label">\u0412\u0440\u0435\u043c\u044f</div><div class="day-summary-value">0</div><div class="day-summary-note">\u043c\u0438\u043d\u0443\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e</div></div>' +
+      '</div>';
     return;
   }
-  root.innerHTML = recent.map(function (item) {
-    var date = new Date(item.timestamp);
-    return '<div class="log-item"><div class="log-dot" style="background:' + window.HabitStore.helpers.triggerColor(item.triggerTag) + ';"></div><div class="log-text">' + window.HabitStore.helpers.triggerLabel(item.triggerTag) + ' В· ' + (item.note || "Р‘РµР· РєРѕРјРјРµРЅС‚Р°СЂРёСЏ") + '</div><div class="log-time">' + window.HabitStore.helpers.formatTime(date) + '</div></div>';
-  }).join("");
+
+  root.innerHTML =
+    '<div class="day-details-list">' +
+    events.map(function (item) {
+      var date = new Date(item.timestamp);
+      if (item.kind === "resisted") {
+        var coping = getResistedCopingLabel(item.copingTool);
+        var leading = coping
+          ? ("\u0423\u0434\u0435\u0440\u0436\u0430\u043b\u0441\u044f \u00b7 " + coping)
+          : ("\u0423\u0434\u0435\u0440\u0436\u0430\u043b\u0441\u044f \u00b7 " + helpers.triggerLabel(item.primaryTag));
+        var resistedSub = item.triggerTags && item.triggerTags.length
+          ? ("\u0424\u043e\u043d: " + item.triggerTags.map(function (tag) { return helpers.triggerLabel(tag); }).join(", ").toLowerCase())
+          : "\u041c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u0440\u043e\u0439\u0442\u0438";
+        return '<div class="day-log-row is-resisted">' +
+          '<div class="day-log-dot" style="background:' + escapeHtml(helpers.triggerColor(item.primaryTag) || "#1D9E75") + ';"></div>' +
+          '<div class="day-log-main">' +
+          '<div class="day-log-line"><div class="day-log-text"><strong>\u0423\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435</strong> \u00b7 ' + escapeHtml(coping || helpers.triggerLabel(item.primaryTag)) + '</div><div class="day-log-time">' + escapeHtml(helpers.formatTime(date)) + '</div></div>' +
+          '<div class="day-log-sub">' + escapeHtml(resistedSub) + '</div>' +
+          (coping ? '<div class="day-log-pill">\u0441\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e: ' + escapeHtml(coping) + '</div>' : '') +
+          '</div></div>';
+      }
+      var slipText = item.note || "\u0411\u0435\u0437 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f";
+      var slipSub = item.cravingLevel
+        ? ("\u0422\u044f\u0433\u0430 " + item.cravingLevel + "/5")
+        : "\u0417\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d \u043d\u0430 \u0433\u043b\u0430\u0432\u043d\u043e\u043c \u044d\u043a\u0440\u0430\u043d\u0435";
+      return '<div class="day-log-row">' +
+        '<div class="day-log-dot" style="background:' + escapeHtml(helpers.triggerColor(item.primaryTag) || "#B4B2A9") + ';"></div>' +
+        '<div class="day-log-main">' +
+        '<div class="day-log-line"><div class="day-log-text"><strong>' + escapeHtml(helpers.triggerLabel(item.primaryTag)) + '</strong> \u00b7 ' + escapeHtml(slipText) + '</div><div class="day-log-time">' + escapeHtml(helpers.formatTime(date)) + '</div></div>' +
+        '<div class="day-log-sub">' + escapeHtml(slipSub) + '</div>' +
+        '</div></div>';
+    }).join("") +
+    '</div>' +
+    '<div class="day-details-summary">' +
+    '<div class="day-summary-card"><div class="day-summary-label">\u0421\u0440\u044b\u0432\u044b</div><div class="day-summary-value">' + todaySlips.length + '</div><div class="day-summary-note">\u043c\u043e\u043c\u0435\u043d\u0442\u043e\u0432 \u0437\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f</div></div>' +
+    '<div class="day-summary-card is-safe"><div class="day-summary-label">\u0423\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044f</div><div class="day-summary-value">' + todayResisted.length + '</div><div class="day-summary-note">\u043c\u043e\u043c\u0435\u043d\u0442 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u0440\u043e\u0439\u0442\u0438</div></div>' +
+    '<div class="day-summary-card is-safe"><div class="day-summary-label">\u0412\u0440\u0435\u043c\u044f</div><div class="day-summary-value">' + Math.max(0, todaySavedMinutes) + '</div><div class="day-summary-note">\u043c\u0438\u043d\u0443\u0442 \u0443\u0436\u0435 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e</div></div>' +
+    '</div>';
 }
 
 function renderQuickStats(state) {
@@ -1078,7 +1298,7 @@ function renderQuickStats(state) {
   document.getElementById("quick-time-sub").textContent = "\u041c\u0435\u0441\u044f\u0446: " + (finance.monthHours || 0) + " \u0447";
   document.getElementById("quick-health").textContent = health.filledCount + "/" + health.totalCount;
   document.getElementById("quick-health-sub").textContent = health.filledCount ? "\u0441\u043e\u043d, \u0434\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0438 \u0442\u0435\u043b\u043e \u0432 \u0444\u043e\u043a\u0443\u0441\u0435" : "\u043c\u0430\u0440\u043a\u0435\u0440\u044b \u043f\u043e\u043a\u0430 \u043d\u0435 \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u044b";
-  document.getElementById("day-cost-summary").textContent = formatMoney(todaySpent, finance.currencySymbol || "\u20bd") + " \u00b7 " + formatMinutes(todayMinutes) + " \u00b7 health " + health.filledCount + "/" + health.totalCount;
+  document.getElementById("day-cost-summary").textContent = formatMoney(todaySpent, finance.currencySymbol || "\u20bd") + " \u00b7 " + formatMinutes(todayMinutes) + " \u00b7 здоровье " + health.filledCount + "/" + health.totalCount;
 }
 
 function renderWeekSnapshot() {
@@ -1090,28 +1310,28 @@ function renderWeekSnapshot() {
   var observedDays = Number(summary.observedDays) || 0;
 
   document.getElementById("week-snapshot-sub").textContent = observedDays >= 4
-    ? "РўСЂРё СЃРёРіРЅР°Р»Р°, С‡С‚РѕР±С‹ Р±С‹СЃС‚СЂРѕ РїРѕРЅСЏС‚СЊ СЂРёС‚Рј РїРѕСЃР»РµРґРЅРёС… 7 РґРЅРµР№."
-    : "РќРµРґРµР»СЏ РµС‰С‘ СЃРѕР±РёСЂР°РµС‚ РѕСЃРЅРѕРІСѓ, РЅРѕ РїРµСЂРІС‹Рµ СЃРёРіРЅР°Р»С‹ СѓР¶Рµ РІРёРґРЅС‹.";
-  document.getElementById("week-snapshot-badge").textContent = observedDays >= 4 ? "РµСЃС‚СЊ СЂРёС‚Рј" : "СЂР°РЅРЅРёР№ РїРµСЂРёРѕРґ";
+    ? "\u0422\u0440\u0438 \u0441\u0438\u0433\u043d\u0430\u043b\u0430, \u0447\u0442\u043e\u0431\u044b \u0431\u044b\u0441\u0442\u0440\u043e \u043f\u043e\u043d\u044f\u0442\u044c \u0440\u0438\u0442\u043c \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0445 7 \u0434\u043d\u0435\u0439."
+    : "\u041d\u0435\u0434\u0435\u043b\u044f \u0435\u0449\u0451 \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442 \u043e\u0441\u043d\u043e\u0432\u0443, \u043d\u043e \u043f\u0435\u0440\u0432\u044b\u0435 \u0441\u0438\u0433\u043d\u0430\u043b\u044b \u0443\u0436\u0435 \u0432\u0438\u0434\u043d\u044b.";
+  document.getElementById("week-snapshot-badge").textContent = observedDays >= 4 ? "\u0435\u0441\u0442\u044c \u0440\u0438\u0442\u043c" : "\u0440\u0430\u043d\u043d\u0438\u0439 \u043f\u0435\u0440\u0438\u043e\u0434";
 
-  document.getElementById("week-snapshot-behavior-value").textContent = "РРЅРґРµРєСЃ " + summary.dependencyIndex;
+  document.getElementById("week-snapshot-behavior-value").textContent = "Индекс " + summary.dependencyIndex;
   document.getElementById("week-snapshot-behavior-copy").textContent =
-    trimSentence("РўСЂРёРіРіРµСЂ: " + String(summary.mainTrigger || "Р”СЂСѓРіРѕРµ").toLowerCase() + ". РћРєРЅРѕ: " + (summary.riskWindow || "вЂ”") + ".", 56);
+    trimSentence("Триггер: " + String(summary.mainTrigger || "Другое").toLowerCase() + ". Окно: " + (summary.riskWindow || "—") + ".", 56);
 
   if (wellbeing.stateEntryCount) {
     var stress = wellbeing.averages && wellbeing.averages.stress ? wellbeing.averages.stress.toFixed(1) : "0.0";
-    document.getElementById("week-snapshot-state-value").textContent = "РЎС‚СЂРµСЃСЃ " + stress + "/5";
+    document.getElementById("week-snapshot-state-value").textContent = "Стресс " + stress + "/5";
     document.getElementById("week-snapshot-state-copy").textContent =
-      trimSentence(compactWeekTrend(wellbeing.trend && wellbeing.trend.direction) + (wellbeing.contextLabel ? " В· С‡Р°С‰Рµ " + wellbeing.contextLabel : ""), 56);
+      trimSentence(compactWeekTrend(wellbeing.trend && wellbeing.trend.direction) + (wellbeing.contextLabel ? " · чаще " + wellbeing.contextLabel : ""), 56);
   } else {
-    document.getElementById("week-snapshot-state-value").textContent = "РќРµС‚ С„РѕРЅР°";
-    document.getElementById("week-snapshot-state-copy").textContent = "РџРѕСЏРІРёС‚СЃСЏ РїРѕСЃР»Рµ Р·Р°РїРёСЃРµР№ СЃРѕСЃС‚РѕСЏРЅРёСЏ.";
+    document.getElementById("week-snapshot-state-value").textContent = "Нет фона";
+    document.getElementById("week-snapshot-state-copy").textContent = "Появится после записей состояния.";
   }
 
   document.getElementById("week-snapshot-health-value").textContent =
     (health.filledCount || 0) + "/" + (health.totalCount || 0);
   document.getElementById("week-snapshot-health-copy").textContent =
-    trimSentence(compactHealthTrend(health.trendDirection) + " В· " + (health.filledCount ? health.trendSummary : "РјРѕР¶РЅРѕ РЅР°С‡Р°С‚СЊ СЃРѕ СЃРЅР° Рё РїСѓР»СЊСЃР°"), 56);
+    trimSentence(compactHealthTrend(health.trendDirection) + " · " + (health.filledCount ? health.trendSummary : "\u043c\u043e\u0436\u043d\u043e \u043d\u0430\u0447\u0430\u0442\u044c \u0441\u043e \u0441\u043d\u0430 \u0438 \u043f\u0443\u043b\u044c\u0441\u0430"), 56);
 }
 
 function renderTips(state) {
@@ -1165,6 +1385,41 @@ function getTrackerCopy(habitId) {
 }
 
 function getTrackerStateCopy(habitId, todayCount, limit) {
+  var ratio = todayCount / Math.max(limit, 1);
+  var safeStage = todayCount === 0 ? "zero" : ratio >= 1 ? "high" : ratio >= 0.4 ? "mid" : "low";
+  var safeCommon = {
+    zero: { badge: "\u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0434\u0435\u043d\u044c", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u043c\u043e\u0436\u043d\u043e \u0434\u0435\u0440\u0436\u0430\u0442\u044c\u0441\u044f \u0437\u0430 \u0440\u0438\u0442\u043c", text: "\u0414\u0430\u0436\u0435 \u043e\u0434\u0438\u043d \u0447\u0435\u0441\u0442\u043d\u044b\u0439 \u0441\u0438\u0433\u043d\u0430\u043b \u0443\u0436\u0435 \u043f\u043e\u043b\u0435\u0437\u043d\u0435\u0435, \u0447\u0435\u043c \u043f\u043e\u043f\u044b\u0442\u043a\u0430 \u0432\u0441\u0451 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0438\u0434\u0435\u0430\u043b\u044c\u043d\u043e." },
+    low: { badge: "\u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0434\u0435\u0440\u0436\u0438\u0442\u0441\u044f", title: "\u0414\u0435\u043d\u044c \u043f\u043e\u043a\u0430 \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c", text: "\u0421\u0446\u0435\u043d\u0430\u0440\u0438\u0439 \u0435\u0449\u0451 \u043d\u0435 \u0440\u0430\u0437\u043e\u0433\u043d\u0430\u043b\u0441\u044f. \u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0445 \u0440\u0435\u0448\u0435\u043d\u0438\u0439 \u043f\u043e\u0434\u0440\u044f\u0434 \u0443\u0436\u0435 \u043c\u0435\u043d\u044f\u044e\u0442 \u0440\u0438\u0442\u043c \u0434\u043d\u044f." },
+    mid: { badge: "\u0438\u0434\u0451\u0442 \u0441\u043d\u0438\u0436\u0435\u043d\u0438\u0435", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 " + todayCount + " \u044d\u043f.", text: "\u042d\u0442\u043e \u0435\u0449\u0451 \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u043c\u044b\u0439 \u0434\u0438\u0430\u043f\u0430\u0437\u043e\u043d. \u0421\u0430\u043c\u044b\u0439 \u043f\u043e\u043b\u0435\u0437\u043d\u044b\u0439 \u0448\u0430\u0433 \u0441\u0435\u0439\u0447\u0430\u0441 \u2014 \u043f\u043e\u0439\u043c\u0430\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0442\u0440\u0438\u0433\u0433\u0435\u0440 \u0447\u0443\u0442\u044c \u0440\u0430\u043d\u044c\u0448\u0435." },
+    high: { badge: "\u043d\u0430\u043f\u0440\u044f\u0436\u0451\u043d\u043d\u044b\u0439 \u0434\u0435\u043d\u044c", title: "\u0414\u0435\u043d\u044c \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u0441\u044f \u0442\u044f\u0436\u0451\u043b\u044b\u043c", text: "\u041d\u0435 \u0441\u0432\u043e\u0434\u0438 \u0432\u0441\u0451 \u043a \u0441\u0438\u043b\u0435 \u0432\u043e\u043b\u0438. \u041f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u0437\u0430\u043c\u0435\u0442\u0438\u0442\u044c \u043c\u043e\u043c\u0435\u043d\u0442, \u0433\u0434\u0435 \u043f\u0440\u0438\u0432\u044b\u0447\u043a\u0430 \u0432\u043a\u043b\u044e\u0447\u0438\u043b\u0430\u0441\u044c \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438." }
+  };
+  var safePerHabit = {
+    alcohol: {
+      zero: { badge: "\u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0434\u0435\u043d\u044c", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0431\u0435\u0437 \u0430\u043b\u043a\u043e\u0433\u043e\u043b\u044f", text: "\u0425\u043e\u0440\u043e\u0448\u0438\u0439 \u0431\u0430\u0437\u043e\u0432\u044b\u0439 \u0434\u0435\u043d\u044c. \u0427\u0435\u043c \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u0435\u0435 \u043f\u0440\u043e\u0445\u043e\u0434\u044f\u0442 \u0442\u0440\u0438\u0433\u0433\u0435\u0440\u043d\u044b\u0435 \u043e\u043a\u043d\u0430, \u0442\u0435\u043c \u0443\u0441\u0442\u043e\u0439\u0447\u0438\u0432\u0435\u0435 \u043e\u0449\u0443\u0449\u0435\u043d\u0438\u0435 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044f." },
+      low: { badge: "\u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u043d\u0430 \u0442\u0432\u043e\u0435\u0439 \u0441\u0442\u043e\u0440\u043e\u043d\u0435", title: "\u041f\u043e\u043a\u0430 \u0431\u0435\u0437 \u043b\u0438\u0448\u043d\u0438\u0445 \u044d\u043f\u0438\u0437\u043e\u0434\u043e\u0432", text: "\u0421\u0446\u0435\u043d\u0430\u0440\u0438\u0439 \u0435\u0449\u0451 \u043d\u0435 \u0440\u0430\u0437\u043e\u0433\u043d\u0430\u043b\u0441\u044f. \u041f\u043e\u043b\u0435\u0437\u043d\u043e \u0437\u0430\u0440\u0430\u043d\u0435\u0435 \u0440\u0435\u0448\u0438\u0442\u044c, \u0447\u0435\u043c \u0437\u0430\u043c\u0435\u043d\u0438\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441." },
+      mid: { badge: "\u0434\u0435\u043d\u044c \u043f\u043e\u0434 \u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u0435\u043c", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 " + todayCount + " \u044d\u043f.", text: "\u0414\u0435\u043d\u044c \u0435\u0449\u0451 \u043c\u043e\u0436\u043d\u043e \u0432\u0435\u0440\u043d\u0443\u0442\u044c \u0432 \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c. \u041f\u043e\u043c\u043e\u0433\u0430\u0435\u0442 \u0437\u0430\u0440\u0430\u043d\u0435\u0435 \u0443\u0431\u0440\u0430\u0442\u044c \u0434\u043e\u0441\u0442\u0443\u043f \u0438 \u0441\u043e\u0446\u0438\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u0440\u0438\u0433\u0433\u0435\u0440." },
+      high: { badge: "\u0441\u043b\u043e\u0436\u043d\u044b\u0439 \u0434\u0435\u043d\u044c", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0431\u044b\u043b\u043e \u043c\u043d\u043e\u0433\u043e \u0442\u0440\u0438\u0433\u0433\u0435\u0440\u043e\u0432", text: "\u0421\u0435\u0439\u0447\u0430\u0441 \u0432\u0430\u0436\u043d\u0435\u0435 \u043c\u044f\u0433\u043a\u043e \u0441\u043e\u043a\u0440\u0430\u0442\u0438\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u044d\u043f\u0438\u0437\u043e\u0434 \u0438 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u044c \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u044b\u0439 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0439." }
+    },
+    sweets: {
+      zero: { badge: "\u0440\u043e\u0432\u043d\u044b\u0439 \u0434\u0435\u043d\u044c", title: "\u0421\u043b\u0430\u0434\u043a\u043e\u0435 \u043f\u043e\u043a\u0430 \u043d\u0435 \u0432\u043a\u043b\u044e\u0447\u0438\u043b\u043e\u0441\u044c", text: "\u0415\u0441\u043b\u0438 \u0443\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u0440\u0438\u0442\u043c \u0435\u0434\u044b \u0438 \u044d\u043d\u0435\u0440\u0433\u0438\u0438, \u0442\u044f\u043d\u0443\u0442\u044c \u0431\u0443\u0434\u0435\u0442 \u0437\u0430\u043c\u0435\u0442\u043d\u043e \u043c\u0435\u043d\u044c\u0448\u0435." },
+      low: { badge: "\u0442\u044f\u0433\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f", title: "\u0414\u0435\u043d\u044c \u0438\u0434\u0451\u0442 \u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e", text: "\u0422\u044b \u0443\u0436\u0435 \u043d\u0435 \u0434\u0430\u0451\u0448\u044c \u043f\u0440\u0438\u0432\u044b\u0447\u043a\u0435 \u0438\u0434\u0442\u0438 \u043d\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0435. \u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0441\u0438\u043b\u044c\u043d\u044b\u0439 \u043c\u043e\u043c\u0435\u043d\u0442 \u0447\u0430\u0441\u0442\u043e \u043f\u0440\u0438\u0445\u043e\u0434\u0438\u0442 \u043f\u043e\u0441\u043b\u0435 \u0435\u0434\u044b \u0438\u043b\u0438 \u0443\u0441\u0442\u0430\u043b\u043e\u0441\u0442\u0438." },
+      mid: { badge: "\u0432\u0430\u0436\u0435\u043d \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0432\u044b\u0431\u043e\u0440", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 " + todayCount + " \u044d\u043f.", text: "\u042d\u0442\u043e \u0435\u0449\u0451 \u043d\u0435 \u043f\u0440\u043e\u0432\u0430\u043b \u0434\u043d\u044f. \u0421\u0435\u0439\u0447\u0430\u0441 \u043f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u0437\u0430\u0440\u0430\u043d\u0435\u0435 \u0437\u0430\u043a\u0440\u044b\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0442\u0440\u0438\u0433\u0433\u0435\u0440." },
+      high: { badge: "\u0434\u0435\u043d\u044c \u043f\u0435\u0440\u0435\u0433\u0440\u0443\u0436\u0435\u043d", title: "\u0422\u044f\u0433\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f \u0431\u044b\u043b\u0430 \u0432\u044b\u0441\u043e\u043a\u043e\u0439", text: "\u041f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u043f\u043e\u043d\u044f\u0442\u044c, \u0433\u0434\u0435 \u043f\u0440\u043e\u0441\u0435\u043b\u0430 \u044d\u043d\u0435\u0440\u0433\u0438\u044f \u0438\u043b\u0438 \u043d\u0430\u043a\u043e\u043f\u0438\u043b\u0441\u044f \u0441\u0442\u0440\u0435\u0441\u0441, \u0438 \u043f\u043e\u0434\u0441\u0442\u0440\u0430\u0445\u043e\u0432\u0430\u0442\u044c \u0438\u043c\u0435\u043d\u043d\u043e \u044d\u0442\u043e\u0442 \u043c\u043e\u043c\u0435\u043d\u0442." }
+    },
+    social: {
+      zero: { badge: "\u0444\u043e\u043a\u0443\u0441 \u0434\u0435\u0440\u0436\u0438\u0442\u0441\u044f", title: "\u041b\u0435\u043d\u0442\u0430 \u043f\u043e\u043a\u0430 \u043d\u0435 \u0437\u0430\u0431\u0440\u0430\u043b\u0430 \u0434\u0435\u043d\u044c", text: "\u0427\u0435\u043c \u0440\u0435\u0436\u0435 \u0442\u0435\u043b\u0435\u0444\u043e\u043d \u043f\u043e\u043f\u0430\u0434\u0430\u0435\u0442 \u0432 \u0440\u0443\u043a\u0438 \u0431\u0435\u0437 \u0446\u0435\u043b\u0438, \u0442\u0435\u043c \u0441\u043b\u0430\u0431\u0435\u0435 \u0430\u0432\u0442\u043e\u043f\u0440\u043e\u043a\u0440\u0443\u0442\u043a\u0430." },
+      low: { badge: "\u044d\u043a\u0440\u0430\u043d \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c", title: "\u0422\u044b \u043f\u043e\u043a\u0430 \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0448\u044c \u0432\u043d\u0438\u043c\u0430\u043d\u0438\u0435\u043c", text: "\u0415\u0441\u0442\u044c \u0437\u0430\u043f\u0430\u0441. \u041f\u043e\u043b\u0435\u0437\u043d\u043e \u0437\u0430\u0440\u0430\u043d\u0435\u0435 \u0440\u0435\u0448\u0438\u0442\u044c, \u043a\u043e\u0433\u0434\u0430 \u043c\u043e\u0436\u043d\u043e \u0437\u0430\u0445\u043e\u0434\u0438\u0442\u044c \u0432 \u043b\u0435\u043d\u0442\u0443 \u0438 \u043a\u043e\u0433\u0434\u0430 \u0432\u044b\u0445\u043e\u0434\u0438\u0442\u044c." },
+      mid: { badge: "\u0432\u0430\u0436\u0435\u043d \u0432\u044b\u0445\u043e\u0434 \u0432\u043e\u0432\u0440\u0435\u043c\u044f", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 " + todayCount + " \u0437\u0430\u0445\u043e\u0434\u0430", text: "\u0414\u0435\u043d\u044c \u0435\u0449\u0451 \u043c\u043e\u0436\u043d\u043e \u0432\u044b\u0440\u043e\u0432\u043d\u044f\u0442\u044c. \u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u043b\u0443\u0447\u0448\u0438\u0439 \u0448\u0430\u0433 \u2014 \u0441\u043e\u043a\u0440\u0430\u0442\u0438\u0442\u044c \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c, \u0430 \u043d\u0435 \u0436\u0434\u0430\u0442\u044c \u0438\u0434\u0435\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u043d\u0443\u043b\u044f." },
+      high: { badge: "\u0434\u0435\u043d\u044c \u0440\u0430\u0441\u0441\u044b\u043f\u0430\u043b\u0441\u044f", title: "\u0410\u0432\u0442\u043e\u043f\u0440\u043e\u043a\u0440\u0443\u0442\u043a\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0441\u0438\u043b\u0438\u043b\u0430\u0441\u044c", text: "\u0421\u0435\u0439\u0447\u0430\u0441 \u043b\u0443\u0447\u0448\u0435 \u0443\u0431\u0440\u0430\u0442\u044c \u0442\u0435\u043b\u0435\u0444\u043e\u043d \u0438\u0437 \u0431\u044b\u0441\u0442\u0440\u043e\u0433\u043e \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u0438 \u0434\u0430\u0442\u044c \u043c\u043e\u0437\u0433\u0443 \u0434\u0440\u0443\u0433\u043e\u0439 \u0440\u0438\u0442\u0443\u0430\u043b." }
+    },
+    overeating: {
+      zero: { badge: "\u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0440\u0438\u0442\u043c", title: "\u041f\u043e\u043a\u0430 \u0431\u0435\u0437 \u044d\u043f\u0438\u0437\u043e\u0434\u043e\u0432 \u043f\u0435\u0440\u0435\u0435\u0434\u0430\u043d\u0438\u044f", text: "\u0420\u043e\u0432\u043d\u044b\u0439 \u0434\u0435\u043d\u044c. \u041a\u043e\u0433\u0434\u0430 \u0435\u0434\u0430 \u043e\u0441\u0442\u0430\u0451\u0442\u0441\u044f \u043e\u0442\u0432\u0435\u0442\u043e\u043c \u043d\u0430 \u0433\u043e\u043b\u043e\u0434, \u0430 \u043d\u0435 \u043d\u0430 \u043d\u0430\u043f\u0440\u044f\u0436\u0435\u043d\u0438\u0435, \u0442\u0435\u043b\u0443 \u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u043b\u0435\u0433\u0447\u0435." },
+      low: { badge: "\u0434\u0435\u043d\u044c \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c", title: "\u0422\u044b \u043f\u043e\u043a\u0430 \u0434\u0435\u0440\u0436\u0438\u0448\u044c \u0440\u0438\u0442\u043c", text: "\u042d\u0442\u043e \u0443\u0436\u0435 \u0445\u043e\u0440\u043e\u0448\u0430\u044f \u0431\u0430\u0437\u0430. \u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u043f\u043e\u043b\u0435\u0437\u043d\u044b\u0439 \u0448\u0430\u0433 \u2014 \u0437\u0430\u043c\u0435\u0442\u0438\u0442\u044c, \u0433\u0434\u0435 \u0435\u0434\u0430 \u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u0441\u043f\u043e\u0441\u043e\u0431\u043e\u043c \u0441\u043d\u044f\u0442\u044c \u043d\u0430\u043f\u0440\u044f\u0436\u0435\u043d\u0438\u0435." },
+      mid: { badge: "\u0432\u0430\u0436\u0435\u043d \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0432\u044b\u0431\u043e\u0440", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0443\u0436\u0435 " + todayCount + " \u044d\u043f.", text: "\u042d\u043f\u0438\u0437\u043e\u0434\u044b \u0435\u0449\u0451 \u043c\u043e\u0436\u043d\u043e \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c. \u041b\u0443\u0447\u0448\u0435 \u043d\u0435 \u0441\u043f\u043e\u0440\u0438\u0442\u044c \u0441 \u0441\u043e\u0431\u043e\u0439, \u0430 \u0437\u0430\u0440\u0430\u043d\u0435\u0435 \u0443\u0431\u0440\u0430\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0439." },
+      high: { badge: "\u0434\u0435\u043d\u044c \u0431\u044b\u043b \u0442\u044f\u0436\u0451\u043b\u044b\u043c", title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u0431\u044b\u043b\u043e \u043c\u043d\u043e\u0433\u043e \u0438\u043c\u043f\u0443\u043b\u044c\u0441\u043e\u0432", text: "\u041f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u043d\u0435 \u0440\u0443\u0433\u0430\u0442\u044c \u0441\u0435\u0431\u044f, \u0430 \u043e\u0442\u043c\u0435\u0442\u0438\u0442\u044c, \u0433\u0434\u0435 \u0432\u043a\u043b\u044e\u0447\u0438\u043b\u0438\u0441\u044c \u0441\u0442\u0440\u0435\u0441\u0441, \u0443\u0441\u0442\u0430\u043b\u043e\u0441\u0442\u044c \u0438\u043b\u0438 \u043f\u0443\u0441\u0442\u043e\u0442\u0430." }
+    }
+  };
+  return (safePerHabit[habitId] && safePerHabit[habitId][safeStage]) || safeCommon[safeStage];
   var lowThreshold = Math.max(1, Math.floor(limit * 0.4));
   var stage = todayCount === 0 ? "zero" : todayCount <= lowThreshold ? "low" : todayCount < limit ? "mid" : "high";
   var maps = {
@@ -1363,16 +1618,81 @@ function renderSetupBanner(state) {
 }
 
 function normalizePrimaryFlow() {
+  var screen = document.querySelector(".screen");
+  var topbar = document.querySelector(".topbar");
+  var moodBanner = document.querySelector(".mood-banner");
   var ritualCard = document.getElementById("ritual-card");
+  var liveEventCard = document.getElementById("live-event-card");
   var hero = document.querySelector(".hero");
   var memoryCard = document.getElementById("memory-card");
-  if (ritualCard && hero && ritualCard.nextElementSibling !== hero) {
-    ritualCard.insertAdjacentElement("afterend", hero);
+  var ritual = currentMainViewModel && currentMainViewModel.ritual;
+  var liveEvent = currentMainViewModel && currentMainViewModel.liveEvent;
+  var phase = currentMainViewModel && currentMainViewModel.phase;
+  var isMorningPrimary = !!(ritual && ritual.type === "morning" && ritual.mode !== "carryover");
+  var isDayPrimary = phase === "day" && !!ritual && ritual.mode !== "carryover";
+  var isEveningPrimary = phase === "evening" && !!ritual && ritual.mode !== "carryover";
+
+  if (screen) {
+    screen.classList.toggle("is-day-phase", !!isDayPrimary);
+    screen.classList.toggle("is-evening-phase", !!isEveningPrimary);
   }
-if (hero && memoryCard && hero.nextElementSibling !== memoryCard) {
-  hero.insertAdjacentElement("afterend", memoryCard);
-}
-renderMemoryCardState();
+
+  if (moodBanner) {
+    moodBanner.style.display = (isMorningPrimary || isDayPrimary || isEveningPrimary) ? "none" : "flex";
+  }
+
+  if (screen && topbar && ritualCard && moodBanner) {
+    if (isDayPrimary) {
+      if (topbar.nextElementSibling !== ritualCard) {
+        topbar.insertAdjacentElement("afterend", ritualCard);
+      }
+    } else if (isEveningPrimary) {
+      if (topbar.nextElementSibling !== ritualCard) {
+        topbar.insertAdjacentElement("afterend", ritualCard);
+      }
+    } else if (isMorningPrimary) {
+      if (topbar.nextElementSibling !== ritualCard) {
+        topbar.insertAdjacentElement("afterend", ritualCard);
+      }
+      if (memoryCard && ritualCard.nextElementSibling !== memoryCard) {
+        ritualCard.insertAdjacentElement("afterend", memoryCard);
+      }
+      if (hero && memoryCard && memoryCard.nextElementSibling !== hero) {
+        memoryCard.insertAdjacentElement("afterend", hero);
+      } else if (hero && !memoryCard && ritualCard.nextElementSibling !== hero) {
+        ritualCard.insertAdjacentElement("afterend", hero);
+      }
+    } else if (topbar.nextElementSibling !== moodBanner) {
+      topbar.insertAdjacentElement("afterend", moodBanner);
+      if (moodBanner.nextElementSibling !== ritualCard) {
+        moodBanner.insertAdjacentElement("afterend", ritualCard);
+      }
+    }
+  }
+
+  if (isDayPrimary && ritualCard && liveEventCard && hero) {
+    if (ritualCard.nextElementSibling !== liveEventCard) {
+      ritualCard.insertAdjacentElement("afterend", liveEventCard);
+    }
+    if (liveEventCard.nextElementSibling !== hero) {
+      liveEventCard.insertAdjacentElement("afterend", hero);
+    }
+  } else if (isEveningPrimary && ritualCard && hero && ritualCard.nextElementSibling !== hero) {
+    ritualCard.insertAdjacentElement("afterend", hero);
+  } else if (!isMorningPrimary && ritualCard && hero && ritualCard.nextElementSibling !== hero && (!moodBanner || moodBanner.nextElementSibling !== hero)) {
+    if (isMorningPrimary && moodBanner) {
+      moodBanner.insertAdjacentElement("afterend", hero);
+    } else {
+      ritualCard.insertAdjacentElement("afterend", hero);
+    }
+  }
+  if (!isMorningPrimary && hero && memoryCard && hero.nextElementSibling !== memoryCard) {
+    hero.insertAdjacentElement("afterend", memoryCard);
+  }
+  if (isDayPrimary && memoryCard && moodBanner && memoryCard.nextElementSibling !== moodBanner) {
+    memoryCard.insertAdjacentElement("afterend", moodBanner);
+  }
+  renderMemoryCardState();
 }
 
 function getFirstWeekModel(state) {
@@ -1403,13 +1723,13 @@ function renderFirstWeekCard(state) {
   document.getElementById("first-week-title").textContent = model.headline;
   document.getElementById("first-week-copy").textContent = model.narrative;
   document.getElementById("first-week-progress").style.width = model.progress + "%";
-  document.getElementById("first-week-meta").textContent = model.completed + " РёР· " + model.total + " РѕРїРѕСЂ СѓР¶Рµ РµСЃС‚СЊ";
+  document.getElementById("first-week-meta").textContent = model.completed + " \u0438\u0437 " + model.total + " \u043e\u043f\u043e\u0440 \u0443\u0436\u0435 \u0435\u0441\u0442\u044c";
   document.getElementById("first-week-chips").innerHTML = model.milestones.map(function (item) {
     return '<div class="week-journey-chip ' + (item.done ? "done" : "") + '">' + item.shortTitle + '</div>';
   }).join("");
   document.getElementById("first-week-next").textContent = model.nextMilestone
-    ? "РЎР»РµРґСѓСЋС‰Р°СЏ РјР°Р»РµРЅСЊРєР°СЏ РѕРїРѕСЂР°: " + model.nextMilestone.title + "."
-    : "Р‘Р°Р·Р° РїРµСЂРІРѕР№ РЅРµРґРµР»Рё СѓР¶Рµ СЃРѕР±СЂР°РЅР°. РўРµРїРµСЂСЊ РїСЂРёР»РѕР¶РµРЅРёРµ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ С‚РІРѕР№ СЂРёС‚Рј Р·Р°РјРµС‚РЅРѕ СѓРІРµСЂРµРЅРЅРµРµ.";
+    ? "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0430\u044f \u043c\u0430\u043b\u0435\u043d\u044c\u043a\u0430\u044f \u043e\u043f\u043e\u0440\u0430: " + model.nextMilestone.title + "."
+    : "\u0411\u0430\u0437\u0430 \u043f\u0435\u0440\u0432\u043e\u0439 \u043d\u0435\u0434\u0435\u043b\u0438 \u0443\u0436\u0435 \u0441\u043e\u0431\u0440\u0430\u043d\u0430. \u0422\u0435\u043f\u0435\u0440\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0431\u0443\u0434\u0435\u0442 \u0432\u0438\u0434\u0435\u0442\u044c \u0442\u0432\u043e\u0439 \u0440\u0438\u0442\u043c \u0437\u0430\u043c\u0435\u0442\u043d\u043e \u0443\u0432\u0435\u0440\u0435\u043d\u043d\u0435\u0435.";
 }
 
 function renderCelebration(state) {
@@ -1433,9 +1753,9 @@ function renderMain(state) {
   var trackerState = getTrackerStateCopy(state.currentHabit.id, todayCount, limit);
   if (!trackerState || !trackerState.title || !trackerState.text) {
     trackerState = {
-      badge: "СЃРїРѕРєРѕР№РЅС‹Р№ РґРµРЅСЊ",
-      title: "РЎРµРіРѕРґРЅСЏ РјРѕР¶РЅРѕ РґРµСЂР¶Р°С‚СЊСЃСЏ Р·Р° СЂРёС‚Рј",
-      text: "Р”Р°Р¶Рµ РѕРґРёРЅ С‡РµСЃС‚РЅС‹Р№ СЃРёРіРЅР°Р» СѓР¶Рµ РїРѕР»РµР·РЅРµРµ, С‡РµРј РїРѕРїС‹С‚РєР° РІСЃС‘ РєРѕРЅС‚СЂРѕР»РёСЂРѕРІР°С‚СЊ РёРґРµР°Р»СЊРЅРѕ."
+      badge: "\u0441\u043f\u043e\u043a\u043e\u0439\u043d\u044b\u0439 \u0434\u0435\u043d\u044c",
+      title: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f \u043c\u043e\u0436\u043d\u043e \u0434\u0435\u0440\u0436\u0430\u0442\u044c\u0441\u044f \u0437\u0430 \u0440\u0438\u0442\u043c",
+      text: "\u0414\u0430\u0436\u0435 \u043e\u0434\u0438\u043d \u0447\u0435\u0441\u0442\u043d\u044b\u0439 \u0441\u0438\u0433\u043d\u0430\u043b \u0443\u0436\u0435 \u043f\u043e\u043b\u0435\u0437\u043d\u0435\u0435, \u0447\u0435\u043c \u043f\u043e\u043f\u044b\u0442\u043a\u0430 \u0432\u0441\u0451 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0438\u0434\u0435\u0430\u043b\u044c\u043d\u043e."
     };
   }
   document.getElementById("user-name").textContent = state.profile.userName;
@@ -1445,8 +1765,15 @@ function renderMain(state) {
   document.getElementById("hero-sub").textContent = "\u043e\u0440\u0438\u0435\u043d\u0442\u0438\u0440: \u0434\u043e " + limit + " " + state.currentHabit.unitLabel + " \u0432 \u0434\u0435\u043d\u044c";
   document.getElementById("goal-fill").style.width = pct + "%";
   document.getElementById("goal-fill").style.background = todayCount >= limit ? "#D85A30" : "#1D9E75";
-  document.getElementById("goal-label").textContent = "СЃРµРіРѕРґРЅСЏ " + todayCount + " / " + limit;
-  document.getElementById("record-btn").textContent = trackerCopy.recordLabel;
+  document.getElementById("goal-label").textContent = "\u0441\u0435\u0433\u043e\u0434\u043d\u044f " + todayCount + " / " + limit;
+  if (document.getElementById("record-btn-title")) {
+    document.getElementById("record-btn-title").textContent = trackerCopy.recordLabel;
+  } else {
+    document.getElementById("record-btn").textContent = trackerCopy.recordLabel;
+  }
+  if (document.getElementById("record-btn-limit")) {
+    document.getElementById("record-btn-limit").textContent = todayCount + "/" + limit;
+  }
   var resistedBtn = document.getElementById("resisted-btn");
   if (resistedBtn) {
     resistedBtn.textContent = resistedSaving
@@ -1508,7 +1835,7 @@ function syncRitualCarryoverUi() {
   if (noteLabel) {
     noteLabel.textContent = status === "partial"
       ? "\u0415\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0448\u044c, \u043c\u043e\u0436\u043d\u043e \u043e\u0434\u043d\u043e\u0439 \u0444\u0440\u0430\u0437\u043e\u0439"
-      : "\u0415\u0441\u043b\u0438 \u0437\u0430\u0445\u043e\u0447\u0435\u0448\u044c, \u043c\u043e\u0436\u043d\u043e \u043e\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u0437\u0430\u043c\u0435\u0442\u043a\u0443";
+      : "\u0415\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0448\u044c, \u043c\u043e\u0436\u043d\u043e \u043a\u043e\u0440\u043e\u0442\u043a\u043e";
   }
   if (noteInput) {
     noteInput.placeholder = showNote && ritual.carryoverNotePlaceholders
@@ -1528,6 +1855,23 @@ function syncRitualEntryAction() {
   if (!button) return;
   if (!ritual || ritual.mode === "carryover") {
     button.disabled = false;
+    return;
+  }
+  if (ritual.type === "evening") {
+    var selectedId = ritualEveningState.status || "";
+    var currentId = ritual.selectedEveningChoice || "";
+    if (!selectedId) {
+      button.disabled = true;
+      button.textContent = currentId ? "\u0414\u0435\u043d\u044c \u0437\u0430\u043a\u0440\u044b\u0442" : "\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u043e\u0442\u0432\u0435\u0442";
+      return;
+    }
+    if (currentId && currentId === selectedId) {
+      button.disabled = true;
+      button.textContent = "\u0414\u0435\u043d\u044c \u0437\u0430\u043a\u0440\u044b\u0442";
+      return;
+    }
+    button.disabled = false;
+    button.textContent = currentId ? "\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c \u043e\u0442\u0432\u0435\u0442" : "\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u0434\u0435\u043d\u044c";
     return;
   }
   var draft = input ? String(input.value || "").trim() : "";
@@ -1550,6 +1894,51 @@ function syncRitualEntryAction() {
   button.textContent = hasSavedEntry ? "Обновить мысль" : "Сохранить мысль";
 }
 
+function syncRitualMorningUi() {
+  var ritual = currentMainViewModel && currentMainViewModel.ritual;
+  var input = document.getElementById("ritual-input");
+  var summary = document.getElementById("ritual-entry-summary");
+  var summaryText = document.getElementById("ritual-entry-summary-text");
+  var footer = document.querySelector(".ritual-footer");
+  if (!input || !summary || !summaryText || !footer) return;
+
+  if (!ritual || ritual.type !== "morning" || ritual.mode !== "entry") {
+    ritualMorningState = { expanded: false };
+    summary.classList.remove("visible");
+    input.style.display = "";
+    footer.style.display = "flex";
+    return;
+  }
+
+  var summaryOnly = !!(ritual.hasEntry && !ritualMorningState.expanded);
+  summaryText.textContent = ritual.value || "";
+  summary.classList.toggle("visible", summaryOnly);
+  input.style.display = summaryOnly ? "none" : "";
+  footer.style.display = summaryOnly ? "none" : "flex";
+}
+
+function syncRitualEveningUi() {
+  var ritual = currentMainViewModel && currentMainViewModel.ritual;
+  var root = document.getElementById("ritual-evening-options");
+  if (!root) return;
+  if (!ritual || ritual.type !== "evening" || ritual.mode !== "entry") {
+    ritualEveningState = { status: "", expanded: false };
+    root.dataset.selected = "";
+    root.classList.remove("is-summary");
+    return;
+  }
+  var selectedId = ritualEveningState.status || ritual.selectedEveningChoice || "";
+  var summaryOnly = !!(ritual.hasEntry && !ritualEveningState.expanded && selectedId);
+  root.dataset.selected = selectedId;
+  root.classList.toggle("is-summary", summaryOnly);
+  root.querySelectorAll("[data-evening-option]").forEach(function (button) {
+    var isSelected = button.dataset.eveningOption === selectedId;
+    button.classList.toggle("active", isSelected);
+    button.style.display = summaryOnly && !isSelected ? "none" : "";
+  });
+  syncRitualEntryAction();
+}
+
 function renderMain(state) {
   var vm = window.HabitScreenModels && window.HabitScreenModels.buildMainScreenModel
     ? window.HabitScreenModels.buildMainScreenModel(state)
@@ -1558,10 +1947,18 @@ function renderMain(state) {
   if (!vm || !vm.ritual || vm.ritual.mode !== "carryover") {
     ritualCarryoverState = { status: "", note: "" };
   }
+  if (!vm || !vm.ritual || vm.ritual.type !== "morning" || vm.ritual.mode !== "entry") {
+    ritualMorningState = { expanded: false };
+  }
+  if (!vm || !vm.ritual || vm.ritual.type !== "evening" || vm.ritual.mode !== "entry") {
+    ritualEveningState = { status: "", expanded: false };
+  }
   if (vm && window.HabitScreenDom && window.HabitScreenDom.applyMainScreenViewModel) {
     window.HabitScreenDom.applyMainScreenViewModel(vm);
   }
   applyResistedButtonState(state);
+  syncRitualMorningUi();
+  syncRitualEveningUi();
   syncRitualEntryAction();
   normalizePrimaryFlow();
   renderSlipComposer(state);
@@ -1618,7 +2015,14 @@ document.getElementById("slip-tag-row").addEventListener("click", function (even
   var target = event.target.closest("[data-slip-tag]");
   if (!target) return;
   var tag = target.dataset.slipTag;
-  slipComposerState.tags = [tag];
+  var index = slipComposerState.tags.indexOf(tag);
+  if (index === -1) {
+    slipComposerState.tags = slipComposerState.tags.concat(tag);
+  } else {
+    slipComposerState.tags = slipComposerState.tags.filter(function (item) {
+      return item !== tag;
+    });
+  }
   renderSlipComposer(window.HabitStore.getState());
 });
 document.getElementById("slip-intensity-row").addEventListener("click", function (event) {
@@ -1694,6 +2098,38 @@ document.getElementById("ritual-carryover-note").addEventListener("input", funct
 document.getElementById("ritual-input").addEventListener("input", function () {
   syncRitualEntryAction();
 });
+document.getElementById("ritual-entry-summary").addEventListener("click", function () {
+  if (!currentMainViewModel || !currentMainViewModel.ritual || currentMainViewModel.ritual.type !== "morning" || !currentMainViewModel.ritual.hasEntry) {
+    return;
+  }
+  ritualMorningState.expanded = true;
+  syncRitualMorningUi();
+  syncRitualEntryAction();
+  var input = document.getElementById("ritual-input");
+  if (input) {
+    input.focus();
+    var len = input.value.length;
+    input.setSelectionRange(len, len);
+  }
+});
+document.getElementById("ritual-entry-summary").addEventListener("keydown", function (event) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    this.click();
+  }
+});
+document.getElementById("ritual-evening-options").addEventListener("click", function (event) {
+  var target = event.target.closest("[data-evening-option]");
+  if (!target) return;
+  if (currentMainViewModel && currentMainViewModel.ritual && currentMainViewModel.ritual.hasEntry && !ritualEveningState.expanded) {
+    ritualEveningState.expanded = true;
+    ritualEveningState.status = currentMainViewModel.ritual.selectedEveningChoice || target.dataset.eveningOption || "";
+    syncRitualEveningUi();
+    return;
+  }
+  ritualEveningState.status = target.dataset.eveningOption || "";
+  syncRitualEveningUi();
+});
 document.getElementById("ritual-save-btn").addEventListener("click", function () {
   var mode = this.dataset.mode || "entry";
   if (mode === "carryover") {
@@ -1725,6 +2161,27 @@ document.getElementById("ritual-save-btn").addEventListener("click", function ()
     return;
   }
 
+  if (currentMainViewModel && currentMainViewModel.ritual && currentMainViewModel.ritual.type === "evening") {
+    var selectedId = ritualEveningState.status || "";
+    var choice = (currentMainViewModel.ritual.eveningChoices || []).find(function (item) {
+      return item.id === selectedId;
+    });
+    if (!choice) {
+      showToast("\u0414\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u043e \u043e\u0434\u043d\u043e\u0433\u043e \u0447\u0435\u0441\u0442\u043d\u043e\u0433\u043e \u043e\u0442\u0432\u0435\u0442\u0430.");
+      return;
+    }
+    window.HabitStore.saveRitualEntry({
+      type: "evening",
+      text: choice.text
+    });
+    showToast(currentMainViewModel.ritual.hasEntry
+      ? "\u0412\u0435\u0447\u0435\u0440\u043d\u0438\u0439 \u043e\u0442\u0432\u0435\u0442 \u043e\u0431\u043d\u043e\u0432\u043b\u0451\u043d."
+      : "\u0414\u0435\u043d\u044c \u0437\u0430\u043a\u0440\u044b\u0442.");
+    ritualEveningState = { status: "", expanded: false };
+    renderMain(window.HabitStore.getState());
+    return;
+  }
+
   var input = document.getElementById("ritual-input");
   var text = (input && input.value || "").trim();
   if (!text) {
@@ -1745,6 +2202,7 @@ document.getElementById("ritual-save-btn").addEventListener("click", function ()
     text: text
   });
   showToast(currentText ? "\u041c\u044b\u0441\u043b\u044c \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0430." : (this.dataset.toast || "\u041c\u044b\u0441\u043b\u044c \u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0430."));
+  ritualMorningState = { expanded: false };
   renderMain(window.HabitStore.getState());
 });
 document.querySelectorAll("[data-detail-card]").forEach(function (button) {

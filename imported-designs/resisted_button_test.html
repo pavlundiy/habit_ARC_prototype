@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Тест кнопки удержания</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#ece7dd;
+    --surface:#faf9f6;
+    --hero:#1e1c18;
+    --hero-elevated:#181613;
+    --hero-muted:#b9afa1;
+    --hero-subtle:#94887b;
+    --accent:#1D9E75;
+    --accent-soft:#E1F5EE;
+    --accent-soft-border:rgba(29,158,117,.26);
+    --accent-text:#085041;
+    --danger:#D85A30;
+    --font:"DM Sans","Segoe UI",sans-serif;
+  }
+  html,body{min-height:100%;background:var(--bg);font-family:var(--font);color:#1e1c18}
+  body{padding:20px}
+  button{font:inherit}
+  .app{max-width:390px;margin:0 auto}
+  .note{
+    background:rgba(255,255,255,.78);
+    border:1px solid rgba(30,28,24,.08);
+    border-radius:18px;
+    padding:14px 16px;
+    font-size:13px;
+    line-height:1.55;
+    color:#4d473f;
+    margin-bottom:16px;
+  }
+  .hero{
+    background:linear-gradient(180deg,var(--hero) 0%,var(--hero-elevated) 100%);
+    border-radius:22px;
+    padding:18px 18px 16px;
+    color:#faf9f6;
+    box-shadow:0 16px 28px rgba(28,22,15,.18);
+  }
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+  .hero-habit{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--hero-muted);margin-bottom:4px}
+  .hero-count{font-size:58px;font-weight:800;line-height:.92;letter-spacing:-.04em}
+  .hero-sub{margin-top:6px;font-size:12px;line-height:1.5;color:#f0e9df}
+  .hero-badge{
+    min-width:96px;
+    font-size:10px;
+    color:#b8f0db;
+    background:rgba(29,158,117,.2);
+    border-radius:999px;
+    text-align:center;
+    font-weight:700;
+    padding:5px 10px;
+  }
+  .goal{display:flex;align-items:center;gap:10px;margin:16px 0 18px}
+  .goal-track{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
+  .goal-fill{width:60%;height:100%;background:var(--danger);border-radius:999px}
+  .goal-label{font-size:11px;color:#8edbc0;font-weight:700}
+  .action-stack{display:grid;gap:12px}
+  .record-btn{
+    background:#221f1b;
+    border:1px solid rgba(255,255,255,.05);
+    color:#faf9f6;
+    border-radius:20px;
+    min-height:74px;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .record-icon{
+    width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.1);
+    display:flex;align-items:center;justify-content:center;font-size:28px;line-height:1
+  }
+  .record-copy{flex:1;min-width:0;text-align:left}
+  .record-title{font-size:14px;font-weight:700;line-height:1.25}
+  .record-sub{font-size:11px;color:#9f9588;line-height:1.45;margin-top:4px}
+  .record-arrow{font-size:20px;color:#b4aa9d}
+  .resisted-btn{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    background:rgba(255,255,255,.08);
+    color:#faf9f6;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:18px;
+    min-height:58px;
+    padding:0 18px;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    transition:transform .16s ease, box-shadow .18s ease, background-color .22s ease, border-color .22s ease, color .22s ease;
+  }
+  .resisted-btn-label{position:relative;z-index:2}
+  .resisted-btn::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    background:linear-gradient(90deg, rgba(184,240,219,0) 0%, rgba(184,240,219,.24) 44%, rgba(255,255,255,.34) 50%, rgba(184,240,219,.24) 56%, rgba(184,240,219,0) 100%);
+    transform:translateX(-120%);
+    opacity:0;
+    pointer-events:none;
+    z-index:1;
+  }
+  .resisted-btn:active{transform:translateY(1px) scale(.992)}
+  .resisted-btn.is-flashing::before{
+    opacity:1;
+    animation:buttonSweep .34s ease-out 1;
+  }
+  .resisted-btn.is-saving{
+    background:rgba(18,51,40,.98);
+    border-color:rgba(51,184,135,.55);
+    color:#b8f0db;
+    box-shadow:0 10px 22px rgba(8,26,20,.26);
+  }
+  .resisted-btn.is-confirmed{
+    background:linear-gradient(180deg, rgba(29,158,117,.98) 0%, rgba(24,129,96,.98) 100%);
+    border-color:rgba(184,240,219,.62);
+    color:#f7fffb;
+    box-shadow:0 14px 28px rgba(15,74,56,.32), inset 0 0 0 1px rgba(247,255,251,.18);
+    transform:translateY(-1px);
+  }
+  .legend{
+    margin-top:16px;
+    display:grid;
+    gap:8px;
+    font-size:12px;
+    color:#5f574d;
+    line-height:1.5;
+  }
+  .legend strong{color:#1e1c18}
+  .controls{
+    margin-top:14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .ghost-btn{
+    border:1px solid rgba(30,28,24,.12);
+    background:rgba(255,255,255,.78);
+    color:#1e1c18;
+    border-radius:999px;
+    padding:8px 12px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  @keyframes buttonSweep{
+    0%{transform:translateX(-120%);opacity:0}
+    15%{opacity:1}
+    100%{transform:translateX(120%);opacity:0}
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="note">
+      Тестовый экран только для проверки поведения кнопки <strong>«Удержался»</strong>. Здесь мы можем спокойно подобрать правильную механику, не трогая основное приложение.
+    </div>
+
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-habit">Курение · сегодня</div>
+          <div class="hero-count">0</div>
+          <div class="hero-sub">один ориентир на этот день</div>
+        </div>
+        <div class="hero-badge">спокойный день</div>
+      </div>
+
+      <div class="goal">
+        <div class="goal-track"><div class="goal-fill"></div></div>
+        <div class="goal-label">сегодня 0 / 5</div>
+      </div>
+
+      <div class="action-stack">
+        <button class="record-btn" type="button">
+          <div class="record-icon">+</div>
+          <div class="record-copy">
+            <div class="record-title">Зафиксировать срыв</div>
+            <div class="record-sub">быстро · два касания</div>
+          </div>
+          <div class="record-arrow">›</div>
+        </button>
+
+        <button class="resisted-btn" id="resisted-btn" type="button">
+          <span class="resisted-btn-label" id="resisted-btn-label">Удержался</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div><strong>Сценарий:</strong> короткая внутренняя вспышка → <code>Фиксируем...</code> → <code>Зафиксировано</code>.</div>
+      <div>Если ощущение всё ещё слабое, здесь можно подкрутить длительность и силу эффекта до переноса в основное приложение.</div>
+    </div>
+
+    <div class="controls">
+      <button class="ghost-btn" id="replay-btn" type="button">Повторить</button>
+      <button class="ghost-btn" id="reset-btn" type="button">Сбросить</button>
+    </div>
+  </div>
+
+<script>
+  var btn = document.getElementById("resisted-btn");
+  var label = document.getElementById("resisted-btn-label");
+  var replayBtn = document.getElementById("replay-btn");
+  var resetBtn = document.getElementById("reset-btn");
+  var flowTimer = null;
+  var confirmTimer = null;
+  var state = "idle";
+
+  function applyState(nextState) {
+    state = nextState;
+    btn.classList.toggle("is-flashing", nextState === "flashing");
+    btn.classList.toggle("is-saving", nextState === "saving");
+    btn.classList.toggle("is-confirmed", nextState === "confirmed");
+    label.textContent =
+      nextState === "saving" ? "Фиксируем..." :
+      nextState === "confirmed" ? "Зафиксировано" :
+      "Удержался";
+  }
+
+  function clearTimers() {
+    if (flowTimer) {
+      window.clearTimeout(flowTimer);
+      flowTimer = null;
+    }
+    if (confirmTimer) {
+      window.clearTimeout(confirmTimer);
+      confirmTimer = null;
+    }
+  }
+
+  function resetFlow() {
+    clearTimers();
+    applyState("idle");
+  }
+
+  function playFlow() {
+    clearTimers();
+    applyState("flashing");
+    flowTimer = window.setTimeout(function () {
+      applyState("saving");
+      flowTimer = window.setTimeout(function () {
+        applyState("confirmed");
+        confirmTimer = window.setTimeout(function () {
+          applyState("idle");
+        }, 920);
+      }, 220);
+    }, 180);
+  }
+
+  btn.addEventListener("click", function () {
+    if (state === "saving") return;
+    playFlow();
+  });
+  replayBtn.addEventListener("click", playFlow);
+  resetBtn.addEventListener("click", resetFlow);
+</script>
+</body>
+</html>

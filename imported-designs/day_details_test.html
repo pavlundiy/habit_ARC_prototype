@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day Details Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf9f6;
+      --shell:#ece7dd;
+      --surface:#ffffff;
+      --surface-soft:#f6f1e8;
+      --text:#1e1c18;
+      --muted:#8a8880;
+      --line:#e6ded2;
+      --line-strong:#d7d0c4;
+      --accent:#1D9E75;
+      --accent-soft:#e3f5ee;
+      --warn:#ef9f27;
+      --risk:#d85a30;
+      --shadow:0 14px 34px rgba(63,43,17,.08);
+      --radius-xl:24px;
+      --radius-lg:18px;
+      --radius-md:14px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:#171512;
+      font-family:"DM Sans",system-ui,sans-serif;
+      color:var(--text);
+    }
+
+    .phone{
+      width:390px;
+      min-height:844px;
+      background:linear-gradient(180deg,#f8f6f1 0%, #f7f4ed 100%);
+      border:14px solid #1f1b16;
+      border-radius:42px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 28px 72px rgba(0,0,0,.32);
+    }
+
+    .notch{
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:30px;
+      border-radius:0 0 16px 16px;
+      background:#0f0d0b;
+      z-index:2;
+    }
+
+    .screen{
+      height:100%;
+      padding:26px 22px 28px;
+      background:var(--bg);
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#6b6860;
+      font-size:14px;
+      margin-bottom:18px;
+      padding:0 2px;
+    }
+
+    .details-shell{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:18px 16px 16px;
+      box-shadow:var(--shadow);
+    }
+
+    .details-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .details-title{
+      font-size:17px;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .details-toggle{
+      border:none;
+      background:none;
+      color:var(--accent);
+      font:inherit;
+      font-size:14px;
+      font-weight:700;
+      padding:0;
+      cursor:pointer;
+    }
+
+    .section-label{
+      font-size:11px;
+      font-weight:700;
+      color:#b1aea6;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+
+    .details-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .day-row{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--surface);
+      padding:12px 12px 11px;
+      box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+    }
+
+    .day-row.is-resisted{
+      background:linear-gradient(180deg,#fcfdfb 0%, #f5fbf8 100%);
+      border-color:#d5ece4;
+    }
+
+    .dot{
+      width:9px;
+      height:9px;
+      border-radius:999px;
+      flex:0 0 auto;
+      margin-top:6px;
+    }
+
+    .dot-risk{background:var(--risk)}
+    .dot-warn{background:var(--warn)}
+    .dot-safe{background:var(--accent)}
+
+    .row-main{
+      min-width:0;
+      flex:1 1 auto;
+    }
+
+    .row-line{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .row-text{
+      min-width:0;
+      font-size:15px;
+      line-height:1.36;
+      color:var(--text);
+    }
+
+    .row-text strong{
+      font-weight:700;
+    }
+
+    .row-time{
+      font-size:13px;
+      color:#aca89f;
+      white-space:nowrap;
+      padding-top:1px;
+    }
+
+    .row-sub{
+      margin-top:4px;
+      font-size:12.5px;
+      line-height:1.4;
+      color:var(--muted);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:8px;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:-.01em;
+    }
+
+    .pill-safe{
+      background:var(--accent-soft);
+      color:#0c6a54;
+    }
+
+    .summary{
+      margin-top:16px;
+      padding-top:14px;
+      border-top:1px solid #f0ebe2;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+
+    .summary-card{
+      min-width:0;
+      background:linear-gradient(180deg,#fbf9f4 0%, #f5efe6 100%);
+      border:1px solid #e9dfd0;
+      border-radius:16px;
+      padding:10px 10px 11px;
+      box-shadow:0 1px 0 rgba(255,255,255,.72) inset;
+    }
+
+    .summary-card.is-safe{
+      background:linear-gradient(180deg,#f3fbf8 0%, #e8f7f1 100%);
+      border-color:#cfe8de;
+    }
+
+    .summary-label{
+      font-size:10.5px;
+      line-height:1.2;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:#aaa59b;
+      margin-bottom:8px;
+    }
+
+    .summary-value{
+      font-size:24px;
+      line-height:1;
+      letter-spacing:-.04em;
+      font-weight:800;
+      color:var(--text);
+      margin-bottom:5px;
+    }
+
+    .summary-note{
+      font-size:11.5px;
+      line-height:1.35;
+      color:#77736a;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="status">
+        <span>11:52</span>
+        <span>пн</span>
+      </div>
+
+      <div class="details-shell">
+        <div class="details-head">
+          <div class="details-title">Детали дня</div>
+          <button class="details-toggle" type="button">Скрыть</button>
+        </div>
+
+        <div class="section-label">Сегодня</div>
+
+        <div class="details-list">
+          <div class="day-row">
+            <div class="dot dot-risk"></div>
+            <div class="row-main">
+              <div class="row-line">
+                <div class="row-text"><strong>Только что</strong> · После еды</div>
+                <div class="row-time">11:50</div>
+              </div>
+              <div class="row-sub">Сильная тяга после ритуала еды</div>
+            </div>
+          </div>
+
+          <div class="day-row is-resisted">
+            <div class="dot dot-safe"></div>
+            <div class="row-main">
+              <div class="row-line">
+                <div class="row-text"><strong>Удержался</strong> · Пауза перед порывом</div>
+                <div class="row-time">10:34</div>
+              </div>
+              <div class="row-sub">Сработало: вышел на короткую прогулку</div>
+              <div class="pill pill-safe">сохранено 7 минут</div>
+            </div>
+          </div>
+
+          <div class="day-row">
+            <div class="dot dot-warn"></div>
+            <div class="row-main">
+              <div class="row-line">
+                <div class="row-text"><strong>09:10</strong> · Скука</div>
+                <div class="row-time">утро</div>
+              </div>
+              <div class="row-sub">Импульс был слабее, но автоматический</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="summary-card">
+            <div class="summary-label">Срывы</div>
+            <div class="summary-value">2</div>
+            <div class="summary-note">момента за сегодня</div>
+          </div>
+          <div class="summary-card is-safe">
+            <div class="summary-label">Удержания</div>
+            <div class="summary-value">1</div>
+            <div class="summary-note">момент удалось пройти</div>
+          </div>
+          <div class="summary-card is-safe">
+            <div class="summary-label">Время</div>
+            <div class="summary-value">7</div>
+            <div class="summary-note">минут уже сохранено</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

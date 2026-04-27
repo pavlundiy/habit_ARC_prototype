@@ -79,6 +79,19 @@
     }).join("");
   }
 
+  function renderRitualEveningOptions(choices, selectedId) {
+    return (choices || []).map(function (choice) {
+      var active = choice.id === selectedId;
+      return '<button class="ritual-evening-option' + (active ? ' active' : '') + '" type="button" data-evening-option="' +
+        escapeHtml(choice.id) +
+        '"><div class="ritual-evening-radio"></div><div class="ritual-evening-copy"><div class="ritual-evening-title">' +
+        escapeHtml(choice.label) +
+        '</div><div class="ritual-evening-sub">' +
+        escapeHtml(choice.sub || "") +
+        "</div></div></button>";
+    }).join("");
+  }
+
   function renderRitualEchoArcs(echo) {
     var arcs = (echo && echo.arcs) || [];
     if (!arcs.length) return "";
@@ -88,28 +101,26 @@
       var y = Number(arc.y || 0);
       var w = Number(arc.width || 0);
       var h = Number(arc.height || 0);
-      var startX = x + w * 0.06;
-      var startY = y + h * 0.8;
-      var c1x = x + w * 0.18;
-      var c1y = y + h * 0.18;
-      var c2x = x + w * 0.74;
-      var c2y = y + h * 0.06;
-      var endX = x + w * 0.92;
-      var endY = y + h * 0.56;
+      var startX = x + w * 0.1;
+      var startY = y + h * 0.94;
+      var endX = x + w * 0.8;
+      var endY = y + h * 0.16;
+      var radiusX = w * 0.64;
+      var radiusY = h * 0.92;
+      var rotation = Number(arc.rotation || 0);
       return "M " + startX.toFixed(2) + " " + startY.toFixed(2) +
-        " C " + c1x.toFixed(2) + " " + c1y.toFixed(2) +
-        ", " + c2x.toFixed(2) + " " + c2y.toFixed(2) +
-        ", " + endX.toFixed(2) + " " + endY.toFixed(2);
-    }
+        " A " + radiusX.toFixed(2) + " " + radiusY.toFixed(2) +
+        " " + rotation.toFixed(2) + " 0 1 " +
+        endX.toFixed(2) + " " + endY.toFixed(2);
+      }
 
     var paths = arcs.map(function (arc) {
       return '<path class="ritual-echo-path' +
         (arc.resonating ? ' resonating' : '') +
         '" data-tone="' + escapeHtml(arc.tone || "soft") +
         '" d="' + buildPath(arc) +
-        '" style="--opacity:' + String(arc.opacity == null ? 0.18 : arc.opacity) +
-        ';--rot:' + Number(arc.rotation || 0) + 'deg;"></path>';
-    }).join("");
+        '" style="--opacity:' + String(arc.opacity == null ? 0.18 : arc.opacity) + ';"></path>';
+      }).join("");
 
     return '<svg class="ritual-echo-svg" viewBox="0 0 320 220" preserveAspectRatio="none" aria-hidden="true">' + paths + "</svg>";
   }
@@ -125,7 +136,7 @@
       "</span></div>";
   }
 
-  function applyRitualPhaseDots(ritual) {
+  function applyRitualPhaseDots(ritual, phase) {
     var morning = byId("ritual-phase-morning");
     var day = byId("ritual-phase-day");
     var evening = byId("ritual-phase-evening");
@@ -147,6 +158,12 @@
       morning.classList.add("is-soft");
       day.classList.add("is-soft");
       evening.classList.add("is-soft");
+      return;
+    }
+
+    if (phase === "day") {
+      morning.classList.add("is-soft");
+      day.classList.add("is-on");
       return;
     }
 
@@ -197,6 +214,16 @@
     return text;
   }
 
+  function getCleanMemoryPreview(items) {
+    var first = (items || [])[0];
+    if (!first) return "";
+    var text = first.text || "";
+    if (first.meta) {
+      return text + " · " + first.meta;
+    }
+    return text;
+  }
+
   function applyMainScreenViewModel(vm) {
     if (!vm) return;
 
@@ -215,6 +242,13 @@
     } else {
       setText("record-btn", vm.hero && vm.hero.recordLabel);
     }
+    if (byId("record-btn-limit")) {
+      setText("record-btn-limit", vm.hero && vm.hero.goalLabel ? String(vm.hero.goalLabel).replace(/^сегодня\s+/i, "") : "");
+    }
+    if (byId("record-btn-limit") && vm.hero && vm.hero.goalLabel) {
+      setText("record-btn-limit", String(vm.hero.goalLabel).replace(/^сегодня\s+/i, ""));
+    }
+    setText("action-meta", vm.hero && vm.hero.resistedMeta);
     setText("resisted-btn", vm.hero && vm.hero.resistedLabel);
     setData("record-btn", "toast", vm.hero && vm.hero.slipToast);
     setData("resisted-btn", "toast", vm.hero && vm.hero.successToast);
@@ -239,7 +273,7 @@
     setHtml("ritual-echo-layer", renderRitualEchoArcs(vm.ritual && vm.ritual.echo));
     setClass("ritual-card", "echo-active", !!(vm.ritual && vm.ritual.echo && vm.ritual.echo.visible));
     setClass("ritual-card", "echo-resonating", !!(vm.ritual && vm.ritual.echo && vm.ritual.echo.resonating));
-    applyRitualPhaseDots(vm.ritual);
+    applyRitualPhaseDots(vm.ritual, vm.phase);
     setText("ritual-note", vm.ritual && vm.ritual.note);
     setText("ritual-save-btn", vm.ritual && vm.ritual.actionLabel);
     setData("ritual-save-btn", "mode", vm.ritual && vm.ritual.mode);
@@ -247,12 +281,16 @@
     setData("ritual-save-btn", "toast", vm.ritual && vm.ritual.toast);
     setData("ritual-save-btn", "carryoverDate", vm.ritual && vm.ritual.carryoverDate);
     setValue("ritual-input", vm.ritual && vm.ritual.value);
+    setHtml("ritual-evening-options", renderRitualEveningOptions(vm.ritual && vm.ritual.eveningChoices, vm.ritual && vm.ritual.selectedEveningChoice));
+    setData("ritual-evening-options", "selected", vm.ritual && vm.ritual.selectedEveningChoice);
     var ritualInput = byId("ritual-input");
     if (ritualInput) {
       ritualInput.placeholder = vm.ritual && vm.ritual.placeholder || "";
     }
     setText("ritual-carryover-note-label", "\u041e\u0434\u043d\u043e \u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u0435, \u0435\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0442\u0441\u044f \u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c");
-    setDisplay("ritual-entry-block", !vm.ritual || vm.ritual.mode !== "carryover", "block");
+    setDisplay("ritual-entry-block", !!(vm.ritual && vm.ritual.mode !== "carryover" && vm.ritual.type !== "evening"), "block");
+    setClass("ritual-evening-block", "visible", !!(vm.ritual && vm.ritual.mode === "entry" && vm.ritual.type === "evening"));
+    setDisplay("ritual-evening-block", !!(vm.ritual && vm.ritual.mode === "entry" && vm.ritual.type === "evening"), "block");
     setDisplay("ritual-carryover-block", !!(vm.ritual && vm.ritual.mode === "carryover"), "block");
     setText("ritual-carryover-question", vm.ritual && vm.ritual.carryoverQuestion);
     setHtml("ritual-carryover-options", renderRitualCarryoverOptions(vm.ritual && vm.ritual.carryoverChoices));
@@ -284,21 +322,25 @@
     setText("quick-health", vm.quickStats && vm.quickStats.health);
     setText("quick-health-sub", vm.quickStats && vm.quickStats.healthSub);
     setText("day-cost-summary", vm.quickStats && vm.quickStats.summary);
+    setNodeText("#main-more-card .detail-title", "\u0415\u0449\u0451 \u0441\u0435\u0433\u043e\u0434\u043d\u044f");
+    setNodeText("#main-more-summary", vm.phase === "day"
+      ? "\u041e\u043f\u043e\u0440\u044b \u0438 \u0440\u0438\u0442\u043c, \u0435\u0441\u043b\u0438 \u0445\u043e\u0447\u0435\u0448\u044c \u043f\u043e\u043d\u044f\u0442\u044c \u0433\u043b\u0443\u0431\u0436\u0435"
+      : "\u0420\u0438\u0442\u043c \u043d\u0435\u0434\u0435\u043b\u0438 \u0438 \u043a\u043e\u0440\u043e\u0442\u043a\u0438\u0435 \u043e\u043f\u043e\u0440\u044b \u043d\u0430 \u0441\u0435\u0439\u0447\u0430\u0441");
     setNodeText("#day-cost-card .detail-title", "\u0426\u0435\u043d\u0430 \u043f\u0440\u0438\u0432\u044b\u0447\u043a\u0438 \u0441\u0435\u0433\u043e\u0434\u043d\u044f");
     setNodeText("#week-rhythm-title", "\u0420\u0438\u0442\u043c \u043d\u0435\u0434\u0435\u043b\u0438");
     setNodeText("#tips-title", "\u041e\u043f\u043e\u0440\u0430 \u043d\u0430 \u0441\u0435\u0439\u0447\u0430\u0441");
-    setNodeText("#recent-log-card .detail-title", "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u0437\u0430\u043f\u0438\u0441\u0438");
+    setNodeText("#recent-log-card .detail-title", "\u0414\u0435\u0442\u0430\u043b\u0438 \u0434\u043d\u044f");
     setNodeText("#tip-btn-1 .tip-label", "\u041f\u0440\u0438 \u043a\u0443\u0440\u0435\u043d\u0438\u0438");
     setNodeText("#tip-btn-2 .tip-label", "\u041f\u0440\u0438 \u0430\u043b\u043a\u043e\u0433\u043e\u043b\u0435");
     setNodeText("#tip-btn-3 .tip-label", "\u041d\u0435 \u0431\u0440\u043e\u0441\u0430\u0442\u044c");
     var quickLabels = document.querySelectorAll("#day-cost-card .quick-label");
     if (quickLabels[0]) quickLabels[0].textContent = "\u0414\u0435\u043d\u044c\u0433\u0438";
     if (quickLabels[1]) quickLabels[1].textContent = "\u0412\u0440\u0435\u043c\u044f";
-    if (quickLabels[2]) quickLabels[2].textContent = "Health";
+    if (quickLabels[2]) quickLabels[2].textContent = "Здоровье";
 
     setDisplay("memory-card", !!(vm.memory && vm.memory.items && vm.memory.items.length), "block");
     setText("memory-title", vm.memory && vm.memory.title || "\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u043d\u0438\u0442");
-    setText("memory-preview", vm.memory && vm.memory.preview || getMemoryPreview(vm.memory && vm.memory.items));
+    setText("memory-preview", vm.memory && vm.memory.preview || getCleanMemoryPreview(vm.memory && vm.memory.items));
     setHtml("memory-list", renderMemoryItems(vm.memory && vm.memory.items));
     setText("memory-open-btn", vm.memory && vm.memory.actionLabel || "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0434\u043d\u0435\u0432\u043d\u0438\u043a");
 
@@ -311,6 +353,7 @@
     setText("week-snapshot-state-copy", vm.weekSnapshot && vm.weekSnapshot.stateCopy);
     setText("week-snapshot-health-value", vm.weekSnapshot && vm.weekSnapshot.healthValue);
     setText("week-snapshot-health-copy", vm.weekSnapshot && vm.weekSnapshot.healthCopy);
+    setDisplay("main-more-card", !!(vm.layout && (vm.layout.showWeekRhythm || vm.layout.showTips)), "block");
     setDisplay("week-rhythm-title", !!(vm.layout && vm.layout.showWeekRhythm), "block");
     setDisplay("week-row", !!(vm.layout && vm.layout.showWeekRhythm), "flex");
     setDisplay("day-cost-card", !!(vm.layout && vm.layout.showQuickStats), "block");
