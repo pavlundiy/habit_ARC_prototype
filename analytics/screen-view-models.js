@@ -80,8 +80,7 @@
   }
 
   function getCurrentRitualType(date) {
-    var target = date || new Date();
-    return target.getHours() < 16 ? "morning" : "evening";
+    return getCurrentDayPhase(date) === "evening" ? "evening" : "morning";
   }
 
   function shiftDate(date, days) {
@@ -302,7 +301,8 @@
 
   function buildRitualModel(state, narrative) {
     var now = new Date();
-    var type = getCurrentRitualType(now);
+    var previewMorningPhraseNow = !!(state && state.profile && state.profile.nextMorningPhrasePreview && String(state.profile.nextMorningPhrase || "").trim());
+    var type = previewMorningPhraseNow ? "morning" : getCurrentRitualType(now);
     var todayKey = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.formatDateKey
       ? window.HabitStore.helpers.formatDateKey(now)
       : now.toISOString().slice(0, 10);
@@ -373,6 +373,15 @@
     var placeholder = type === "morning"
       ? "\u041d\u0430\u043f\u0440\u0438\u043c\u0435\u0440: \u043f\u0440\u043e\u0439\u0442\u0438 \u0447\u0435\u0440\u0435\u0437 14:00 \u0441\u043f\u043e\u043a\u043e\u0439\u043d\u0435\u0435 \u0438 \u043d\u0435 \u0441\u043f\u043e\u0440\u0438\u0442\u044c \u0441 \u0441\u043e\u0431\u043e\u0439."
       : "\u041d\u0430\u043f\u0440\u0438\u043c\u0435\u0440: \u043f\u043e\u0441\u043b\u0435 \u0432\u0441\u0442\u0440\u0435\u0447 \u043c\u0435\u043d\u044f \u0441\u0438\u043b\u044c\u043d\u0435\u0435 \u0432\u0441\u0435\u0433\u043e \u0432\u044b\u0431\u0438\u0432\u0430\u0435\u0442 \u043d\u0430\u043f\u0440\u044f\u0436\u0435\u043d\u0438\u0435.";
+    var nextMorningPhrase = type === "morning" && state && state.profile
+      ? String(state.profile.nextMorningPhrase || "").trim()
+      : "";
+    var nextMorningPhraseDate = type === "morning" && state && state.profile
+      ? String(state.profile.nextMorningPhraseDate || "").trim()
+      : "";
+    var morningSuggestion = nextMorningPhrase && (previewMorningPhraseNow || (nextMorningPhraseDate === todayKey && !existing))
+      ? nextMorningPhrase
+      : "";
     var eveningChoices = type === "evening"
       ? [
         {
@@ -425,6 +434,9 @@
       contextLabel: contextLabel,
       contextText: contextText,
       placeholder: placeholder,
+      previewSuggestedPhrase: !!(previewMorningPhraseNow && morningSuggestion),
+      suggestedPhraseLabel: morningSuggestion ? "\u0424\u0440\u0430\u0437\u0430 \u043d\u0430 \u044d\u0442\u043e \u0443\u0442\u0440\u043e" : "",
+      suggestedPhrase: morningSuggestion,
       note: savedNote,
       value: existing ? existing.text : "",
       hasEntry: !!existing,
@@ -477,6 +489,50 @@
     return new Intl.NumberFormat("ru-RU", {
       maximumFractionDigits: Number(value) % 1 === 0 ? 0 : 1
     }).format(Number(value) || 0) + " ч";
+  }
+
+  function formatDaysLabel(count) {
+    var value = Math.abs(Number(count) || 0);
+    var mod10 = value % 10;
+    var mod100 = value % 100;
+    if (mod10 === 1 && mod100 !== 11) return value + " день";
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return value + " дня";
+    return value + " дней";
+  }
+
+  function getWhtrModel(markers) {
+    var waist = Number(markers && markers.waistCm);
+    var height = Number(markers && markers.heightCm);
+    if (!(waist > 0) || !(height > 0)) {
+      return { ready: false, value: null, label: "нужны талия и рост" };
+    }
+    var value = waist / height;
+    var label = value < 0.4
+      ? "ниже 0.40"
+      : value < 0.5
+        ? "в комфортном диапазоне"
+        : value < 0.6
+          ? "выше 0.50"
+          : "заметно выше 0.60";
+    return { ready: true, value: value, label: label };
+  }
+
+  function formatWhtrValue(value) {
+    return value == null ? "не заполнено" : Number(value).toFixed(2);
+  }
+
+  function buildWhtrCopy(whtr) {
+    if (!whtr || !whtr.ready) return "нужны талия и рост";
+    return "WHtR " + formatWhtrValue(whtr.value) + " · " + whtr.label;
+  }
+
+  function buildPersonalContextChips(profile) {
+    var chips = [];
+    if (profile && profile.birthYear) chips.push(String(profile.birthYear) + " г.");
+    if (profile && profile.sex) chips.push(profile.sex);
+    if (profile && profile.activityLevel) chips.push(profile.activityLevel);
+    if (profile && profile.sportType) chips.push(profile.sportType);
+    return chips;
   }
 
   function riskLabel(riskLevel) {
@@ -592,7 +648,7 @@
     return {
       headline: headline,
       narrative: narrative,
-      meta: observedKeys.length + " дней · " + withCount + " с ориентиром, " + withoutCount + " без",
+      meta: formatDaysLabel(observedKeys.length) + " · " + withCount + " с ориентиром, " + withoutCount + " без",
       delta: delta,
       withCount: withCount,
       withoutCount: withoutCount
@@ -996,22 +1052,22 @@
   function getDiaryLogCopy(habitId) {
     if (habitId === "smoking") {
       return {
-        tabLabel: "Записи срывов",
-        notePlaceholder: "Что произошло перед сигаретой? Почему именно сейчас?",
-        noteButton: "Добавить мысль к этому моменту"
+        tabLabel: "События дня",
+        notePlaceholder: "Что произошло перед сигаретой? Что хочется заметить в этом моменте?",
+        noteButton: "Добавить мысль"
       };
     }
     if (habitId === "social") {
       return {
-        tabLabel: "Записи эпизодов",
-        notePlaceholder: "Что было перед этим заходом в ленту? Что можно изменить в следующий раз?",
-        noteButton: "Добавить мысль к этому моменту"
+        tabLabel: "События дня",
+        notePlaceholder: "Что было перед этим заходом в ленту? Что хочется попробовать в следующий раз?",
+        noteButton: "Добавить мысль"
       };
     }
     return {
-      tabLabel: "Записи эпизодов",
-      notePlaceholder: "Что происходило в этот момент? Почему именно сейчас?",
-      noteButton: "Добавить мысль к этому моменту"
+      tabLabel: "События дня",
+      notePlaceholder: "Что происходило в этот момент? Что здесь хочется понять лучше?",
+      noteButton: "Добавить мысль"
     };
   }
 
@@ -1022,7 +1078,7 @@
     if (entryFilter === "state") {
       return "Пока нет записей о состоянии. Здесь будут короткие заметки про сон, стресс, энергию и фон дня.";
     }
-    return "Пока здесь тихо. Здесь можно вести и заметки о привычке, и короткие записи о состоянии дня — вместе они лучше объясняют паттерн.";
+    return "Пока здесь тихо. Здесь можно вести и мысли о привычке, и короткие записи о состоянии дня — вместе они потом лучше объясняют ритм.";
   }
 
   function getStateTagLabel(tag) {
@@ -1068,7 +1124,9 @@
     var ritual = buildRitualModel(state, narrative);
     var phase = ritual && ritual.mode === "carryover"
       ? "carryover"
-      : getCurrentDayPhase(new Date());
+      : ((state && state.profile && state.profile.nextMorningPhrasePreview && ritual && ritual.type === "morning")
+        ? "morning"
+        : getCurrentDayPhase(new Date()));
     var heroSub = "один ориентир на этот день";
     var showHeroProgress = true;
     if (phase === "carryover") {
@@ -1126,7 +1184,7 @@
         health: (health.filledCount || 0) + "/" + (health.totalCount || 7),
         healthSub: health.filledCount ? "сон, давление и тело в фокусе" : "маркеры пока не заполнены",
         summary: formatMoney(finance.todaySpent || 0, finance.currencySymbol || config.currencySymbol || "₽") +
-          " · " + formatMinutes(todayMinutes) + " · health " + (health.filledCount || 0) + "/" + (health.totalCount || 7)
+          " · " + formatMinutes(todayMinutes) + " · маркеры " + (health.filledCount || 0) + "/" + (health.totalCount || 7)
       },
       weekSnapshot: {
         sub: (narrative.weekly && narrative.weekly.compact) || (
@@ -1207,7 +1265,7 @@
         logTabLabel: logCopy.tabLabel,
         hint: composeMode === "state"
           ? "Можно коротко: как спалось, сколько было сил, что происходило с напряжением или телом."
-          : "Пиши своими словами. Одной честной мысли уже достаточно, чтобы потом увидеть паттерн.",
+          : "Одной-двух честных фраз уже достаточно, чтобы потом увидеть паттерн.",
         placeholder: composeMode === "state" ? getStatePlaceholder() : getDiaryPlaceholder(state.currentHabit.id, state.currentHabit.name),
         showHabitTags: composeMode !== "state",
         showStateControls: composeMode === "state",
@@ -1224,7 +1282,7 @@
         visible: !summary.hasEntries
       },
       summary: {
-        text: "О привычке: " + (summary.habitCount || 0) + " · Состояние: " + (summary.stateCount || 0) + " · Всего: " + (summary.totalCount || 0)
+        text: "Мысли: " + (summary.habitCount || 0) + " · Состояние: " + (summary.stateCount || 0) + " · Всего: " + (summary.totalCount || 0)
       },
       entries: {
         emptyText: getDiaryEmptyText(state, entryFilter)
@@ -1266,6 +1324,8 @@
     var config = getCurrentHabitConfig(state);
     var markers = health.markers || {};
     var bpReady = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null;
+    var whtr = getWhtrModel(markers);
+    var personalContextChips = buildPersonalContextChips(state.profile);
 
     return {
       hero: {
@@ -1309,12 +1369,15 @@
         sleep: markers.sleepHours != null ? String(markers.sleepHours) + " ч" : "не заполнено",
         restingHr: markers.restingHeartRate != null ? String(markers.restingHeartRate) + " уд/мин" : "не заполнено",
         bp: bpReady ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic) : "не заполнено",
-        body: (markers.weightKg != null || markers.waistCm != null)
-          ? [markers.weightKg != null ? String(markers.weightKg) + " кг" : null, markers.waistCm != null ? String(markers.waistCm) + " см" : null].filter(Boolean).join(" · ")
+        body: markers.weightKg != null ? String(markers.weightKg) + " кг" : "не заполнено",
+        frame: (markers.heightCm != null || markers.waistCm != null)
+          ? [markers.heightCm != null ? String(markers.heightCm) + " см" : null, markers.waistCm != null ? String(markers.waistCm) + " см" : null].filter(Boolean).join(" · ")
           : "не заполнено",
+        whtr: whtr.ready ? formatWhtrValue(whtr.value) : "не заполнено",
+        contextChips: personalContextChips,
         note: health.filledCount
-          ? "Заполнено " + health.filledCount + " из " + health.totalCount + " health markers. Аналитика их не диагностирует, а только хранит как личный контекст."
-          : "Пока health markers пустые. Можно начать хотя бы со сна, пульса в покое и давления."
+          ? "Заполнено " + health.filledCount + " из " + health.totalCount + " маркеров здоровья. WHtR считаем только как личный ориентир по талии и росту, без диагноза."
+          : "Пока маркеры здоровья пустые. Для WHtR достаточно добавить талию и рост."
       },
       details: {
         guidanceSummary: toneMeta.label + " · " + toneMeta.summary,
@@ -1350,6 +1413,8 @@
         badgeColor: "#085041",
         title: "Это можно унести в следующий день",
         text: "«" + topSupport.text + "» уже срабатывало " + topSupport.countLabel + ". Его можно снова взять с собой как короткую опору на завтра.",
+        phraseLabel: "Фраза на завтра",
+        phrase: topSupport.text,
         highlight: topSupport.detail
           ? topSupport.detail + ". Лучше один знакомый ход, чем большой план на весь день."
           : "Лучше один знакомый ход, чем большой план на весь день."
@@ -1364,6 +1429,8 @@
         badgeColor: "#8A5208",
         title: "Это можно мягко проверить ещё раз",
         text: "«" + topSupport.text + "» уже возвращалось " + topSupport.countLabel + ". Пока это не устойчивая опора, но это уже можно проверить ещё раз без давления.",
+        phraseLabel: "Фраза на завтра",
+        phrase: topSupport.text,
         highlight: "Отнесись к этому как к спокойной пробе, а не как к тесту на силу воли."
       };
     }
@@ -1376,6 +1443,8 @@
         badgeColor: "#0C447C",
         title: "В следующий день можно взять саму форму",
         text: "Один утренний ориентир уже делает день ровнее. Сейчас полезнее не искать идеальную формулировку, а просто оставить себе одну короткую мысль.",
+        phraseLabel: "Фраза на завтра",
+        phrase: "Одна честная фраза утром.",
         highlight: "Одна честная фраза утром полезнее, чем попытка удержать весь день в голове."
       };
     }
@@ -1391,11 +1460,23 @@
           (riskWindow ? "окно " + riskWindow : "сложный момент дня") +
           (mainTrigger ? ", где чаще включается \"" + mainTrigger + "\"" : "") +
           ", входить в него обычно легче.",
+        phraseLabel: "Фраза на завтра",
+        phrase: mainTrigger ? "Я заранее замечаю " + mainTrigger + "." : "Одна пауза в пике уже считается.",
         highlight: "Полезнее готовить одну точку опоры заранее, чем спорить с собой в самом пике."
       };
     }
 
-    return { visible: false };
+    return {
+      visible: true,
+      badge: "на завтра",
+      badgeBg: "#F3EFE7",
+      badgeColor: "#4F4A43",
+      title: "На следующий день лучше оставить себе одну спокойную опору",
+      text: "Даже когда паттерн ещё только собирается, полезно заранее вернуть себе одну короткую рабочую мысль на утро.",
+      phraseLabel: "Фраза на завтра",
+      phrase: "Одна честная фраза утром.",
+      highlight: "Не нужен большой план. Достаточно одной мысли, к которой можно вернуться утром."
+    };
   }
 
   function buildInsightsScreenModel(state, period) {
@@ -1425,6 +1506,7 @@
     var bp = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null
       ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic)
       : "не заполнено";
+    var whtr = getWhtrModel(markers);
     var topSubscore = (summary.subscores && [
       { label: "Тяга", value: summary.subscores.cravingScore || 0 },
       { label: "Автоматизм", value: summary.subscores.automaticityScore || 0 },
@@ -1479,7 +1561,7 @@
           ? "Когда появятся первые записи и события, приложение сможет показать окна риска, триггеры и рабочие закономерности."
           : setup.nextStep && setup.nextStep.id === "assessment"
             ? "Первые сигналы уже есть. Следом опрос поможет сделать выводы точнее и спокойнее."
-            : "Финансы, время и health markers дадут инсайтам больше веса и связи с реальной жизнью.",
+          : "Финансы, время и маркеры здоровья дадут инсайтам больше веса и связи с реальной жизнью.",
         buttonLabel: !hasBehaviorData
           ? "Сделать первый шаг"
           : setup.nextStep && setup.nextStep.id === "assessment"
@@ -1493,8 +1575,8 @@
       },
       detailSummaries: {
         index: topSubscore.label + " сейчас сильнее всего влияет на индекс: " + Math.round(topSubscore.value) + "/100.",
-        finance: "Нагрузка " + (financialLoad.label || "низкая") + " и " + financeTrendText + "; маркеров заполнено " + (health.filledCount || 0) + "/" + (health.totalCount || 7) + ".",
-        period: "Окно риска: " + (summary.riskWindow || "—") + ". Главный триггер: " + String(summary.mainTrigger || "Другое").toLowerCase() + "." + (physical.topLabel ? " По телу чаще всего повторяется: " + physical.topLabel.toLowerCase() + "." : "")
+      finance: "Нагрузка " + (financialLoad.label || "низкая") + " и " + financeTrendText + "; маркеров уже " + (health.filledCount || 0) + "/" + (health.totalCount || 7) + ".",
+      period: "Окно риска: " + (summary.riskWindow || "—") + ". Главный триггер: " + String(summary.mainTrigger || "Другое").toLowerCase() + "." + (physical.topLabel ? " По телу чаще всего повторяется: " + physical.topLabel.toLowerCase() + "." : "")
       },
       workedSupports: workedSupports,
       carryForward: carryForward,
@@ -1511,6 +1593,7 @@
         healthText:
           "Сон: " + (markers.sleepHours != null ? markers.sleepHours + " ч" : "не заполнено") +
           ". Давление: " + bp + ". " +
+          buildWhtrCopy(whtr) + ". " +
           (health.trendSummary || "Пока нет прошлого замера для сравнения."),
         physicalValue: physical.top.length ? physical.top.map(function (item) { return item.label; }).join(" · ") : "Пока не отмечены",
         physicalText: physical.top.length

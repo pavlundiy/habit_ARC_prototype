@@ -194,6 +194,12 @@
     }).join("");
   }
 
+  function renderSimpleChips(items) {
+    return (items || []).map(function (item) {
+      return '<span class="context-chip">' + escapeHtml(item || "") + "</span>";
+    }).join("");
+  }
+
   function getMemoryPreview(items) {
     var first = (items || [])[0];
     if (!first) return "";
@@ -224,6 +230,31 @@
     return text;
   }
 
+  function renderRitualEchoMeta(echo) {
+    if (!echo || !echo.visible || !echo.resonating || !(echo.helper || echo.label)) return "";
+    return '<div class="ritual-echo-meta' +
+      (echo.resonating ? ' resonating' : '') +
+      '"><span class="ritual-echo-pill">' +
+      escapeHtml(echo.label || "Эхо-память") +
+      '</span><span class="ritual-echo-helper">' +
+      escapeHtml(echo.helper || "") +
+      "</span></div>";
+  }
+
+  function getMemoryPreview(items) {
+    var first = (items || [])[0];
+    if (!first) return "";
+    var text = first.text || "";
+    if (first.meta) {
+      return text + " · " + first.meta;
+    }
+    return text;
+  }
+
+  function getCleanMemoryPreview(items) {
+    return getMemoryPreview(items);
+  }
+
   function applyMainScreenViewModel(vm) {
     if (!vm) return;
 
@@ -244,6 +275,9 @@
     }
     if (byId("record-btn-limit")) {
       setText("record-btn-limit", vm.hero && vm.hero.goalLabel ? String(vm.hero.goalLabel).replace(/^сегодня\s+/i, "") : "");
+    }
+    if (byId("record-btn-limit") && vm.hero && vm.hero.goalLabel) {
+      setText("record-btn-limit", String(vm.hero.goalLabel).replace(/^сегодня\s+/i, ""));
     }
     if (byId("record-btn-limit") && vm.hero && vm.hero.goalLabel) {
       setText("record-btn-limit", String(vm.hero.goalLabel).replace(/^сегодня\s+/i, ""));
@@ -280,6 +314,10 @@
     setData("ritual-save-btn", "type", vm.ritual && vm.ritual.type);
     setData("ritual-save-btn", "toast", vm.ritual && vm.ritual.toast);
     setData("ritual-save-btn", "carryoverDate", vm.ritual && vm.ritual.carryoverDate);
+    setText("ritual-suggestion-label", vm.ritual && vm.ritual.suggestedPhraseLabel);
+    setText("ritual-suggestion-btn", vm.ritual && vm.ritual.suggestedPhrase);
+    setData("ritual-suggestion-btn", "phrase", vm.ritual && vm.ritual.suggestedPhrase);
+    setDisplay("ritual-suggestion-wrap", !!(vm.ritual && vm.ritual.suggestedPhrase && vm.ritual.type === "morning" && vm.ritual.mode === "entry"), "block");
     setValue("ritual-input", vm.ritual && vm.ritual.value);
     setHtml("ritual-evening-options", renderRitualEveningOptions(vm.ritual && vm.ritual.eveningChoices, vm.ritual && vm.ritual.selectedEveningChoice));
     setData("ritual-evening-options", "selected", vm.ritual && vm.ritual.selectedEveningChoice);
@@ -336,7 +374,7 @@
     var quickLabels = document.querySelectorAll("#day-cost-card .quick-label");
     if (quickLabels[0]) quickLabels[0].textContent = "\u0414\u0435\u043d\u044c\u0433\u0438";
     if (quickLabels[1]) quickLabels[1].textContent = "\u0412\u0440\u0435\u043c\u044f";
-    if (quickLabels[2]) quickLabels[2].textContent = "Здоровье";
+  if (quickLabels[2]) quickLabels[2].textContent = "Маркеры";
 
     setDisplay("memory-card", !!(vm.memory && vm.memory.items && vm.memory.items.length), "block");
     setText("memory-title", vm.memory && vm.memory.title || "\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u043d\u0438\u0442");
@@ -437,6 +475,10 @@
     setText("health-resting-hr", vm.financeHealth && vm.financeHealth.restingHr);
     setText("health-bp", vm.financeHealth && vm.financeHealth.bp);
     setText("health-body", vm.financeHealth && vm.financeHealth.body);
+    setText("health-frame", vm.financeHealth && vm.financeHealth.frame);
+    setText("health-whtr", vm.financeHealth && vm.financeHealth.whtr);
+    setDisplay("personal-context-row", !!(vm.financeHealth && vm.financeHealth.contextChips && vm.financeHealth.contextChips.length), "flex");
+    setHtml("personal-context-row", renderSimpleChips(vm.financeHealth && vm.financeHealth.contextChips));
     setText("finance-health-note", vm.financeHealth && vm.financeHealth.note);
   }
 

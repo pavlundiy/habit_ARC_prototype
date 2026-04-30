@@ -50,6 +50,46 @@
     return String(text || "").replace(/\r/g, "").trim();
   }
 
+  function sanitizeAiDisplayText(text) {
+    var value = normalizeText(text);
+    if (!value) return "";
+    return value
+      .replace(/^\?{3,}\s*:\s*/i, "Что уже работает: ")
+      .replace(/^Р“Р»Р°РІРЅС‹Р№\s+С‚СЂРёРіРіРµСЂ:\s*/i, "Главный триггер: ")
+      .replace(/^Р›СѓС‡С€РёР№\s+РґРµРЅСЊ:\s*/i, "Более устойчивый день: ")
+      .replace(/^Р РёСЃРє-РѕРєРЅРѕ:\s*/i, "Риск-окно: ")
+      .replace(/^Р§Р°С‰Рµ\s+РІСЃРµРіРѕ\s+СЌС‚Рѕ\s+СЃРІСЏР·Р°РЅРѕ\s+СЃ:\s*/i, "Чаще всего это связано с: ")
+      .replace(/^Р›СѓС‡С€РёР№\s+РґРµРЅСЊ\s+РЅРµРґРµР»Рё:\s*/i, "Более устойчивый день недели: ")
+      .replace(/^РЎР°РјС‹Р№\s+СЃР»РѕР¶РЅС‹Р№\s+СЃР»РѕС‚:\s*/i, "Самое уязвимое окно: ");
+  }
+
+  function sanitizeAiReviewPayload(payload) {
+    var next = Object.assign({}, payload || {});
+    next.summary = sanitizeAiDisplayText(next.summary);
+    next.actionItems = (next.actionItems || []).map(sanitizeAiDisplayText).filter(Boolean);
+    next.highlights = (next.highlights || []).map(sanitizeAiDisplayText).filter(Boolean);
+    next.rawLines = (next.rawLines || []).map(sanitizeAiDisplayText).filter(Boolean);
+    if (Array.isArray(next.sections)) {
+      next.sections = next.sections.map(function (section) {
+        return Object.assign({}, section, {
+          title: sanitizeAiDisplayText(section && section.title),
+          sourceTitle: sanitizeAiDisplayText(section && section.sourceTitle),
+          items: (section && section.items || []).map(sanitizeAiDisplayText).filter(Boolean)
+        });
+      });
+    }
+    if (next.breakdown) {
+      next.breakdown = {
+        patterns: (next.breakdown.patterns || []).map(sanitizeAiDisplayText).filter(Boolean),
+        triggers: (next.breakdown.triggers || []).map(sanitizeAiDisplayText).filter(Boolean),
+        states: (next.breakdown.states || []).map(sanitizeAiDisplayText).filter(Boolean),
+        supports: (next.breakdown.supports || []).map(sanitizeAiDisplayText).filter(Boolean),
+        actions: (next.breakdown.actions || []).map(sanitizeAiDisplayText).filter(Boolean)
+      };
+    }
+    return next;
+  }
+
   function normalizePlanItems(items) {
     return (items || []).map(function (item) {
       if (typeof item === "string") {
@@ -77,6 +117,13 @@
       .split("\n")
       .map(function (line) { return line.trim(); })
       .filter(Boolean);
+  }
+
+  function splitRawLines(text) {
+    return String(text || "")
+      .replace(/\r/g, "")
+      .split("\n")
+      .map(function (line) { return line.trim(); });
   }
 
   function normalizeLine(line) {
@@ -111,6 +158,146 @@
       .split(/(?<=[.!?])\s+/)
       .map(function (line) { return line.trim(); })
       .filter(Boolean);
+  }
+
+  function normalizeSectionKey(title) {
+    var normalized = normalizeText(title).toLowerCase();
+    if (/паттерн|поведени/.test(normalized)) return "patterns";
+    if (/триггер|сценари/.test(normalized)) return "triggers";
+    if (/мысл|состояни|предшеств/.test(normalized)) return "states";
+    if (/опора|работает/.test(normalized)) return "supports";
+    if (/действ|шаг|недел/.test(normalized)) return "actions";
+    return "other";
+  }
+
+  function sectionLabel(key) {
+    var labels = {
+      patterns: "Паттерны",
+      triggers: "Триггеры и сценарии",
+      states: "Что перед эпизодом",
+      supports: "Что уже работает",
+      actions: "Шаги на неделю",
+      other: "Из разбора"
+    };
+    return labels[key] || labels.other;
+  }
+
+  function groupSectionLines(lines) {
+    var groups = [];
+    var current = [];
+
+    lines.forEach(function (line) {
+      if (!line) {
+        if (current.length) {
+          groups.push(current.join(" ").trim());
+          current = [];
+        }
+        return;
+      }
+
+      current.push(normalizeLine(line));
+    });
+
+    if (current.length) {
+      groups.push(current.join(" ").trim());
+    }
+
+    return groups.filter(Boolean);
+  }
+
+  function cleanSectionItems(sectionKey, items) {
+    var list = (items || []).map(function (item) {
+      return normalizeText(item);
+    }).filter(Boolean);
+
+    if (!list.length) {
+      return [];
+    }
+
+    if (sectionKey === "states") {
+      list = list.filter(function (item) {
+        return !/^по данным видно/i.test(item) && !/повторяющихся внутренних состояний/i.test(item);
+      });
+    }
+
+    if (sectionKey === "actions") {
+      list = list.filter(function (item) {
+        return !/^все шаги/i.test(item) && !/цель не .*ломать привычку/i.test(item);
+      });
+    }
+
+    return list;
+  }
+
+  function buildFallbackHighlights(breakdown) {
+    var result = [];
+    ["patterns", "triggers", "supports"].forEach(function (key) {
+      if (breakdown[key] && breakdown[key].length) {
+        result.push(breakdown[key][0]);
+      }
+    });
+    return result.slice(0, 5);
+  }
+
+  function parseSectionedResponse(text) {
+    var rawLines = splitRawLines(text);
+    var sections = [];
+    var current = null;
+
+    rawLines.forEach(function (line) {
+      var match = line.match(/^(\d+)\.\s+(.+)$/);
+      if (match) {
+        current = {
+          title: normalizeText(match[2]),
+          key: normalizeSectionKey(match[2]),
+          lines: []
+        };
+        sections.push(current);
+        return;
+      }
+
+      if (current) {
+        current.lines.push(line);
+      }
+    });
+
+    if (!sections.length) {
+      return null;
+    }
+
+    var breakdown = {
+      patterns: [],
+      triggers: [],
+      states: [],
+      supports: [],
+      actions: []
+    };
+
+    var normalizedSections = sections.map(function (section) {
+      var items = cleanSectionItems(section.key, groupSectionLines(section.lines));
+      if (section.key !== "other" && items.length) {
+        breakdown[section.key] = items.slice(0, section.key === "actions" ? 5 : 4);
+      }
+      return {
+        key: section.key,
+        title: sectionLabel(section.key),
+        sourceTitle: section.title,
+        items: items
+      };
+    }).filter(function (section) {
+      return section.items && section.items.length;
+    });
+
+    return {
+      sections: normalizedSections,
+      breakdown: breakdown,
+      summary:
+        (breakdown.patterns[0] || "") +
+        (breakdown.triggers[0] ? " " + breakdown.triggers[0] : "") +
+        (breakdown.supports[0] ? " " + breakdown.supports[0] : ""),
+      highlights: buildFallbackHighlights(breakdown),
+      actionItems: breakdown.actions.slice(0, 5)
+    };
   }
 
   function tryParseJson(text) {
@@ -154,7 +341,19 @@
   function parseAiResponse(text) {
     var structured = parseStructuredReview(tryParseJson(text));
     if (structured) {
-      return structured;
+      return sanitizeAiReviewPayload(structured);
+    }
+
+    var sectioned = parseSectionedResponse(text);
+    if (sectioned) {
+      return sanitizeAiReviewPayload({
+        summary: normalizeText(sectioned.summary),
+        actionItems: sectioned.actionItems,
+        highlights: sectioned.highlights,
+        rawLines: splitLines(text),
+        sections: sectioned.sections,
+        breakdown: sectioned.breakdown
+      });
     }
 
     var lines = splitLines(text);
@@ -167,12 +366,20 @@
       actionItems = sentences.slice(0, 5);
     }
 
-    return {
+    return sanitizeAiReviewPayload({
       summary: paragraphs.slice(0, 2).join(" ").trim() || sentences.slice(0, 2).join(" ").trim() || lines.slice(0, 2).join(" ").trim(),
       actionItems: actionItems,
       highlights: bullets.slice(0, 5),
-      rawLines: lines
-    };
+      rawLines: lines,
+      sections: [],
+      breakdown: {
+        patterns: [],
+        triggers: [],
+        states: [],
+        supports: [],
+        actions: actionItems.slice(0, 5)
+      }
+    });
   }
 
   function ensureReviewList(state, habitId) {
@@ -213,7 +420,15 @@
       responseText: responseText,
       summary: parsed.summary,
       actionItems: parsed.actionItems,
-      highlights: parsed.highlights
+      highlights: parsed.highlights,
+      sections: parsed.sections || [],
+      breakdown: parsed.breakdown || {
+        patterns: [],
+        triggers: [],
+        states: [],
+        supports: [],
+        actions: parsed.actionItems || []
+      }
     };
 
     list.unshift(item);
@@ -223,7 +438,26 @@
 
   function getReviews(habitId) {
     var state = readState();
-    return clone(ensureReviewList(state, habitId));
+    return clone(ensureReviewList(state, habitId)).map(function (review) {
+      if (!review || !review.responseText) {
+        return review;
+      }
+
+      var reparsed = parseAiResponse(review.responseText);
+      return Object.assign({}, review, {
+        summary: reparsed.summary || review.summary,
+        actionItems: reparsed.actionItems && reparsed.actionItems.length ? reparsed.actionItems : (review.actionItems || []),
+        highlights: reparsed.highlights && reparsed.highlights.length ? reparsed.highlights : (review.highlights || []),
+        sections: reparsed.sections || [],
+        breakdown: reparsed.breakdown || {
+          patterns: [],
+          triggers: [],
+          states: [],
+          supports: [],
+          actions: reparsed.actionItems || []
+        }
+      });
+    });
   }
 
   function getLatestReview(habitId) {
@@ -254,7 +488,11 @@
       sourceReviewId: review.id,
       sourceCreatedAt: review.createdAt,
       summary: review.summary,
-      items: review.actionItems && review.actionItems.length ? review.actionItems : review.highlights
+      items: review.breakdown && review.breakdown.actions && review.breakdown.actions.length
+        ? review.breakdown.actions
+        : review.actionItems && review.actionItems.length
+          ? review.actionItems
+          : review.highlights
     });
   }
 

@@ -8,7 +8,8 @@
     "Ты — тёплый и поддерживающий психолог-аналитик в приложении для отслеживания вредных привычек.",
     "Твоя задача: анализировать данные пользователя и находить паттерны.",
     "Говори на русском, кратко, без осуждения.",
-    "Всегда заканчивай конкретным советом на ближайшие 7 дней.",
+    "Отвечай структурно и по секциям, чтобы ответ можно было разложить внутри приложения.",
+    "Всегда заканчивай конкретными шагами на ближайшие 7 дней.",
     "Не ставь диагноз и не изображай терапевта.",
     "Если данных мало, честно скажи об этом и всё равно дай мягкий следующий шаг."
   ].join(" ");
@@ -187,14 +188,16 @@
       "2. Не используй пугающие формулировки.",
       "3. Опирайся только на данные ниже.",
       "4. Дай практический, поддерживающий разбор.",
+      "5. Верни данные строго в JSON по заданной схеме.",
       "",
       "Что нужно в ответе:",
-      "1. 5 главных паттернов поведения.",
-      "2. Повторяющиеся триггеры и сценарии.",
-      "3. Какие мысли или состояния чаще всего предшествуют эпизодам.",
-      "4. Какие телесные сигналы или физические последствия уже начинают повторяться.",
-      "5. Что уже работает как опора.",
-      "6. 5 конкретных действий на ближайшую неделю.",
+      "1. Короткий главный вывод.",
+      "2. 4-5 главных паттернов поведения.",
+      "3. Повторяющиеся триггеры с долями и короткими пояснениями.",
+      "4. 2-4 типичных сценария в формате «триггер → состояние → действие».",
+      "5. 3-5 повторяющихся мыслей или состояний перед эпизодом.",
+      "6. 3-5 опор, которые уже работают.",
+      "7. 4-5 конкретных шагов на ближайшую неделю.",
       "",
       "Контекст приватности:",
       "- Имя: " + (privacy.includeName ? "доступно" : "скрыто"),
@@ -203,6 +206,10 @@
       "",
       "Сводка за 30 дней:",
       "- Пользователь: " + normalizeText(bundle.profile && bundle.profile.userName),
+      "- Год рождения: " + normalizeText(bundle.profile && bundle.profile.birthYear || "не указан"),
+      "- Пол: " + normalizeText(bundle.profile && bundle.profile.sex || "не указан"),
+      "- Уровень активности: " + normalizeText(bundle.profile && bundle.profile.activityLevel || "не указан"),
+      "- Регулярный спорт: " + normalizeText(bundle.profile && bundle.profile.sportType || "не указан"),
       "- Привычка: " + normalizeText(bundle.habit && bundle.habit.name),
       "- Индекс нагрузки: " + normalizeText(summary30.dependencyIndex),
       "- Уровень риска: " + normalizeText(summary30.riskLevel || "данных мало"),
@@ -242,16 +249,42 @@
       type: "object",
       properties: {
         main_insight: { type: "string" },
-        pattern: { type: "string" },
-        trigger_top: { type: "string" },
-        physical_pattern: { type: "string" },
-        support_anchor: { type: "string" },
-        best_day: { type: "string" },
-        worst_time: { type: "string" },
-        advice: { type: "string" }
+        patterns: {
+          type: "array",
+          items: { type: "string" }
+        },
+        trigger_breakdown: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              label: { type: "string" },
+              share_percent: { type: "number" },
+              note: { type: "string" }
+            },
+            required: ["label", "share_percent", "note"],
+            propertyOrdering: ["label", "share_percent", "note"]
+          }
+        },
+        scenario_examples: {
+          type: "array",
+          items: { type: "string" }
+        },
+        preceding_states: {
+          type: "array",
+          items: { type: "string" }
+        },
+        support_anchors: {
+          type: "array",
+          items: { type: "string" }
+        },
+        weekly_actions: {
+          type: "array",
+          items: { type: "string" }
+        }
       },
-      required: ["main_insight", "pattern", "trigger_top", "physical_pattern", "support_anchor", "best_day", "worst_time", "advice"],
-      propertyOrdering: ["main_insight", "pattern", "trigger_top", "physical_pattern", "support_anchor", "best_day", "worst_time", "advice"]
+      required: ["main_insight", "patterns", "trigger_breakdown", "scenario_examples", "preceding_states", "support_anchors", "weekly_actions"],
+      propertyOrdering: ["main_insight", "patterns", "trigger_breakdown", "scenario_examples", "preceding_states", "support_anchors", "weekly_actions"]
     };
   }
 
@@ -281,8 +314,49 @@
     }).join("").trim();
   }
 
-  function toReviewText(result) {
+  function formatSection(title, items) {
+    var lines = [title];
+    (items || []).forEach(function (item) {
+      lines.push(normalizeText(item));
+      lines.push("");
+    });
+    return lines.join("\n").trim();
+  }
+
+  function toLegacyReviewText(result) {
     return JSON.stringify(result, null, 2);
+  }
+
+  function toStructuredReviewText(result) {
+    if (!result || !Array.isArray(result.patterns)) {
+      return "";
+    }
+
+    var triggerLines = (result.trigger_breakdown || []).map(function (item) {
+      var share = Math.max(0, Math.round(Number(item.share_percent) || 0));
+      return normalizeText(item.label) + " (" + share + "%) — " + normalizeText(item.note);
+    });
+
+    var triggerSectionItems = triggerLines.slice();
+    if (result.scenario_examples && result.scenario_examples.length) {
+      triggerSectionItems.push("Типичные сценарии:");
+      result.scenario_examples.forEach(function (item) {
+        triggerSectionItems.push(normalizeText(item));
+      });
+    }
+
+    return [
+      formatSection("1. Пять главных паттернов поведения", result.patterns),
+      formatSection("2. Повторяющиеся триггеры и сценарии", triggerSectionItems),
+      formatSection("3. Какие мысли или состояния чаще всего предшествуют эпизодам", result.preceding_states),
+      formatSection("4. Что уже работает как опора", result.support_anchors),
+      formatSection("5. Пять конкретных действий на ближайшую неделю", result.weekly_actions)
+    ].join("\n\n").trim();
+  }
+
+  function toReviewText(result) {
+    var structured = toStructuredReviewText(result);
+    return structured || toLegacyReviewText(result);
   }
 
   function wait(ms) {

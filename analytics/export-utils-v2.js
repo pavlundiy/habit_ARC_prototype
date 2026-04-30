@@ -50,9 +50,14 @@
   }
 
   function buildProfileExport(profile, options) {
-    return options.includeName
+    var result = options.includeName
       ? { userName: profile.userName, initials: profile.initials }
       : { userName: "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ", initials: "Рџ" };
+    result.birthYear = String(profile.birthYear || "").trim();
+    result.sex = String(profile.sex || "").trim();
+    result.activityLevel = String(profile.activityLevel || "").trim();
+    result.sportType = String(profile.sportType || "").trim();
+    return result;
   }
 
   function formatEventTime(date, options) {
@@ -199,6 +204,10 @@
       "",
       "## Профиль",
       "- Пользователь: " + bundle.profile.userName,
+      "- Год рождения: " + (bundle.profile.birthYear || "не указан"),
+      "- Пол: " + (bundle.profile.sex || "не указан"),
+      "- Активность: " + (bundle.profile.activityLevel || "не указана"),
+      "- Регулярный спорт: " + (bundle.profile.sportType || "не указан"),
       "- Привычка: " + bundle.habit.name,
       "- Дневной лимит: " + bundle.habit.dailyLimit,
       "",
@@ -272,6 +281,10 @@
       "",
       "Сводка за 30 дней:",
       "- Пользователь: " + bundle.profile.userName,
+      "- Год рождения: " + (bundle.profile.birthYear || "не указан"),
+      "- Пол: " + (bundle.profile.sex || "не указан"),
+      "- Уровень активности: " + (bundle.profile.activityLevel || "не указан"),
+      "- Регулярный спорт: " + (bundle.profile.sportType || "не указан"),
       "- Привычка: " + bundle.habit.name,
       "- Индекс нагрузки: " + analytics.summary.dependencyIndex,
       "- Уровень риска: " + analytics.summary.riskLevel,
@@ -319,27 +332,33 @@
   }
 
   function copyText(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      return navigator.clipboard.writeText(text);
+    function fallbackCopy() {
+      return new Promise(function (resolve, reject) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "readonly");
+        area.style.position = "absolute";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        try {
+          document.execCommand("copy");
+          document.body.removeChild(area);
+          resolve();
+        } catch (error) {
+          document.body.removeChild(area);
+          reject(error);
+        }
+      });
     }
 
-    return new Promise(function (resolve, reject) {
-      var area = document.createElement("textarea");
-      area.value = text;
-      area.setAttribute("readonly", "readonly");
-      area.style.position = "absolute";
-      area.style.left = "-9999px";
-      document.body.appendChild(area);
-      area.select();
-      try {
-        document.execCommand("copy");
-        document.body.removeChild(area);
-        resolve();
-      } catch (error) {
-        document.body.removeChild(area);
-        reject(error);
-      }
-    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        return fallbackCopy();
+      });
+    }
+
+    return fallbackCopy();
   }
 
   window.HabitExport = {

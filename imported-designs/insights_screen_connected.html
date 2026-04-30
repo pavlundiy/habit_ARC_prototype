@@ -106,6 +106,13 @@ html.embedded-shell .sticky-bottom{display:none;}
 .ic-badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:500;}
 .ic-text{font-size:12px;color:var(--color-body);line-height:1.6;margin-bottom:10px;}
 .ic-meta{font-size:11px;color:var(--color-text-secondary);line-height:1.45;margin-top:8px;}
+.tomorrow-phrase{margin:0 0 10px;padding:10px 12px;border-radius:14px;background:var(--accent-soft);border:1px solid rgba(29,158,117,0.2);}
+.tomorrow-phrase-label{font-size:9px;font-weight:800;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--accent-text);}
+.tomorrow-phrase-text{font-size:13px;font-weight:700;color:var(--color-text);line-height:1.45;margin-top:5px;}
+.tomorrow-phrase-btn{margin-top:10px;border:1px solid rgba(29,158,117,0.18);border-radius:999px;background:#eef8f4;color:var(--accent-text);padding:9px 12px;font:700 12px/1.2 var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.tomorrow-phrase-btn.saved{background:rgba(29,158,117,0.12);border-color:rgba(29,158,117,0.24);}
+.tomorrow-phrase-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.tomorrow-phrase-btn.preview{background:var(--surface-elevated);color:var(--color-text);border-color:var(--color-border-tertiary);}
 .ic-highlight{position:relative;background:var(--surface-soft);border-radius:12px;padding:10px 12px 10px 14px;overflow:hidden;}
 .ic-highlight::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:999px;background:var(--accent);}
 .ic-hl-text{font-size:12px;color:var(--accent-text);line-height:1.5;}
@@ -163,6 +170,7 @@ html.embedded-shell .sticky-bottom{display:none;}
 .detail-body{display:none;padding:0 0 2px;}
 .detail-card.open .detail-body{display:block;}
 .detail-body .section-lbl{padding-top:2px;}
+.detail-body .trigger-bars{padding:0 12px 4px;}
 .sticky-bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:296px;max-width:calc(100% - 32px);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid var(--color-border-tertiary);border-radius:24px;background:var(--tab-bg);backdrop-filter:blur(20px);box-shadow:0 18px 36px rgba(34,29,23,0.12);z-index:15;}
 .tab{display:flex;align-items:center;justify-content:center;min-width:0;color:var(--color-text-muted);cursor:pointer;}
 .tab-chip{width:100%;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:18px;transition:background .16s ease,color .16s ease,transform .16s ease;}
@@ -258,11 +266,18 @@ html.embedded-shell .sticky-bottom{display:none;}
   <div class="insight-card" id="carryforward-card" style="margin-bottom:12px;">
     <div class="ic-header">
       <div class="ic-icon" style="background:#E1F5EE;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8h8M9 4l4 4-4 4" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="ic-title" id="carryforward-title"></div>
-      <div class="ic-badge" id="carryforward-badge"></div>
+      <div class="ic-title" id="carryforward-title">На следующий день лучше оставить себе одну спокойную опору</div>
+      <div class="ic-badge" id="carryforward-badge">на завтра</div>
     </div>
-    <div class="ic-text" id="carryforward-text"></div>
-    <div class="ic-highlight"><div class="ic-hl-text" id="carryforward-highlight"></div></div>
+    <div class="ic-text" id="carryforward-text">Даже когда паттерн ещё только собирается, полезно заранее вернуть себе одну короткую рабочую мысль на утро.</div>
+    <div class="tomorrow-phrase" id="carryforward-phrase-wrap">
+      <div class="tomorrow-phrase-label" id="carryforward-phrase-label">Фраза на завтра</div>
+      <div class="tomorrow-phrase-text" id="carryforward-phrase">«Одна честная фраза утром.»</div>
+    </div>
+    <div class="ic-highlight"><div class="ic-hl-text" id="carryforward-highlight">Не нужен большой план. Достаточно одной мысли, к которой можно вернуться утром.</div></div>
+    <div class="tomorrow-phrase-actions">
+      <button class="tomorrow-phrase-btn" id="carryforward-phrase-btn" type="button">Вернуть завтра утром</button>
+    </div>
   </div>
 
   <div class="section-lbl" id="stats-caption" style="display:none;">За 30 дней</div>
@@ -284,8 +299,8 @@ html.embedded-shell .sticky-bottom{display:none;}
   <div class="detail-card" id="finance-detail-card" style="display:none;">
     <button class="detail-toggle" type="button" data-detail-card="finance-detail-card">
       <span class="detail-copy">
-        <span class="detail-title">Финансы и здоровье</span>
-        <span class="detail-sub" id="finance-detail-summary">Показать, сколько привычка стоит и что происходит с личными маркерами.</span>
+        <span class="detail-title">Финансы и маркеры</span>
+        <span class="detail-sub" id="finance-detail-summary">Сколько привычка стоит и что видно по личным маркерам.</span>
       </span>
       <span class="detail-arrow">⌄</span>
     </button>
@@ -298,7 +313,7 @@ html.embedded-shell .sticky-bottom{display:none;}
     <button class="detail-toggle" type="button" data-detail-card="period-detail-card">
       <span class="detail-copy">
         <span class="detail-title">Детали периода</span>
-        <span class="detail-sub" id="period-detail-summary">Показать часы риска и топ-триггеры этого периода.</span>
+        <span class="detail-sub" id="period-detail-summary">Часы риска и главные триггеры этого периода.</span>
       </span>
       <span class="detail-arrow">⌄</span>
     </button>
@@ -420,7 +435,7 @@ function renderSetupCard(state, hasBehaviorData) {
     document.getElementById("setup-btn").textContent = "Открыть опрос";
   } else {
     document.getElementById("setup-title").textContent = "Добавь личный контекст";
-    document.getElementById("setup-copy").textContent = "Финансы, время и health markers дадут инсайтам больше веса и связи с реальной жизнью.";
+document.getElementById("setup-copy").textContent = "Финансы, время и маркеры здоровья дадут инсайтам больше веса и связи с реальной жизнью.";
     document.getElementById("setup-btn").textContent = "Открыть настройку";
   }
 }
@@ -598,6 +613,8 @@ function renderCarryForward(vm) {
   var model = vm && vm.carryForward ? vm.carryForward : null;
   var section = document.getElementById("carryforward-section-label");
   var card = document.getElementById("carryforward-card");
+  var phraseButton = document.getElementById("carryforward-phrase-btn");
+  var previewButton = document.getElementById("carryforward-preview-btn");
   if (!model || !model.visible) {
     section.style.display = "none";
     card.style.display = "none";
@@ -610,6 +627,28 @@ function renderCarryForward(vm) {
   document.getElementById("carryforward-badge").style.background = model.badgeBg || "#E1F5EE";
   document.getElementById("carryforward-badge").style.color = model.badgeColor || "#085041";
   document.getElementById("carryforward-text").textContent = model.text;
+  document.getElementById("carryforward-phrase-label").textContent = model.phraseLabel || "Фраза на завтра";
+  document.getElementById("carryforward-phrase").textContent = model.phrase ? "«" + model.phrase + "»" : "";
+  document.getElementById("carryforward-phrase-wrap").style.display = model.phrase ? "" : "none";
+  if (phraseButton) {
+    var state = window.HabitStore.getState();
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var tomorrowKey = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.formatDateKey
+      ? window.HabitStore.helpers.formatDateKey(tomorrow)
+      : tomorrow.toISOString().slice(0, 10);
+    var alreadySaved = !!(state && state.profile && String(state.profile.nextMorningPhrase || "").trim() === String(model.phrase || "").trim() && String(state.profile.nextMorningPhraseDate || "") === tomorrowKey);
+    phraseButton.dataset.phrase = model.phrase || "";
+    phraseButton.dataset.targetDate = tomorrowKey;
+    phraseButton.style.display = model.phrase ? "inline-flex" : "none";
+    phraseButton.textContent = alreadySaved ? "Ждёт завтра утром" : "Вернуть завтра утром";
+    phraseButton.classList.toggle("saved", alreadySaved);
+  }
+  if (previewButton) {
+    previewButton.dataset.phrase = model.phrase || "";
+    previewButton.textContent = "Открыть на Главной";
+    previewButton.style.display = model.phrase ? "inline-flex" : "none";
+  }
   document.getElementById("carryforward-highlight").textContent = model.highlight || "";
   document.getElementById("carryforward-highlight").closest(".ic-highlight").style.display = model.highlight ? "" : "none";
 }
@@ -713,7 +752,7 @@ function renderMeta(model) {
   metaRowRoot.innerHTML = [
     '<div class="meta-card wide"><div class="meta-title">Финансовая нагрузка</div><div class="meta-value" style="color:' + financialLoad.color + ';">' + Math.round(financialLoad.score) + ' · ' + financialLoad.label + ' ' + trendMark + '</div><div class="meta-copy">' + financialLoad.headline + '. Главный драйвер: ' + financialLoad.driver + '. ' + trend.text + ' ' + financialLoad.narrative + '</div></div>',
     '<div class="meta-card"><div class="meta-title">Расход за период</div><div class="meta-value">' + formatMoney(finance.monthSpent || finance.weekSpent || 0, finance.currencySymbol || "₽") + '</div><div class="meta-copy">Прогноз на месяц: ' + formatMoney(finance.monthProjection || 0, finance.currencySymbol || "₽") + '. Время: ' + (finance.monthHours || 0) + ' ч.</div></div>',
-    '<div class="meta-card"><div class="meta-title">Health markers</div><div class="meta-value">' + health.filledCount + '/' + health.totalCount + ' ' + healthTrendMark + '</div><div class="meta-copy">Сон: ' + (markers.sleepHours != null ? markers.sleepHours + ' ч' : 'не заполнено') + '. Давление: ' + bp + '. ' + (health.trendSummary || 'Пока нет прошлого замера для сравнения.') + '</div></div>',
+      '<div class="meta-card"><div class="meta-title">Маркеры здоровья</div><div class="meta-value">' + health.filledCount + '/' + health.totalCount + ' ' + healthTrendMark + '</div><div class="meta-copy">Сон: ' + (markers.sleepHours != null ? markers.sleepHours + ' ч' : 'не заполнено') + '. Давление: ' + bp + '. ' + (health.trendSummary || 'Пока нет прошлого замера для сравнения.') + '</div></div>',
     '<div class="meta-card wide"><div class="meta-title">Телесные сигналы</div><div class="meta-value">' + ((model.meta && model.meta.physicalValue) || 'Пока не отмечены') + '</div><div class="meta-copy">' + ((model.meta && model.meta.physicalText) || 'Когда появятся телесные сигналы, здесь начнёт собираться телесный паттерн привычки.') + '</div></div>'
   ].join("");
 }
@@ -803,6 +842,55 @@ document.querySelectorAll("[data-detail-card]").forEach(function (button) {
 document.getElementById("setup-btn").addEventListener("click", function () {
   openSetupNextStep(window.HabitStore.getState());
 });
+document.getElementById("carryforward-phrase-btn").addEventListener("click", function () {
+  var phrase = String(this.dataset.phrase || document.getElementById("carryforward-phrase").textContent || "").trim();
+  phrase = phrase.replace(/^«|»$/g, "");
+  var targetDate = String(this.dataset.targetDate || "").trim();
+  if (!targetDate) {
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    targetDate = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.formatDateKey
+      ? window.HabitStore.helpers.formatDateKey(tomorrow)
+      : tomorrow.toISOString().slice(0, 10);
+  }
+  if (!phrase || !targetDate || !window.HabitStore || !window.HabitStore.setNextMorningPhrase) return;
+  window.HabitStore.setNextMorningPhrase(phrase, targetDate);
+  render();
+});
+var carryforwardPreviewBtn = document.getElementById("carryforward-preview-btn");
+if (carryforwardPreviewBtn) {
+  carryforwardPreviewBtn.addEventListener("click", function () {
+    var phrase = String(this.dataset.phrase || document.getElementById("carryforward-phrase").textContent || "").trim();
+    phrase = phrase.replace(/^«|»$/g, "");
+    var today = new Date();
+    var todayKey = window.HabitStore && window.HabitStore.helpers && window.HabitStore.helpers.formatDateKey
+      ? window.HabitStore.helpers.formatDateKey(today)
+      : today.toISOString().slice(0, 10);
+    if (!phrase || !window.HabitStore || !window.HabitStore.setNextMorningPhrase) return;
+    try {
+      window.HabitStore.setNextMorningPhrase(phrase, todayKey, true);
+    } catch (error) {
+      console.warn("Preview phrase saved with UI warning:", error);
+    }
+    if (window.DemoNavigation && window.DemoNavigation.navigate) {
+      window.DemoNavigation.navigate("main", { refreshFrame: true, immediate: true });
+      return;
+    }
+    if (window.parent && window.parent !== window) {
+      try {
+        if (window.parent.HabitShellSetScreen) {
+          window.parent.HabitShellSetScreen("main", { refreshFrame: true, immediate: true });
+          return;
+        }
+        window.parent.postMessage({ type: "demo:navigate", route: "main", options: { refreshFrame: true, immediate: true } }, "*");
+        return;
+      } catch (error) {
+        console.warn("Shell preview navigation bridge failed:", error);
+      }
+    }
+    render();
+  });
+}
 
 window.HabitStore.subscribe(render);
 window.DemoNavigation.initBottomTabs();

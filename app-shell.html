@@ -683,9 +683,20 @@
             display: block;
         }
 
+        .onboarding-static-note {
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(29, 158, 117, 0.18);
+            background: rgba(225, 245, 238, 0.58);
+            color: #2f5f4f;
+            font-size: 0.96rem;
+            line-height: 1.58;
+            box-shadow: 0 12px 26px rgba(29, 158, 117, 0.06);
+        }
+
         .onboarding-option-stack {
             display: none;
-            gap: 10px;
+            gap: 8px;
         }
 
         .onboarding-option-stack.open {
@@ -697,7 +708,7 @@
             border: 1px solid rgba(73, 64, 52, 0.12);
             border-radius: 22px;
             background: rgba(255, 252, 246, 0.72);
-            padding: 16px 18px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -725,8 +736,8 @@
 
         .onboarding-option-meta {
             margin-top: 4px;
-            font-size: 0.92rem;
-            line-height: 1.45;
+            font-size: 0.88rem;
+            line-height: 1.42;
             color: var(--muted);
         }
 
@@ -794,6 +805,7 @@
             font: 600 0.94rem "DM Sans", sans-serif;
             padding: 10px 16px;
             cursor: pointer;
+            transition: border-color .16s ease, background-color .16s ease, color .16s ease, box-shadow .16s ease, transform .14s ease;
         }
 
         .onboarding-chip.accent {
@@ -801,11 +813,88 @@
             color: #127355;
         }
 
+        .onboarding-chip.active {
+            background: rgba(225, 245, 238, 0.96);
+            border-color: rgba(29, 158, 117, 0.48);
+            color: #0f6f54;
+            box-shadow: 0 10px 20px rgba(29, 158, 117, 0.10);
+            transform: translateY(-1px);
+        }
+
         .onboarding-meta-note {
             margin-top: 12px;
             text-align: center;
             font-size: 0.84rem;
             color: rgba(29, 29, 26, 0.34);
+        }
+
+        .onboarding-finish {
+            display: none;
+            min-height: 520px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px 6px 4px;
+        }
+
+        .onboarding-finish.open {
+            display: flex;
+        }
+
+        .onboarding-finish-mark {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            background: #e1f5ee;
+            color: #127355;
+            border: 1px solid rgba(29, 158, 117, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 800 2rem/1 "DM Sans", sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .onboarding-finish-title {
+            font: 800 2.2rem/1.12 "DM Sans", sans-serif;
+            letter-spacing: -0.05em;
+            color: var(--text);
+            max-width: 270px;
+        }
+
+        .onboarding-finish-copy {
+            margin-top: 14px;
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--muted);
+            max-width: 280px;
+        }
+
+        .onboarding-finish-anchor {
+            width: 100%;
+            margin-top: 22px;
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(29, 158, 117, 0.26);
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 14px 30px rgba(34, 29, 23, 0.08);
+            text-align: left;
+        }
+
+        .onboarding-finish-anchor-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #127355;
+            margin-bottom: 8px;
+        }
+
+        .onboarding-finish-anchor-text {
+            font: 500 1.12rem/1.4 "DM Sans", sans-serif;
+            letter-spacing: -0.03em;
+            color: var(--text);
         }
 
         .welcome-btn:disabled {
@@ -880,7 +969,7 @@
                         <div class="onboarding-mode open" id="welcomeMode">
                             <div class="welcome-kicker">Первый запуск</div>
                             <div class="welcome-title">Можно начать с чистого трека или восстановить резервную копию</div>
-                            <div class="welcome-copy">Если у тебя уже были данные в приложении, их можно вернуть сразу на старте. Если нет, мы спокойно пройдём четыре коротких шага и начнём первый день не с пустого экрана, а с живого ориентира.</div>
+                            <div class="welcome-copy">Если данные уже были, их можно вернуть сразу. Если нет — пройдём четыре коротких шага и начнём первый день с живого ориентира.</div>
                             <div class="welcome-actions">
                                 <button class="welcome-btn primary" id="welcomeStartBtn" type="button">Начать настройку</button>
                                 <button class="welcome-btn secondary" id="welcomeRestoreBtn" type="button">Восстановить из копии</button>
@@ -903,7 +992,7 @@
                             <div class="onboarding-icon" id="onboardingIcon">01</div>
                             <div class="onboarding-title" id="onboardingTitle">Это не трекер.</div>
                             <div class="onboarding-copy" id="onboardingCopy">Это дневник с памятью.</div>
-                            <div class="onboarding-copy secondary" id="onboardingCopySecondary">Большинство приложений просто считают. Это — помнит твои слова, паттерны и рабочие ходы в нужный момент.</div>
+                            <div class="onboarding-copy secondary" id="onboardingCopySecondary">Большинство приложений просто считают. Это — возвращает твои слова и рабочие ходы в нужный момент.</div>
 
                             <div class="onboarding-body">
                                 <div class="onboarding-static open" id="onboardingStep1Body"></div>
@@ -916,6 +1005,15 @@
                                         <button class="onboarding-chip" type="button" data-ritual-text="Замечать себя до первого порыва">Замечать себя</button>
                                         <button class="onboarding-chip accent" type="button" data-ritual-text="Пауза перед первым порывом">Пауза перед порывом</button>
                                         <button class="onboarding-chip" type="button" data-ritual-text="Не идти на автопилоте после обеда">Не на автопилоте</button>
+                                    </div>
+                                </div>
+                                <div class="onboarding-finish" id="onboardingFinish">
+                                    <div class="onboarding-finish-mark">✓</div>
+                                    <div class="onboarding-finish-title">Всё готово. Начинаем.</div>
+                                    <div class="onboarding-finish-copy">Ориентир поставлен. Вечером вернёмся к нему и закроем первую дугу.</div>
+                                    <div class="onboarding-finish-anchor">
+                                        <div class="onboarding-finish-anchor-label">Твой ориентир сегодня</div>
+                                        <div class="onboarding-finish-anchor-text" id="onboardingFinishAnchor">—</div>
                                     </div>
                                 </div>
                             </div>
@@ -977,6 +1075,8 @@
         const onboardingHabitOptions = document.getElementById("onboardingHabitOptions");
         const onboardingGoalOptions = document.getElementById("onboardingGoalOptions");
         const onboardingRitualBlock = document.getElementById("onboardingRitualBlock");
+        const onboardingFinish = document.getElementById("onboardingFinish");
+        const onboardingFinishAnchor = document.getElementById("onboardingFinishAnchor");
         const onboardingRitualInput = document.getElementById("onboardingRitualInput");
         const onboardingRitualMeta = document.getElementById("onboardingRitualMeta");
         const onboardingNextBtn = document.getElementById("onboardingNextBtn");
@@ -992,13 +1092,13 @@
             { id: "smoking", label: "Курение", meta: "сигареты, вейп" },
             { id: "alcohol", label: "Алкоголь", meta: "пиво, вино, крепкое" },
             { id: "social", label: "Телефон", meta: "соцсети, скроллинг" },
-            { id: "custom", label: "Другое", meta: "название можно уточнить позже" }
+            { id: "custom", label: "Другое", meta: "уточним позже" }
         ];
         const ONBOARDING_GOALS = [
             {
                 id: "understand_triggers",
                 label: "Понять свои триггеры",
-                meta: "Самый мягкий старт: сначала увидеть повторяющийся сценарий."
+                meta: "Самый мягкий старт: сначала увидеть сценарий."
             },
             {
                 id: "reduce_count",
@@ -1008,32 +1108,32 @@
             {
                 id: "take_control",
                 label: "Взять под контроль",
-                meta: "Подойдёт, если хочется быстрее почувствовать опору и границы."
+                meta: "Если хочется быстрее почувствовать опору."
             },
             {
                 id: "stay_honest",
                 label: "Быть честным с собой",
-                meta: "Если пока важнее ясная картина, а не цель — это тоже хороший вход."
+                meta: "Если пока важнее ясная картина — это тоже хороший вход."
             }
         ];
         const ONBOARDING_STEPS = [
             {
                 title: "Это не трекер.",
                 copy: "Это дневник с памятью.",
-                secondary: "Большинство приложений просто считают. Это — помнит твои слова, паттерны и рабочие ходы в нужный момент.",
+                secondary: "Ты фиксируешь моменты, а приложение возвращает рабочие опоры в нужный момент.",
                 cta: "Понятно, продолжим",
                 icon: "01"
             },
             {
                 title: "С какой привычкой работаем?",
-                copy: "Выбери одну — другие можно добавить позже.",
+                copy: "Начнём с одной. Остальные можно добавить позже.",
                 secondary: "",
                 cta: "Продолжить",
                 icon: "02"
             },
             {
                 title: "Какая цель на первый месяц?",
-                copy: "Не нужно сразу бросать. Начни с малого — это работает лучше.",
+                copy: "Не нужно обещать слишком много. Достаточно честного направления.",
                 secondary: "",
                 cta: "Продолжить",
                 icon: "03"
@@ -1041,7 +1141,7 @@
             {
                 title: "Первый ориентир.",
                 copy: "Что важно сохранить уже сегодня?",
-                secondary: "Напиши своими словами — одно предложение. Так первый день начнётся уже не с пустого экрана, а с живой дуги.",
+                secondary: "Напиши своими словами — одно предложение.",
                 cta: "Начать с этим ориентиром",
                 icon: "04"
             }
@@ -1128,7 +1228,7 @@
         function renderFrameTrack() {
             frameTrack.style.width = `${Math.max(routes.length, 1) * 100}%`;
             frameTrack.innerHTML = routes.map((route) => {
-                return `<div class="frame-pane" style="flex:0 0 ${100 / Math.max(routes.length, 1)}%;width:${100 / Math.max(routes.length, 1)}%;"><iframe id="screenFrame${route.id.replace(/(^|-)([a-z])/g, (_, dash, char) => char.toUpperCase())}" class="screen-frame" src="${route.src}" title="${route.title}"></iframe></div>`;
+                return `<div class="frame-pane" style="flex:0 0 ${100 / Math.max(routes.length, 1)}%;width:${100 / Math.max(routes.length, 1)}%;"><iframe id="screenFrame${route.id.replace(/(^|-)([a-z])/g, (_, dash, char) => char.toUpperCase())}" class="screen-frame" src="${route.src}" data-base-src="${route.src}" title="${route.title}"></iframe></div>`;
             }).join("");
         }
 
@@ -1226,13 +1326,38 @@
             frameTrack.style.transform = `translate3d(-${screen.index * (100 / Math.max(routes.length, 1))}%, 0, 0)`;
         }
 
+        function getScreenFrame(route) {
+            const resolvedRoute = routeMap[route] ? route : "main";
+            const frameId = `screenFrame${resolvedRoute.replace(/(^|-)([a-z])/g, (_, dash, char) => char.toUpperCase())}`;
+            return document.getElementById(frameId);
+        }
+
+        function refreshScreenFrame(route) {
+            const frame = getScreenFrame(route);
+            if (!frame) {
+                return;
+            }
+            const baseSrc = frame.dataset.baseSrc || frame.getAttribute("src") || (routeMap[route] && routeMap[route].src);
+            if (!baseSrc) {
+                return;
+            }
+            const nextUrl = new URL(baseSrc, window.location.href);
+            nextUrl.searchParams.set("_ts", String(Date.now()));
+            frame.setAttribute("src", nextUrl.toString());
+        }
+
         function setScreen(route, options = {}) {
             const resolvedRoute = routeMap[route] ? route : "main";
             const immediate = !!options.immediate;
+            const refreshFrame = !!options.refreshFrame;
 
-            if (currentRoute === resolvedRoute && !immediate) {
+            if (currentRoute === resolvedRoute && !immediate && !refreshFrame) {
                 syncRouteInUrl(resolvedRoute);
                 return;
+            }
+
+            if (refreshFrame) {
+                refreshScreenFrame(resolvedRoute);
             }
 
             currentRoute = resolvedRoute;
@@ -1246,6 +1371,8 @@
                 applyAiNotice();
             }
         }
+
+        window.HabitShellSetScreen = setScreen;
 
         function shouldShowWelcome() {
             if (!window.HabitStore || !window.HabitStore.getState) {
@@ -1263,33 +1390,51 @@
         }
 
         function renderOnboardingStep() {
-            const stepIndex = Math.max(0, Math.min(onboardingStep, ONBOARDING_STEPS.length - 1));
-            const step = ONBOARDING_STEPS[stepIndex];
+            const finishStep = ONBOARDING_STEPS.length;
+            const stepIndex = Math.max(0, Math.min(onboardingStep, finishStep));
+            const isFinish = stepIndex === finishStep;
+            const step = ONBOARDING_STEPS[Math.min(stepIndex, ONBOARDING_STEPS.length - 1)];
             switchOverlayMode("onboarding");
 
             onboardingBackBtn.hidden = stepIndex === 0;
-            onboardingTitle.textContent = step.title;
-            onboardingCopy.textContent = step.copy;
-            onboardingCopySecondary.textContent = step.secondary;
-            onboardingCopySecondary.style.display = step.secondary ? "block" : "none";
+            onboardingTitle.textContent = isFinish ? "" : step.title;
+            onboardingCopy.textContent = isFinish ? "" : step.copy;
+            onboardingCopySecondary.textContent = isFinish ? "" : step.secondary;
+            onboardingCopySecondary.style.display = !isFinish && step.secondary ? "block" : "none";
+            onboardingTitle.style.display = isFinish ? "none" : "block";
+            onboardingCopy.style.display = isFinish ? "none" : "block";
             onboardingIcon.textContent = step.icon;
-            onboardingMeta.textContent = `${stepIndex + 1} из 4 · займёт около 2 минут`;
-            onboardingNextBtn.textContent = step.cta;
+            onboardingIcon.style.display = isFinish ? "none" : "flex";
+            onboardingMeta.textContent = isFinish ? "" : `${stepIndex + 1} из 4 · займёт около 2 минут`;
+            onboardingMeta.style.display = isFinish ? "none" : "block";
+            onboardingNextBtn.textContent = isFinish ? "Открыть приложение →" : step.cta;
 
             onboardingProgressBars.forEach((bar, index) => {
-                bar.classList.toggle("done", index < stepIndex);
-                bar.classList.toggle("active", index === stepIndex);
+                bar.classList.toggle("done", isFinish ? true : index < stepIndex);
+                bar.classList.toggle("active", !isFinish && index === stepIndex);
             });
 
-            onboardingStep1Body.classList.toggle("open", stepIndex === 0);
-            onboardingHabitOptions.classList.toggle("open", stepIndex === 1);
-            onboardingGoalOptions.classList.toggle("open", stepIndex === 2);
-            onboardingRitualBlock.classList.toggle("open", stepIndex === 3);
+            document.querySelectorAll("[data-ritual-text]").forEach((button) => {
+                const text = button.dataset.ritualText || "";
+                button.classList.toggle("active", text === String(onboardingSelection.ritualText || ""));
+            });
+
+            onboardingStep1Body.innerHTML = stepIndex === 0 && !isFinish
+                ? '<div class="onboarding-static-note">Без оценок и давления. Только честный контакт с собой.</div>'
+                : "";
+
+            onboardingStep1Body.classList.toggle("open", !isFinish && stepIndex === 0);
+            onboardingHabitOptions.classList.toggle("open", !isFinish && stepIndex === 1);
+            onboardingGoalOptions.classList.toggle("open", !isFinish && stepIndex === 2);
+            onboardingRitualBlock.classList.toggle("open", !isFinish && stepIndex === 3);
+            onboardingFinish.classList.toggle("open", isFinish);
+            onboardingFinishAnchor.textContent = String(onboardingSelection.ritualText || "").trim() || "—";
+            onboardingSkipBtn.hidden = isFinish;
 
             onboardingNextBtn.disabled =
-                (stepIndex === 1 && !onboardingSelection.habitId) ||
-                (stepIndex === 2 && !onboardingSelection.goalId) ||
-                (stepIndex === 3 && !String(onboardingSelection.ritualText || "").trim());
+                (!isFinish && stepIndex === 1 && !onboardingSelection.habitId) ||
+                (!isFinish && stepIndex === 2 && !onboardingSelection.goalId) ||
+                (!isFinish && stepIndex === 3 && !String(onboardingSelection.ritualText || "").trim());
         }
 
         function renderOnboardingHabitOptions() {
@@ -1360,7 +1505,7 @@
             resetOnboardingState();
         }
 
-        function finishOnboarding() {
+        function commitOnboardingSelection() {
             const selectedGoal = ONBOARDING_GOALS.find((item) => item.id === onboardingSelection.goalId) || ONBOARDING_GOALS[0];
             if (window.HabitStore && window.HabitStore.selectHabit) {
                 window.HabitStore.selectHabit(onboardingSelection.habitId || "smoking", "");
@@ -1382,13 +1527,27 @@
             } else if (window.HabitStore && window.HabitStore.setInstallMode) {
                 window.HabitStore.setInstallMode("active");
             }
+            setScreen("main");
+        }
+
+        function showOnboardingFinish() {
+            commitOnboardingSelection();
+            onboardingStep = ONBOARDING_STEPS.length;
+            renderOnboardingStep();
+        }
+
+        function finishOnboarding() {
             closeWelcome();
             setScreen("main");
         }
 
         function advanceOnboarding() {
-            if (onboardingStep >= ONBOARDING_STEPS.length - 1) {
+            if (onboardingStep >= ONBOARDING_STEPS.length) {
                 finishOnboarding();
+                return;
+            }
+            if (onboardingStep === ONBOARDING_STEPS.length - 1) {
+                showOnboardingFinish();
                 return;
             }
             onboardingStep += 1;
@@ -1398,6 +1557,11 @@
         function retreatOnboarding() {
             if (onboardingStep <= 0) {
                 switchOverlayMode("welcome");
+                return;
+            }
+            if (onboardingStep > ONBOARDING_STEPS.length - 1) {
+                onboardingStep = ONBOARDING_STEPS.length - 1;
+                renderOnboardingStep();
                 return;
             }
             onboardingStep -= 1;
@@ -1486,7 +1650,7 @@
                 return;
             }
 
-            setScreen(event.data.route);
+            setScreen(event.data.route, event.data.options || {});
         });
 
         window.addEventListener("hashchange", () => {

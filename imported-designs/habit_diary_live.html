@@ -193,7 +193,7 @@ html.embedded-shell .sticky-bottom{display:none;}
 
   <div class="tab-pills">
     <div class="pill active" data-tab="diary" id="diary-pill-label">Мысли</div>
-    <div class="pill" data-tab="log" id="log-pill-label">Записи срывов</div>
+    <div class="pill" data-tab="log" id="log-pill-label">События дня</div>
   </div>
 
   <div class="setup-card" id="setup-card">
@@ -208,7 +208,7 @@ html.embedded-shell .sticky-bottom{display:none;}
   </div>
 
   <div class="panel active" id="panel-diary">
-    <div class="filter-summary" id="entry-filter-summary">О привычке: 0 · Состояние: 0 · Всего: 0</div>
+    <div class="filter-summary" id="entry-filter-summary">Мысли: 0 · Состояние: 0 · Всего: 0</div>
     <div class="filter-pills" id="entry-filter-pills">
       <button class="filter-pill active" type="button" data-entry-filter="all" id="entry-filter-all-label">Все</button>
       <button class="filter-pill" type="button" data-entry-filter="habit" id="entry-filter-habit-label">Привычка</button>
@@ -226,12 +226,12 @@ html.embedded-shell .sticky-bottom{display:none;}
         <button class="compose-mode active" id="mode-habit-btn" type="button" data-compose-mode="habit">Мысль</button>
         <button class="compose-mode" id="mode-state-btn" type="button" data-compose-mode="state">Состояние дня</button>
       </div>
-      <div class="compose-hint" id="compose-hint">Короткая честная запись полезнее, чем попытка написать идеально.</div>
+      <div class="compose-hint" id="compose-hint">Одной-двух честных фраз уже достаточно, чтобы потом увидеть паттерн.</div>
       <div class="compose-anchor" id="compose-anchor">
         <div class="compose-anchor-kicker" id="compose-anchor-kicker">Ориентир сегодня</div>
         <div class="compose-anchor-text" id="compose-anchor-text">Здесь появится утренняя мысль дня.</div>
       </div>
-      <textarea class="compose-textarea" id="compose-text" placeholder="Почему сорвался? Что чувствовал? Что хочешь изменить?&#10;Пиши свободно — это только для тебя..."></textarea>
+      <textarea class="compose-textarea" id="compose-text" placeholder="Что здесь было самым важным? Что почувствовал? Что хочется запомнить?&#10;Пиши свободно — это только для тебя..."></textarea>
       <div class="compose-section-label" id="habit-tags-label">Теги по желанию</div>
       <div class="compose-bottom wrap" id="habit-tags-row">
         <div class="tag-chip" data-tag="stress">стресс</div>
@@ -310,7 +310,7 @@ html.embedded-shell .sticky-bottom{display:none;}
       <div class="starter-chip-row">
         <div class="starter-chip">что запустило момент</div>
         <div class="starter-chip">что ты почувствовал</div>
-        <div class="starter-chip">что можно попробовать в следующий раз</div>
+        <div class="starter-chip">что хочется попробовать в следующий раз</div>
       </div>
     </div>
     <div id="diary-entries">
@@ -414,7 +414,7 @@ function renderSetupCard(state) {
     document.getElementById("setup-btn").textContent = "Открыть опрос";
   } else {
     document.getElementById("setup-title").textContent = "Добавь личный контекст";
-    document.getElementById("setup-copy").textContent = "Цена эпизода, время и health markers помогут связать записи с реальной жизнью, а не только с эмоциями.";
+  document.getElementById("setup-copy").textContent = "Цена эпизода, время и маркеры здоровья помогут связать записи с реальной жизнью, а не только с эмоциями.";
     document.getElementById("setup-btn").textContent = "Открыть настройку";
   }
 }
@@ -484,21 +484,21 @@ function renderStarterCard(state) {
 function getDiaryLogCopy(habitId) {
   if (habitId === "smoking") {
     return {
-      tabLabel: "Записи срывов",
-      notePlaceholder: "Что произошло перед сигаретой? Почему именно сейчас?",
+      tabLabel: "События дня",
+      notePlaceholder: "Что произошло перед сигаретой? Что хочется заметить в этом моменте?",
       noteButton: "Добавить мысль"
     };
   }
   if (habitId === "social") {
     return {
-      tabLabel: "Записи эпизодов",
-      notePlaceholder: "Что было перед этим заходом в ленту? Что можно изменить в следующий раз?",
+      tabLabel: "События дня",
+      notePlaceholder: "Что было перед этим заходом в ленту? Что хочется попробовать в следующий раз?",
       noteButton: "Добавить мысль"
     };
   }
   return {
-    tabLabel: "Записи эпизодов",
-    notePlaceholder: "Что происходило в этот момент? Почему именно сейчас?",
+    tabLabel: "События дня",
+    notePlaceholder: "Что происходило в этот момент? Что здесь хочется понять лучше?",
     noteButton: "Добавить мысль"
   };
 }
@@ -510,7 +510,7 @@ function getDiaryEmptyText(state) {
   if (entryFilter === "state") {
     return "Пока нет записей о состоянии. Здесь будут короткие заметки про сон, стресс, энергию и фон дня.";
   }
-  return "Пока здесь тихо. Здесь можно вести и заметки о привычке, и короткие записи о состоянии дня — именно вместе они потом лучше объясняют паттерн.";
+  return "Пока здесь тихо. Здесь можно вести и мысли о привычке, и короткие записи о состоянии дня — вместе они потом лучше объясняют ритм.";
 }
 
 function updateEntryFilterUI() {
@@ -527,7 +527,7 @@ function renderEntrySummary(state) {
     return entry.entryScope === "state";
   }).length;
   document.getElementById("entry-filter-summary").textContent =
-    "О привычке: " + habitCount + " · Состояние: " + stateCount + " · Всего: " + state.diaryEntries.length;
+    "Мысли: " + habitCount + " · Состояние: " + stateCount + " · Всего: " + state.diaryEntries.length;
 }
 
 function getStateTagLabel(tag) {
@@ -555,7 +555,7 @@ function renderEntrySummary(state) {
         totalCount: state.diaryEntries.length
       };
   document.getElementById("entry-filter-summary").textContent =
-    "О привычке: " + (summary.habitCount || 0) + " · Состояние: " + (summary.stateCount || 0) + " · Всего: " + (summary.totalCount || 0);
+    "Мысли: " + (summary.habitCount || 0) + " · Состояние: " + (summary.stateCount || 0) + " · Всего: " + (summary.totalCount || 0);
 }
 
 function saveEntry() {

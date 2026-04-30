@@ -34,7 +34,7 @@
     },
     {
       id: "ai-review",
-      title: "AI-разбор",
+    title: "ИИ-разбор",
       src: "imported-designs/ai_review_live.html",
       tab: false
     }

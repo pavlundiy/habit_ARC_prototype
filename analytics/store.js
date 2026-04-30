@@ -309,6 +309,13 @@
         habitName: "Курение",
         dailyLimit: 5,
         guidanceTone: "supportive",
+        birthYear: "",
+        sex: "",
+        activityLevel: "",
+        sportType: "",
+        nextMorningPhrase: "",
+        nextMorningPhraseDate: "",
+        nextMorningPhrasePreview: false,
         starterGoalId: "",
         starterGoalLabel: ""
       },
@@ -345,7 +352,14 @@
         dailyLimit: HABIT_PRESETS.smoking.dailyLimit,
         activeHabitId: "smoking",
         customHabitName: "",
-        guidanceTone: "supportive"
+        guidanceTone: "supportive",
+        birthYear: "",
+        sex: "",
+        activityLevel: "",
+        sportType: "",
+        nextMorningPhrase: "",
+        nextMorningPhraseDate: "",
+        nextMorningPhrasePreview: false
       },
       habitTracks: {
         smoking: {
@@ -458,6 +472,7 @@
       bloodPressureSystolic: null,
       bloodPressureDiastolic: null,
       weightKg: null,
+      heightCm: null,
       waistCm: null,
       hba1c: null
     };
@@ -536,6 +551,10 @@
     state.profile.activeHabitId = state.profile.activeHabitId || inferHabitId(state.profile.habitName);
     state.profile.customHabitName = state.profile.customHabitName || "";
     state.profile.guidanceTone = normalizeGuidanceTone(state.profile.guidanceTone);
+    state.profile.birthYear = String(state.profile.birthYear || "").trim();
+    state.profile.sex = String(state.profile.sex || "").trim();
+    state.profile.activityLevel = String(state.profile.activityLevel || "").trim();
+    state.profile.sportType = String(state.profile.sportType || "").trim();
     state.profile.starterGoalId = String(state.profile.starterGoalId || "").trim();
     state.profile.starterGoalLabel = String(state.profile.starterGoalLabel || "").trim();
     state.habitAssessments = state.habitAssessments || {};
@@ -827,6 +846,7 @@
     payload = payload || {};
     return setState(function (state) {
       var now = payload.timestamp ? new Date(payload.timestamp) : new Date();
+      state.profile = state.profile || {};
       var track = ensureTrack(state, state.profile.activeHabitId);
       track.ritualEntries = Array.isArray(track.ritualEntries) ? track.ritualEntries : [];
       var type = payload.type === "evening" ? "evening" : "morning";
@@ -847,6 +867,11 @@
           timestamp: now.toISOString(),
           localDate: localDate
         });
+      }
+      if (type === "morning") {
+        state.profile.nextMorningPhrase = "";
+        state.profile.nextMorningPhraseDate = "";
+        state.profile.nextMorningPhrasePreview = false;
       }
       return state;
     });
@@ -966,7 +991,7 @@
       {
         id: "context",
         title: "Добавь личный контекст",
-        sub: "Цена эпизода, время или health markers сделают картину привычки более живой.",
+    sub: "Цена эпизода, время или маркеры здоровья сделают картину привычки более живой.",
         done: hasContext
       }
     ];
@@ -1210,6 +1235,16 @@
     };
   }
 
+  function buildInitialsFromName(name) {
+    var value = String(name || "").trim();
+    if (!value) return "ИВ";
+    var parts = value.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+    }
+    return value.slice(0, Math.min(2, value.length)).toUpperCase();
+  }
+
   function getDiarySummary(snapshot) {
     var track = getCurrentTrackSummary(snapshot);
     var resistedCount = Array.isArray(track.resisted) ? track.resisted.length : 0;
@@ -1227,7 +1262,7 @@
     payload = payload || {};
     var habitName = payload.habitName || "активная привычка";
     var messages = {
-      finance_saved: "Финансы и health markers сохранены для активной привычки.",
+    finance_saved: "Финансы и маркеры здоровья сохранены для активной привычки.",
       export_json_saved: "JSON выгружен. Внутри дневник, события и аналитика по активной привычке.",
       export_report_saved: "Отчёт выгружен. Его удобно читать самому или отправить специалисту.",
       backup_saved: "Полная резервная копия приложения сохранена. Её можно восстановить позже на этом же устройстве.",
@@ -1338,6 +1373,38 @@
     });
   }
 
+  function setProfileName(name) {
+    return setState(function (state) {
+      state.profile = state.profile || {};
+      var nextName = String(name || "").trim();
+      state.profile.userName = nextName || "Иван";
+      state.profile.initials = buildInitialsFromName(state.profile.userName);
+      return state;
+    });
+  }
+
+  function savePersonalContext(payload) {
+    payload = payload || {};
+    return setState(function (state) {
+      state.profile = state.profile || {};
+      state.profile.birthYear = String(payload.birthYear || "").trim().slice(0, 4);
+      state.profile.sex = String(payload.sex || "").trim().slice(0, 24);
+      state.profile.activityLevel = String(payload.activityLevel || "").trim().slice(0, 32);
+      state.profile.sportType = String(payload.sportType || "").trim().slice(0, 64);
+      return state;
+    });
+  }
+
+  function setNextMorningPhrase(text, localDate, previewNow) {
+    return setState(function (state) {
+      state.profile = state.profile || {};
+      state.profile.nextMorningPhrase = String(text || "").trim().slice(0, 140);
+      state.profile.nextMorningPhraseDate = String(localDate || "").trim().slice(0, 10);
+      state.profile.nextMorningPhrasePreview = !!previewNow;
+      return state;
+    });
+  }
+
   function setStarterGoal(payload) {
     payload = payload || {};
     return setState(function (state) {
@@ -1410,6 +1477,9 @@
     seedDemoData: seedDemoData,
     setInstallMode: setInstallMode,
     setGuidanceTone: setGuidanceTone,
+    setProfileName: setProfileName,
+    savePersonalContext: savePersonalContext,
+    setNextMorningPhrase: setNextMorningPhrase,
     setStarterGoal: setStarterGoal,
     completeOnboarding: completeOnboarding,
     helpers: {
@@ -1472,7 +1542,7 @@
       var nextMarkers = clone(config.healthMarkers);
       Object.keys(config.healthMarkers).forEach(function (key) {
         if (Object.prototype.hasOwnProperty.call(markers, key)) {
-          nextMarkers[key] = sanitizeMetricNumber(markers[key], key === "hba1c" || key === "sleepHours" ? 1 : 0);
+          nextMarkers[key] = sanitizeMetricNumber(markers[key], key === "hba1c" || key === "sleepHours" || key === "weightKg" || key === "waistCm" || key === "heightCm" ? 1 : 0);
         }
       });
       config.healthMarkers = nextMarkers;

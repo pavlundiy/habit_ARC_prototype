@@ -75,9 +75,12 @@ html.embedded-shell .sticky-bottom{display:none;}
 .topbar-sub{font-size:11.5px;color:var(--color-text-secondary);line-height:1.45;margin-top:2px;}
   .hero{margin:0 16px 16px;background:linear-gradient(180deg, var(--hero) 0%, var(--hero-elevated) 100%);border-radius:24px;padding:18px;color:#fff;box-shadow:0 14px 30px rgba(28,22,15,0.18);border:1px solid rgba(255,255,255,0.04);}
 .hero-head{display:flex;align-items:center;gap:12px;}
+.hero-copy{display:flex;flex-direction:column;align-items:flex-start;}
   .avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent-soft);}
 .hero-name{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:var(--tracking-tight);}
 .hero-note{font-size:12.5px;color:var(--hero-muted);line-height:1.5;margin-top:3px;}
+.hero-edit-name{margin-top:7px;border:none;background:transparent;padding:0;font-size:12px;line-height:1;color:var(--accent);font-weight:600;cursor:pointer;}
+.hero-edit-name:active{transform:translateY(1px);}
 .hero-index{margin-top:16px;display:flex;justify-content:space-between;align-items:end;gap:8px;}
 .hero-index-num{font-family:var(--font-display);font-size:48px;line-height:0.96;font-weight:800;letter-spacing:-0.05em;}
   .hero-index-meta{font-size:11.5px;line-height:1.45;color:var(--accent-text);text-align:right;}
@@ -231,6 +234,8 @@ html.embedded-shell .sticky-bottom{display:none;}
 .health-chip{background:var(--surface-soft);border:1px solid var(--color-border-tertiary);border-radius:12px;padding:10px 12px;}
 .health-chip-label{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;}
 .health-chip-value{font-size:13px;font-weight:600;color:var(--color-text);margin-top:6px;}
+.context-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.context-chip{display:inline-flex;align-items:center;min-height:30px;padding:6px 11px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--color-border-tertiary);font-size:11px;font-weight:600;line-height:1;color:var(--color-body);}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;}
 .form-field{display:flex;flex-direction:column;gap:6px;align-self:stretch;}
 .form-field.full{grid-column:1 / -1;}
@@ -260,14 +265,33 @@ html.embedded-shell .sticky-bottom{display:none;}
   <div class="hero">
     <div class="hero-head">
       <div class="avatar" id="profile-avatar">ИВ</div>
-      <div>
+      <div class="hero-copy">
         <div class="hero-name" id="profile-name">Иван</div>
         <div class="hero-note" id="profile-habit">Курение · поведенческий индекс</div>
+        <button class="hero-edit-name" id="edit-profile-name-btn" type="button">Изменить имя</button>
       </div>
     </div>
     <div class="hero-index">
       <div class="hero-index-num" id="profile-index">0</div>
       <div class="hero-index-meta" id="profile-index-meta">умеренная нагрузка</div>
+    </div>
+  </div>
+
+  <div class="context-screen" id="edit-name-screen">
+    <div class="context-screen-inner">
+      <div class="context-screen-head">
+        <button class="context-screen-back" id="close-edit-name-screen-btn" type="button">‹</button>
+        <div class="context-screen-copy">
+          <div class="context-screen-title">Как тебя подписывать</div>
+          <div class="context-screen-sub">Имя видно в приветствии, профиле и в персональных подсказках приложения.</div>
+        </div>
+      </div>
+      <div class="context-screen-note">Можно оставить полное имя, короткую форму или просто то обращение, в котором тебе спокойно.</div>
+      <input class="custom-input" id="profile-name-input" type="text" maxlength="32" placeholder="Например, Иван">
+      <div class="context-screen-actions">
+        <button class="sheet-btn secondary" id="cancel-edit-name-btn" type="button">Отмена</button>
+        <button class="sheet-btn primary" id="save-edit-name-btn" type="button">Сохранить</button>
+      </div>
     </div>
   </div>
 
@@ -302,7 +326,7 @@ html.embedded-shell .sticky-bottom{display:none;}
     <div class="snapshot-head">
       <div>
         <div class="snapshot-title">Снимок недели</div>
-        <div class="snapshot-sub" id="weekly-snapshot-sub">Короткое резюме по поведению, состоянию и health markers.</div>
+        <div class="snapshot-sub" id="weekly-snapshot-sub">Короткое резюме по поведению, состоянию и маркерам здоровья.</div>
       </div>
       <div class="snapshot-badge" id="weekly-snapshot-badge">7 дней</div>
     </div>
@@ -318,7 +342,7 @@ html.embedded-shell .sticky-bottom{display:none;}
         <div class="snapshot-copy" id="weekly-state-copy">Когда появятся записи состояния, здесь будет видно фон недели.</div>
       </div>
       <div class="snapshot-item">
-        <div class="snapshot-label">Здоровье</div>
+<div class="snapshot-label">Маркеры</div>
         <div class="snapshot-value" id="weekly-health-value">0 маркеров</div>
         <div class="snapshot-copy" id="weekly-health-copy">Можно начать хотя бы со сна и пульса в покое.</div>
       </div>
@@ -380,7 +404,7 @@ html.embedded-shell .sticky-bottom{display:none;}
       <div class="detail-arrow">⌄</div>
     </button>
     <div class="detail-body">
-      <div class="wide-text">Это меняет не смысл аналитики, а голос приложения: как оно формулирует фокус дня, weekly review и маленькие шаги.</div>
+      <div class="wide-text">Это меняет не смысл аналитики, а голос приложения: как оно формулирует фокус дня, недельный обзор и маленькие шаги.</div>
       <div class="tone-grid" id="guidance-tone-options"></div>
       <div class="tone-preview">
         <div class="tone-preview-label">Так это звучит сейчас</div>
@@ -392,13 +416,13 @@ html.embedded-shell .sticky-bottom{display:none;}
   <div class="detail-card" id="finance-detail-card">
     <button class="detail-toggle" type="button" data-detail-card="finance-detail-card">
       <div class="detail-copy">
-        <div class="detail-title">Финансы и здоровье</div>
+<div class="detail-title">Финансы и маркеры</div>
         <div class="detail-sub" id="finance-detail-summary">За 30 дней: 0 ₽ · маркеров: 0/7</div>
       </div>
       <div class="detail-arrow">⌄</div>
     </button>
     <div class="detail-body">
-      <div class="wide-text">Привычка тратит не только внимание. Здесь можно видеть прямые расходы, время и несколько простых health markers без медицинских диагнозов.</div>
+<div class="wide-text">Привычка тратит не только внимание. Здесь можно видеть прямые расходы, время и несколько простых маркеров без медицинских диагнозов.</div>
       <div class="finance-grid">
         <div class="finance-metric">
           <div class="finance-metric-label">За 30 дней</div>
@@ -425,10 +449,19 @@ html.embedded-shell .sticky-bottom{display:none;}
           <div class="health-chip-value" id="health-bp">не заполнено</div>
         </div>
         <div class="health-chip">
-          <div class="health-chip-label">Вес / талия</div>
+          <div class="health-chip-label">Вес</div>
           <div class="health-chip-value" id="health-body">не заполнено</div>
         </div>
+        <div class="health-chip">
+          <div class="health-chip-label">Рост / талия</div>
+          <div class="health-chip-value" id="health-frame">не заполнено</div>
+        </div>
+        <div class="health-chip">
+          <div class="health-chip-label">WHtR</div>
+          <div class="health-chip-value" id="health-whtr">не заполнено</div>
+        </div>
       </div>
+      <div class="context-chip-row" id="personal-context-row" style="display:none;"></div>
       <div class="finance-note" id="finance-health-note">Заполни стоимость эпизода и несколько маркеров, чтобы видеть более личную картину привычки.</div>
       <div class="finance-actions">
         <button class="export-btn secondary" id="open-finance-health-btn" type="button">Настроить</button>
@@ -447,7 +480,7 @@ html.embedded-shell .sticky-bottom{display:none;}
     </button>
     <div class="detail-body">
       <div class="onboarding-status">
-        <div class="onboarding-copy" id="assessment-copy"><strong>Опрос не заполнен</strong>Ответь на 4 коротких вопроса, чтобы аналитика точнее оценивала стартовую нагрузку.</div>
+        <div class="onboarding-copy" id="assessment-copy"><strong>Опрос не заполнен</strong> Ответь на 4 коротких вопроса, чтобы аналитика точнее оценивала стартовую нагрузку.</div>
         <button class="onboarding-btn" id="assessment-btn" type="button">Заполнить</button>
       </div>
     </div>
@@ -462,7 +495,9 @@ html.embedded-shell .sticky-bottom{display:none;}
       <div class="detail-arrow">⌄</div>
     </button>
     <div class="detail-body">
-      <div class="wide-text">Главный путь здесь — живой разбор через Gemini по кнопке. Ручной режим оставили как запасной вариант, если захочется отправить prompt в другой чат или сервис.</div>
+      <div class="wide-text">Основной путь здесь — живой разбор через Gemini. Ручной режим оставили как запасной вариант, если захочется отправить промпт в другой чат или сервис.</div>
+      <div class="privacy-sub" id="ai-context-copy" style="margin-top:10px;">Если добавишь личный фон, он тоже войдёт в промпт как дополнительный контекст.</div>
+      <div class="context-chip-row" id="ai-context-row" style="display:none;"></div>
       <div class="privacy-stack">
         <div class="privacy-card">
           <div class="privacy-row">
@@ -497,10 +532,10 @@ html.embedded-shell .sticky-bottom{display:none;}
         <button class="export-btn secondary full" id="toggle-manual-ai-export-btn" type="button">Ручной режим</button>
       </div>
       <div class="manual-ai-panel" id="manual-ai-export-panel">
-        <div class="manual-ai-copy">Нужен только если хочешь отправить prompt во внешний чат вручную. В обычном сценарии через Gemini ничего копировать не нужно.</div>
+        <div class="manual-ai-copy">Нужен только если хочешь отправить промпт во внешний чат вручную. В обычном сценарии через Gemini ничего копировать не нужно.</div>
         <div class="manual-ai-actions">
-          <button class="export-btn secondary" id="open-ai-export-btn" type="button">Открыть prompt</button>
-          <button class="export-btn secondary" id="download-ai-prompt-inline-btn" type="button">Скачать prompt</button>
+          <button class="export-btn secondary" id="open-ai-export-btn" type="button">Открыть промпт</button>
+          <button class="export-btn secondary" id="download-ai-prompt-inline-btn" type="button">Скачать промпт</button>
         </div>
       </div>
       <div class="privacy-card" style="margin-top:12px;">
@@ -525,7 +560,9 @@ html.embedded-shell .sticky-bottom{display:none;}
       <div class="detail-arrow">⌄</div>
     </button>
     <div class="detail-body">
-      <div class="wide-text">Если запускаешь Gemini из приложения, разбор сохранится сам. Ручная вставка нужна только для ответа из внешнего чата или другого ИИ-сервиса.</div>
+      <div class="wide-text">Если запускаешь Gemini из приложения, разбор сохранится сам. Ручная вставка нужна только для ответа из внешнего чата или другого сервиса.</div>
+      <div class="privacy-sub" id="ai-review-context-copy" style="margin-top:10px;">Новые ИИ-разборы могут учитывать личный фон как спокойный дополнительный контекст.</div>
+      <div class="context-chip-row" id="ai-review-context-row" style="display:none;"></div>
       <div class="review-meta" id="ai-review-meta">Разбор ещё не сохранён</div>
       <div class="review-summary" id="ai-review-summary">Здесь появится краткое резюме последнего ответа ИИ по этой привычке.</div>
       <div class="review-list" id="ai-review-actions">
@@ -533,13 +570,13 @@ html.embedded-shell .sticky-bottom{display:none;}
       </div>
       <div class="review-actions">
         <button class="export-btn secondary" id="toggle-manual-ai-review-btn" type="button">Ручная вставка</button>
-        <button class="export-btn primary full" id="open-ai-review-screen-btn" type="button">Полный AI-разбор</button>
+        <button class="export-btn primary full" id="open-ai-review-screen-btn" type="button">Полный ИИ-разбор</button>
       </div>
       <div class="manual-ai-panel" id="manual-ai-review-panel">
         <div class="manual-ai-copy">Этот путь нужен только если ты уже получил ответ модели во внешнем чате и хочешь сохранить его здесь.</div>
         <div class="manual-ai-actions">
           <button class="export-btn secondary" id="open-ai-response-btn" type="button">Вставить ответ</button>
-          <button class="export-btn secondary" id="reopen-ai-prompt-btn" type="button">Открыть prompt</button>
+          <button class="export-btn secondary" id="reopen-ai-prompt-btn" type="button">Открыть промпт</button>
         </div>
       </div>
     </div>
@@ -622,8 +659,38 @@ html.embedded-shell .sticky-bottom{display:none;}
           <input class="form-input" id="health-weight-input" type="number" min="0" step="0.1" placeholder="Например, 72 кг">
         </div>
         <div class="form-field">
+          <label class="form-label" for="health-height-input">Рост, если хочешь видеть WHtR</label>
+          <input class="form-input" id="health-height-input" type="number" min="0" step="0.1" placeholder="Например, 174 см">
+        </div>
+        <div class="form-field">
           <label class="form-label" for="health-waist-input">Талия, если хочешь</label>
           <input class="form-input" id="health-waist-input" type="number" min="0" step="1" placeholder="Например, 84 см">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="profile-birth-year-input">Год рождения</label>
+          <input class="form-input" id="profile-birth-year-input" type="number" min="1900" max="2100" step="1" placeholder="Например, 1993">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="profile-sex-input">Пол</label>
+          <select class="form-input" id="profile-sex-input">
+            <option value="">Не указывать</option>
+            <option value="мужской">Мужской</option>
+            <option value="женский">Женский</option>
+            <option value="другой">Другой</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="profile-activity-input">Уровень активности</label>
+          <select class="form-input" id="profile-activity-input">
+            <option value="">Не указывать</option>
+            <option value="почти не двигаюсь">Почти не двигаюсь</option>
+            <option value="обычная активность">Обычная активность</option>
+            <option value="регулярно тренируюсь">Регулярно тренируюсь</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="profile-sport-input">Регулярный спорт, если есть</label>
+          <input class="form-input" id="profile-sport-input" type="text" maxlength="64" placeholder="Например, ходьба, бег, зал">
         </div>
       </div>
       <div class="context-screen-actions">
@@ -638,7 +705,7 @@ html.embedded-shell .sticky-bottom{display:none;}
       <div class="context-screen-head">
         <button class="context-screen-back" id="close-ai-export-screen-btn" type="button">‹</button>
         <div class="context-screen-copy">
-          <div class="context-screen-title">Prompt для ИИ-разбора</div>
+        <div class="context-screen-title">Промпт для ИИ-разбора</div>
           <div class="context-screen-sub">Ниже готовый текст для ручной отправки в ИИ. Он просит анализировать паттерны поведения без диагноза и без роли терапевта.</div>
         </div>
       </div>
@@ -685,7 +752,7 @@ html.embedded-shell .sticky-bottom{display:none;}
           <div class="privacy-sub">Активная привычка, события, дневник и аналитическая summary по выбранным настройкам приватности.</div>
         </div>
         <div class="privacy-card">
-          <div class="privacy-label">API key Gemini</div>
+<div class="privacy-label">Ключ API Gemini</div>
           <div class="privacy-sub">Для демо ключ можно хранить только на этом устройстве. В исходники он не записывается.</div>
           <input class="custom-input" id="gemini-api-key-input" type="password" placeholder="AIza..." autocomplete="off">
           <div class="privacy-row" style="margin-top:12px;">
@@ -698,7 +765,7 @@ html.embedded-shell .sticky-bottom{display:none;}
         </div>
         <div class="privacy-card">
           <div class="privacy-label">Модель</div>
-          <div class="privacy-sub">Для демо используем самый стабильный из проверенных быстрых вариантов Gemini Flash.</div>
+<div class="privacy-sub">Для демо используем самый стабильный из быстрых вариантов Gemini Flash.</div>
           <div class="privacy-options" id="gemini-model-options">
             <button class="privacy-option active" type="button" data-gemini-model="gemini-flash-latest">Flash latest</button>
           </div>
@@ -706,7 +773,7 @@ html.embedded-shell .sticky-bottom{display:none;}
       </div>
       <div class="export-note" id="gemini-sheet-status" data-tone="neutral">Ничего не отправится, пока ты явно не нажмёшь кнопку ниже.</div>
       <div class="sheet-actions-single">
-        <button class="sheet-btn secondary" id="toggle-gemini-preview-btn" type="button">Показать prompt</button>
+          <button class="sheet-btn secondary" id="toggle-gemini-preview-btn" type="button">Показать промпт</button>
       </div>
       <textarea class="prompt-preview" id="gemini-prompt-preview" readonly style="display:none;min-height:220px;margin-top:10px;"></textarea>
       <div class="context-screen-actions">
@@ -722,12 +789,12 @@ html.embedded-shell .sticky-bottom{display:none;}
         <button class="context-screen-back" id="close-reset-habit-screen-btn" type="button">‹</button>
         <div class="context-screen-copy">
           <div class="context-screen-title">Очистить активную привычку</div>
-          <div class="context-screen-sub" id="reset-habit-sub">Будут удалены события, дневник, опрос и health markers только для активной привычки. Остальные привычки останутся на месте.</div>
+          <div class="context-screen-sub" id="reset-habit-sub">Будут удалены события, дневник, опрос и маркеры здоровья только для активной привычки. Остальные привычки останутся на месте.</div>
         </div>
       </div>
       <div class="privacy-card">
         <div class="privacy-label">Что сохранится</div>
-        <div class="privacy-sub">Профиль пользователя, остальные привычки, AI-разборы и сама структура приложения останутся без изменений.</div>
+              <div class="privacy-sub">Профиль пользователя, остальные привычки, ИИ-разборы и сама структура приложения останутся без изменений.</div>
       </div>
       <div class="context-screen-actions">
         <button class="sheet-btn secondary" id="cancel-reset-habit-btn" type="button">Отмена</button>
@@ -1105,7 +1172,12 @@ function openFinanceHealthSheet() {
   document.getElementById("health-bp-sys-input").value = markers.bloodPressureSystolic != null ? markers.bloodPressureSystolic : "";
   document.getElementById("health-bp-dia-input").value = markers.bloodPressureDiastolic != null ? markers.bloodPressureDiastolic : "";
   document.getElementById("health-weight-input").value = markers.weightKg != null ? markers.weightKg : "";
+  document.getElementById("health-height-input").value = markers.heightCm != null ? markers.heightCm : "";
   document.getElementById("health-waist-input").value = markers.waistCm != null ? markers.waistCm : "";
+  document.getElementById("profile-birth-year-input").value = state.profile.birthYear || "";
+  document.getElementById("profile-sex-input").value = state.profile.sex || "";
+  document.getElementById("profile-activity-input").value = state.profile.activityLevel || "";
+  document.getElementById("profile-sport-input").value = state.profile.sportType || "";
   openContextScreen("finance-health-screen", "#config-cost-input");
 }
 
@@ -1141,8 +1213,15 @@ function saveFinanceHealth() {
       bloodPressureSystolic: document.getElementById("health-bp-sys-input").value,
       bloodPressureDiastolic: document.getElementById("health-bp-dia-input").value,
       weightKg: document.getElementById("health-weight-input").value,
+      heightCm: document.getElementById("health-height-input").value,
       waistCm: document.getElementById("health-waist-input").value
     }
+  });
+  window.HabitStore.savePersonalContext({
+    birthYear: document.getElementById("profile-birth-year-input").value,
+    sex: document.getElementById("profile-sex-input").value,
+    activityLevel: document.getElementById("profile-activity-input").value,
+    sportType: document.getElementById("profile-sport-input").value
   });
   profileDetailState["finance-detail-card"] = true;
   closeFinanceHealthSheet();
@@ -1353,7 +1432,7 @@ function renderGeminiPromptPreview() {
 
   if (!isGeminiPromptPreviewOpen) {
     preview.style.display = "none";
-    button.textContent = "Показать prompt";
+    button.textContent = "Показать промпт";
     return;
   }
 
@@ -1361,7 +1440,7 @@ function renderGeminiPromptPreview() {
   currentAiPrompt = window.HabitGemini.buildUserPrompt(bundle);
   preview.value = currentAiPrompt;
   preview.style.display = "block";
-  button.textContent = "Скрыть prompt";
+  button.textContent = "Скрыть промпт";
 }
 
 function openGeminiSheet() {
@@ -1372,7 +1451,24 @@ function openGeminiSheet() {
   openContextScreen("gemini-sheet", "#gemini-api-key-input");
 }
 
+function persistGeminiSettingsOnDevice() {
+  if (!window.HabitGemini) return;
+  var apiKeyInput = document.getElementById("gemini-api-key-input");
+  var rememberKeyInput = document.getElementById("gemini-remember-key");
+  var apiKey = String(apiKeyInput && apiKeyInput.value || "").trim();
+  var rememberKey = rememberKeyInput ? rememberKeyInput.checked : true;
+  currentGeminiSettings = window.HabitGemini.writeSettings({
+    apiKey: rememberKey ? apiKey : "",
+    model: currentGeminiSettings.model || "gemini-flash-latest",
+    rememberKey: rememberKey
+  });
+  if (!rememberKey) {
+    currentGeminiSettings.apiKey = apiKey;
+  }
+}
+
 function closeGeminiSheet() {
+  persistGeminiSettingsOnDevice();
   isGeminiPromptPreviewOpen = false;
   renderGeminiPromptPreview();
   closeContextScreen("gemini-sheet");
@@ -1430,7 +1526,7 @@ function runGeminiReview() {
     });
     closeGeminiSheet();
     renderProfile();
-    setExportStatus("Gemini-разбор сохранён. Краткий вывод и действия уже появились в профиле.", "success");
+    setExportStatus("Gemini-разбор готов. Открываем полный экран разбора.", "success");
     try {
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
@@ -1439,6 +1535,7 @@ function runGeminiReview() {
         }, "*");
       }
     } catch (error) {}
+    openAiReviewScreen();
   }).catch(function (error) {
     var message = error && error.message
       ? "Gemini не ответил корректно: " + error.message
@@ -1452,13 +1549,31 @@ function openAiResponseSheet() {
   openContextScreen("ai-response-sheet", "#ai-response-input");
 }
 
+function openAiReviewScreen() {
+  if (window.DemoNavigation && window.DemoNavigation.navigate) {
+    window.DemoNavigation.navigate("ai-review");
+    return;
+  }
+  if (window.parent && window.parent !== window) {
+    try {
+      if (window.parent.HabitShellSetScreen) {
+        window.parent.HabitShellSetScreen("ai-review");
+        return;
+      }
+      window.parent.postMessage({ type: "demo:navigate", route: "ai-review" }, "*");
+      return;
+    } catch (error) {}
+  }
+  window.location.href = "../imported-designs/ai_review_live.html";
+}
+
 function closeAiResponseSheet() {
   closeContextScreen("ai-response-sheet");
 }
 
 function openResetHabitSheet() {
   var state = window.HabitStore.getState();
-  document.getElementById("reset-habit-sub").textContent = "Будут удалены события, дневник, опрос и health markers только для привычки: " + state.currentHabit.name + ". Остальные привычки останутся на месте.";
+  document.getElementById("reset-habit-sub").textContent = "Будут удалены события, дневник, опрос и маркеры здоровья только для привычки: " + state.currentHabit.name + ". Остальные привычки останутся на месте.";
   openContextScreen("reset-habit-sheet");
 }
 
@@ -1496,7 +1611,7 @@ function renderAiReview(state) {
     ? review.actionItems.slice(0, 5).map(function (item) {
         return '<div class="review-item">' + item.replace(/</g, "&lt;") + '</div>';
       }).join("")
-    : '<div class="review-empty">ИИ-ответ сохранён, но явные действия не нашлись. Можно перечитать исходный текст через prompt и вставить более структурированный ответ.</div>');
+      : '<div class="review-empty">ИИ-ответ сохранён, но явные действия не нашлись. Можно перечитать исходный текст через промпт и вставить более структурированный ответ.</div>');
 }
 
 function renderGuidanceTone(state, vm) {
@@ -1524,10 +1639,55 @@ function updateDetailCard(cardId, open) {
   card.classList.toggle("open", !!open);
 }
 
+function escapeInlineHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function getAiContextChips(state) {
+  var chips = [];
+  if (state.profile && state.profile.birthYear) chips.push(String(state.profile.birthYear) + " г.");
+  if (state.profile && state.profile.sex) chips.push(state.profile.sex);
+  if (state.profile && state.profile.activityLevel) chips.push(state.profile.activityLevel);
+  if (state.profile && state.profile.sportType) chips.push(state.profile.sportType);
+  var config = getCurrentHabitConfig(state);
+  var markers = (config && config.healthMarkers) || {};
+  if (markers.heightCm != null && markers.waistCm != null && Number(markers.heightCm) > 0) {
+    chips.push("WHtR " + (Number(markers.waistCm) / Number(markers.heightCm)).toFixed(2));
+  }
+  return chips;
+}
+
+function renderAiContextBlocks(state) {
+  var chips = getAiContextChips(state);
+  var exportRow = document.getElementById("ai-context-row");
+  var exportCopy = document.getElementById("ai-context-copy");
+  var reviewRow = document.getElementById("ai-review-context-row");
+  var reviewCopy = document.getElementById("ai-review-context-copy");
+  var html = chips.map(function (item) {
+    return '<span class="context-chip">' + escapeInlineHtml(item) + "</span>";
+  }).join("");
+
+  exportRow.innerHTML = html;
+  reviewRow.innerHTML = html;
+  exportRow.style.display = chips.length ? "flex" : "none";
+  reviewRow.style.display = chips.length ? "flex" : "none";
+    exportCopy.textContent = chips.length
+      ? "В промпт уже войдёт этот личный фон как дополнительный контекст."
+      : "Если добавишь личный фон, он тоже войдёт в промпт как дополнительный контекст.";
+    reviewCopy.textContent = chips.length
+      ? "Новые ИИ-разборы уже смогут учитывать этот фон как дополнительный контекст."
+      : "Новые ИИ-разборы могут учитывать личный фон как спокойный дополнительный контекст.";
+}
+
 function setProfileDetailSummaries(state, analytics) {
   var finance = analytics.finance || {};
   var health = analytics.health || { filledCount: 0, totalCount: 0 };
   var review = window.HabitAiReviewStore.getLatestReview(state.currentHabit.id);
+  var aiContextChips = getAiContextChips(state);
 
   document.getElementById("finance-detail-summary").textContent =
     "30 дней: " + formatMoney(finance.monthSpent || 0, finance.currencySymbol || "₽") +
@@ -1540,7 +1700,8 @@ function setProfileDetailSummaries(state, analytics) {
   document.getElementById("export-detail-summary").textContent =
     "Имя " + (exportSettings.includeName ? "включено" : "скрыто") +
     " · " + (exportSettings.diaryScope === "recent" ? "10 записей" : "полный дневник") +
-    " · " + (exportSettings.timePrecision === "exact" ? "точное время" : "диапазоны");
+    " · " + (exportSettings.timePrecision === "exact" ? "точное время" : "диапазоны") +
+    (aiContextChips.length ? " · личный фон" : "");
 
   document.getElementById("ai-review-detail-summary").textContent = review
     ? "Последний разбор: " + window.HabitStore.helpers.todayLabel(new Date(review.createdAt)) + " · действий: " + ((review.actionItems && review.actionItems.length) || 0)
@@ -1550,6 +1711,7 @@ function setProfileDetailSummaries(state, analytics) {
 function renderFinanceHealth(state, analytics) {
   var openFinanceBtn = document.getElementById("open-finance-health-btn");
   var refreshHealthBtn = document.getElementById("reset-health-hint-btn");
+  var personalContextRow = document.getElementById("personal-context-row");
   var config = getCurrentHabitConfig(state);
   var savedContext = !!(
     (config.costPerEpisode || config.costPerEpisode === 0) &&
@@ -1579,6 +1741,16 @@ function renderFinanceHealth(state, analytics) {
     document.getElementById("health-resting-hr").textContent = analytics.restingHr;
     document.getElementById("health-bp").textContent = analytics.bp;
     document.getElementById("health-body").textContent = analytics.body;
+    document.getElementById("health-frame").textContent = analytics.frame;
+    document.getElementById("health-whtr").textContent = analytics.whtr;
+    personalContextRow.innerHTML = (analytics.contextChips || []).map(function (item) {
+      return '<span class="context-chip">' + String(item)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;") + "</span>";
+    }).join("");
+    personalContextRow.style.display = analytics.contextChips && analytics.contextChips.length ? "flex" : "none";
     document.getElementById("finance-health-note").textContent = analytics.note;
     return;
   }
@@ -1586,6 +1758,11 @@ function renderFinanceHealth(state, analytics) {
   var finance = analytics.finance || {};
   var markers = health.markers || {};
   var bpReady = markers.bloodPressureSystolic != null && markers.bloodPressureDiastolic != null;
+  var personalContext = [];
+  if (state.profile && state.profile.birthYear) personalContext.push(String(state.profile.birthYear) + " г.");
+  if (state.profile && state.profile.sex) personalContext.push(state.profile.sex);
+  if (state.profile && state.profile.activityLevel) personalContext.push(state.profile.activityLevel);
+  if (state.profile && state.profile.sportType) personalContext.push(state.profile.sportType);
 
   document.getElementById("finance-month-spent").textContent = formatMoney(finance.monthSpent || 0, finance.currencySymbol || config.currencySymbol);
   document.getElementById("finance-month-projection").textContent = "Прогноз на месяц: " + formatMoney(finance.monthProjection || 0, finance.currencySymbol || config.currencySymbol);
@@ -1594,12 +1771,24 @@ function renderFinanceHealth(state, analytics) {
   document.getElementById("health-sleep").textContent = markerText(markers.sleepHours, "ч");
   document.getElementById("health-resting-hr").textContent = markerText(markers.restingHeartRate, "уд/мин");
   document.getElementById("health-bp").textContent = bpReady ? String(markers.bloodPressureSystolic) + "/" + String(markers.bloodPressureDiastolic) : "не заполнено";
-  document.getElementById("health-body").textContent = (markers.weightKg != null || markers.waistCm != null)
-    ? [markers.weightKg != null ? String(markers.weightKg) + " кг" : null, markers.waistCm != null ? String(markers.waistCm) + " см" : null].filter(Boolean).join(" · ")
+  document.getElementById("health-body").textContent = markers.weightKg != null ? String(markers.weightKg) + " кг" : "не заполнено";
+  document.getElementById("health-frame").textContent = (markers.heightCm != null || markers.waistCm != null)
+    ? [markers.heightCm != null ? String(markers.heightCm) + " см" : null, markers.waistCm != null ? String(markers.waistCm) + " см" : null].filter(Boolean).join(" · ")
     : "не заполнено";
+  document.getElementById("health-whtr").textContent = (markers.heightCm != null && markers.waistCm != null && Number(markers.heightCm) > 0)
+    ? (Number(markers.waistCm) / Number(markers.heightCm)).toFixed(2)
+    : "не заполнено";
+  personalContextRow.innerHTML = personalContext.map(function (item) {
+    return '<span class="context-chip">' + String(item)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;") + "</span>";
+  }).join("");
+  personalContextRow.style.display = personalContext.length ? "flex" : "none";
   document.getElementById("finance-health-note").textContent = health.filledCount
-    ? "Заполнено " + health.filledCount + " из " + health.totalCount + " health markers. Аналитика их не диагностирует, а только хранит как личный контекст."
-    : "Пока health markers пустые. Можно начать хотя бы со сна, пульса в покое и давления.";
+      ? "Заполнено " + health.filledCount + " из " + health.totalCount + " маркеров здоровья. WHtR считаем только как личный ориентир по талии и росту, без диагноза."
+      : "Пока маркеры здоровья пустые. Для WHtR достаточно добавить талию и рост.";
 }
 
 function renderWeeklySnapshot(weeklyAnalytics) {
@@ -1701,15 +1890,16 @@ function saveAiResponse() {
   document.getElementById("ai-response-input").value = "";
   closeAiResponseSheet();
   renderProfile();
-  setExportStatusKey("ai_response_saved");
+  setExportStatus("Разбор сохранён. Открываем полный экран ИИ-разбора.", "success");
   try {
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: "demo:ai-review-ready",
-        text: review && review.summary ? review.summary : "Новый AI-разбор уже сохранён в профиле."
+        text: review && review.summary ? review.summary : "Новый ИИ-разбор уже сохранён в профиле."
       }, "*");
     }
   } catch (error) {}
+  openAiReviewScreen();
 }
 
 function initExportControls() {
@@ -1771,6 +1961,7 @@ function renderProfile() {
   }
   document.getElementById("active-habit-meta").textContent = "Сейчас приложение считает и анализирует только эту привычку";
   renderAiReview(state);
+  renderAiContextBlocks(state);
   setProfileDetailSummaries(state, analytics);
   Object.keys(profileDetailState).forEach(function (cardId) {
     updateDetailCard(cardId, profileDetailState[cardId]);
@@ -1803,7 +1994,29 @@ function renderFirstWeek(state) {
   }
 }
 
+function editProfileName() {
+  var state = window.HabitStore.getState();
+  var currentName = state && state.profile && state.profile.userName ? state.profile.userName : "Иван";
+  document.getElementById("profile-name-input").value = currentName;
+  openContextScreen("edit-name-screen", "#profile-name-input");
+}
+
+function closeEditNameSheet() {
+  closeContextScreen("edit-name-screen");
+}
+
+function saveProfileName() {
+  var input = document.getElementById("profile-name-input");
+  var cleanName = String(input && input.value || "").trim().slice(0, 32);
+  window.HabitStore.setProfileName(cleanName);
+  closeEditNameSheet();
+}
+
 document.getElementById("change-habit-btn").addEventListener("click", openHabitSheet);
+document.getElementById("edit-profile-name-btn").addEventListener("click", editProfileName);
+document.getElementById("close-edit-name-screen-btn").addEventListener("click", closeEditNameSheet);
+document.getElementById("cancel-edit-name-btn").addEventListener("click", closeEditNameSheet);
+document.getElementById("save-edit-name-btn").addEventListener("click", saveProfileName);
 document.getElementById("setup-action-btn").addEventListener("click", openSetupNextStep);
 document.getElementById("cancel-habit-btn").addEventListener("click", closeHabitSheet);
 document.getElementById("close-habit-screen-btn").addEventListener("click", closeHabitSheet);

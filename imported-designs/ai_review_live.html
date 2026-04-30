@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>AI-разбор</title>
+    <title>ИИ-разбор</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -79,6 +79,34 @@ html.embedded-shell .screen{padding-bottom:112px;}
 .mini{background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:12px;}
 .mini-label{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-secondary);}
 .mini-value{font-size:12px;color:var(--body);line-height:1.5;margin-top:8px;}
+.breakdown-stack{display:grid;gap:10px;margin-top:12px;}
+.breakdown-block{background:var(--surface-soft);border:1px solid var(--border);border-radius:14px;padding:12px;}
+.breakdown-block.primary{background:linear-gradient(180deg,rgba(225,245,238,0.72) 0%, rgba(255,255,255,0.98) 100%);border-color:rgba(29,158,117,0.24);}
+.breakdown-block.primary .breakdown-label{color:var(--accent-text);}
+.breakdown-block.actions{background:linear-gradient(180deg,rgba(255,241,228,0.84) 0%, rgba(255,255,255,0.98) 100%);border-color:rgba(242,166,109,0.28);}
+.breakdown-block.actions .breakdown-label{color:#8b5a2b;}
+.breakdown-block.triggers{background:linear-gradient(180deg,rgba(239,248,244,0.72) 0%, rgba(255,255,255,0.98) 100%);border-color:rgba(29,158,117,0.18);}
+.breakdown-label{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-secondary);}
+.breakdown-list{display:grid;gap:8px;margin-top:10px;}
+.breakdown-item{font-size:12px;line-height:1.55;color:var(--body);}
+.breakdown-block.primary .breakdown-item:first-child,
+.breakdown-block.actions .breakdown-item:first-child{color:var(--text);font-weight:700;}
+.breakdown-index{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;background:rgba(29,158,117,0.14);color:var(--accent-text);font-size:10px;font-weight:700;flex:0 0 auto;}
+.breakdown-block.actions .breakdown-index{background:rgba(242,166,109,0.18);color:#8b5a2b;}
+.breakdown-row{display:flex;align-items:flex-start;gap:8px;}
+.breakdown-row .breakdown-item{margin-top:0;flex:1 1 auto;}
+.trigger-breakdown{display:grid;gap:12px;margin-top:10px;}
+.trigger-meter-list{display:grid;gap:8px;}
+.trigger-meter{display:grid;gap:6px;}
+.trigger-meter-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.trigger-meter-label{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;}
+.trigger-meter-value{font-size:11px;font-weight:700;color:var(--accent-text);background:rgba(29,158,117,0.12);border-radius:999px;padding:4px 8px;white-space:nowrap;}
+.trigger-meter-track{height:8px;border-radius:999px;background:var(--surface-elevated);border:1px solid var(--border);overflow:hidden;}
+.trigger-meter-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),#5fd8ad);}
+.trigger-meter-copy{font-size:11px;line-height:1.45;color:var(--body);}
+.scenario-stack{display:grid;gap:8px;}
+.scenario-kicker{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-secondary);}
+.scenario-card{background:var(--surface-elevated);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;color:var(--body);}
 .empty{font-size:12px;line-height:1.6;color:var(--text-secondary);margin-top:10px;}
 .plan-meta{font-size:11px;color:var(--text-secondary);line-height:1.5;margin-top:8px;}
 .plan-progress{margin-top:12px;}
@@ -124,8 +152,8 @@ html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom
   <div class="screen">
     <div class="topbar">
       <div>
-        <div class="topbar-title">AI-разбор</div>
-        <div class="topbar-sub" id="screen-subtitle">История ответов, сравнение по времени и недельный план по активной привычке.</div>
+      <div class="topbar-title">ИИ-разбор</div>
+        <div class="topbar-sub" id="screen-subtitle">Сохранённые ответы, повторяющиеся темы и рабочий план по активной привычке.</div>
       </div>
       <button class="ghost-btn" id="back-to-profile-btn" type="button">Назад</button>
     </div>
@@ -133,7 +161,7 @@ html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom
     <div class="hero">
       <div class="hero-label">Последний фокус</div>
       <div class="hero-title" id="hero-title">Разбор ещё не сохранён</div>
-      <div class="hero-text" id="hero-text">Сначала вставь в профиль хотя бы один ответ ИИ. После этого здесь появится история, сравнение и живой план недели.</div>
+      <div class="hero-text" id="hero-text">Сначала сохрани в профиле хотя бы один ответ ИИ. После этого здесь появятся история, повторяющиеся темы и рабочий план недели.</div>
       <div class="hero-meta">
         <div class="hero-pill">
           <div class="hero-pill-label">Разборов</div>
@@ -147,6 +175,15 @@ html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom
           <div class="hero-pill-label">План</div>
           <div class="hero-pill-value" id="hero-plan-status">нет</div>
         </div>
+      </div>
+    </div>
+
+    <div class="section-title">Последний разбор</div>
+    <div class="card">
+      <div class="card-title">Разложено по полкам</div>
+      <div class="card-sub" id="breakdown-sub">Когда сохраняется структурный ИИ-разбор, здесь появляются его основные блоки.</div>
+      <div class="breakdown-stack" id="breakdown-sections">
+        <div class="empty">Пока здесь пусто. Сохрани один разбор, и приложение выделит паттерны, триггеры, опоры и шаги на неделю.</div>
       </div>
     </div>
 
@@ -170,7 +207,7 @@ html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom
     <div class="section-title">План Недели</div>
     <div class="card">
       <div class="card-title">Рабочий план по последнему разбору</div>
-      <div class="card-sub" id="plan-sub">Можно сохранить действия из любого AI-разбора как ориентир на ближайшие 7 дней.</div>
+      <div class="card-sub" id="plan-sub">Когда разбор уже сохранён, его действия можно взять как ориентир на ближайшие 7 дней.</div>
       <div class="plan-meta" id="plan-meta">План пока не сохранён.</div>
       <div class="plan-progress">
         <div class="plan-progress-head">
@@ -193,17 +230,17 @@ html.embedded-shell .sticky-bottom{bottom:calc(84px + env(safe-area-inset-bottom
         <div class="impact-card">
           <div class="impact-label">Нагрузка недели</div>
           <div class="impact-value" id="impact-index">—</div>
-          <div class="impact-copy" id="impact-copy">Появится, когда будет план недели и текущая аналитика.</div>
+          <div class="impact-copy" id="impact-copy">Пока здесь видна текущая нагрузка за 30 дней. Когда появится план недели, станет видно и его влияние.</div>
         </div>
       </div>
     </div>
 
-    <div class="section-title">История Разборов</div>
+      <div class="section-title">История разборов</div>
     <div class="card">
       <div class="card-title">Сохранённые ответы ИИ</div>
-      <div class="card-sub">Каждый ответ остаётся внутри активной привычки. Можно в любой момент взять прошлый разбор за основу недели.</div>
+      <div class="card-sub">Каждый ответ остаётся внутри активной привычки. Позже из любого разбора можно будет собрать план недели.</div>
       <div class="history-list" id="history-list">
-        <div class="empty">Пока нет сохранённых AI-разборов.</div>
+          <div class="empty">Пока нет сохранённых ИИ-разборов. Первый можно получить через Gemini в профиле или вставить туда вручную.</div>
       </div>
     </div>
 
@@ -279,9 +316,9 @@ function buildComparison(reviews) {
   if (reviews.length < 2) {
     return {
       repeat: "Пока недостаточно данных для сравнения.",
-      shift: "Сохрани хотя бы два ответа ИИ по одной привычке.",
-      note: "Когда ответов станет больше, здесь будет видно, какие темы ИИ повторяет из раза в раз, а что появилось только сейчас.",
-      subtitle: "Сравнение строится по двум последним сохранённым разборам."
+      shift: "Когда сохранится второй ответ, здесь появится уже не просто история, а сравнение фокуса.",
+      note: "Сначала нужен хотя бы один сохранённый разбор. Потом экран начнёт показывать, что ИИ повторяет из раза в раз, а что смещается.",
+      subtitle: "Сравнение включается, когда по одной привычке уже есть два сохранённых разбора."
     };
   }
 
@@ -326,7 +363,7 @@ function renderPlan(plan) {
     progressLabelNode.textContent = "Выполнено 0 из 0 шагов";
     progressPercentNode.textContent = "0%";
     progressFillNode.style.width = "0%";
-    listNode.innerHTML = '<div class="empty">Пока нет плана недели. Сохрани его из последнего разбора или из карточки в истории.</div>';
+    listNode.innerHTML = '<div class="empty">Пока нет плана недели. Как только появится разбор, отсюда можно будет сохранить 2–4 шага на ближайшую неделю.</div>';
     return;
   }
 
@@ -358,6 +395,95 @@ function renderPlan(plan) {
   });
 }
 
+function renderBreakdown(review) {
+  var subNode = document.getElementById("breakdown-sub");
+  var root = document.getElementById("breakdown-sections");
+
+  if (!review || !review.sections || !review.sections.length) {
+    subNode.textContent = "Когда сохраняется структурный ИИ-разбор, здесь появляются его основные блоки.";
+    root.innerHTML = '<div class="empty">Пока здесь пусто. Сохрани один разбор, и приложение выделит паттерны, триггеры, опоры и шаги на неделю.</div>';
+    return;
+  }
+
+  subNode.textContent = "Это не весь текст ответа, а его рабочая раскладка: что повторяется, что запускает привычку и на что уже можно опереться.";
+  root.innerHTML = review.sections.map(function (section) {
+    var blockClass = "breakdown-block";
+    if (section.key === "patterns") blockClass += " primary";
+    if (section.key === "triggers") blockClass += " triggers";
+    if (section.key === "actions") blockClass += " actions";
+
+    if (section.key === "triggers") {
+      var triggerRows = [];
+      var scenarios = [];
+      var plainRows = [];
+
+      (section.items || []).forEach(function (item) {
+        var cleanItem = String(item || "").trim();
+        if (!cleanItem || /^типичные сценарии:?$/i.test(cleanItem)) {
+          return;
+        }
+        if (cleanItem.indexOf("→") !== -1) {
+          scenarios.push(cleanItem);
+          return;
+        }
+        var match = cleanItem.match(/^(.+?)\s*\((\d+)%\)\s*[—-]\s*(.+)$/);
+        if (match) {
+          triggerRows.push({
+            label: match[1].trim(),
+            percent: Number(match[2]) || 0,
+            copy: match[3].trim()
+          });
+          return;
+        }
+        plainRows.push(cleanItem);
+      });
+
+      return '' +
+        '<div class="' + blockClass + '">' +
+          '<div class="breakdown-label">' + escapeHtml(section.title || section.sourceTitle || "Из разбора") + '</div>' +
+          '<div class="trigger-breakdown">' +
+            (triggerRows.length
+              ? '<div class="trigger-meter-list">' + triggerRows.map(function (row) {
+                  return '' +
+                    '<div class="trigger-meter">' +
+                      '<div class="trigger-meter-head">' +
+                        '<div class="trigger-meter-label">' + escapeHtml(row.label) + '</div>' +
+                        '<div class="trigger-meter-value">' + row.percent + '%</div>' +
+                      '</div>' +
+                      '<div class="trigger-meter-track"><div class="trigger-meter-fill" style="width:' + Math.max(8, Math.min(100, row.percent)) + '%;"></div></div>' +
+                      '<div class="trigger-meter-copy">' + escapeHtml(row.copy) + '</div>' +
+                    '</div>';
+                }).join("") + '</div>'
+              : '') +
+            (plainRows.length
+              ? '<div class="breakdown-list">' + plainRows.map(function (item) {
+                  return '<div class="breakdown-item">' + escapeHtml(item) + '</div>';
+                }).join("") + '</div>'
+              : '') +
+            (scenarios.length
+              ? '<div class="scenario-stack"><div class="scenario-kicker">Типичные сценарии</div>' + scenarios.map(function (item) {
+                  return '<div class="scenario-card">' + escapeHtml(item) + '</div>';
+                }).join("") + '</div>'
+              : '') +
+          '</div>' +
+        '</div>';
+    }
+
+    return '' +
+      '<div class="' + blockClass + '">' +
+        '<div class="breakdown-label">' + escapeHtml(section.title || section.sourceTitle || "Из разбора") + '</div>' +
+        '<div class="breakdown-list">' +
+          (section.items || []).slice(0, section.key === "actions" ? 5 : 4).map(function (item, index) {
+            if (section.key === "actions") {
+              return '<div class="breakdown-row"><div class="breakdown-index">' + (index + 1) + '</div><div class="breakdown-item">' + escapeHtml(item) + '</div></div>';
+            }
+            return '<div class="breakdown-item">' + escapeHtml(item) + '</div>';
+          }).join("") +
+        '</div>' +
+      '</div>';
+  }).join("");
+}
+
 function renderImpact(plan, analytics) {
   var supportNode = document.getElementById("impact-support");
   var indexNode = document.getElementById("impact-index");
@@ -366,7 +492,7 @@ function renderImpact(plan, analytics) {
   if (!plan || !plan.items || !plan.items.length) {
     supportNode.textContent = "+0";
     indexNode.textContent = analytics.summary.dependencyIndex;
-    copyNode.textContent = "Появится, когда будет план недели и текущая аналитика.";
+    copyNode.textContent = "Пока здесь видна текущая нагрузка за 30 дней. Когда появится план недели, станет видно, как он её смягчает.";
     return;
   }
 
@@ -380,7 +506,7 @@ function renderHistory(reviews) {
   var root = document.getElementById("history-list");
 
   if (!reviews.length) {
-    root.innerHTML = '<div class="empty">Пока нет сохранённых AI-разборов.</div>';
+      root.innerHTML = '<div class="empty">Пока нет сохранённых ИИ-разборов. Первый можно получить через Gemini в профиле или вставить туда вручную.</div>';
     return;
   }
 
@@ -420,20 +546,24 @@ function renderScreen() {
   var analytics = window.HabitAnalytics.getInsightViewModel("30d");
   var comparison = buildComparison(reviews);
 
-  document.getElementById("screen-subtitle").textContent = "История ответов, сравнение по времени и недельный план для привычки: " + state.currentHabit.name + ".";
+  document.getElementById("screen-subtitle").textContent = "Сохранённые ответы, повторяющиеся темы и рабочий план для привычки: " + state.currentHabit.name + ".";
   document.getElementById("hero-review-count").textContent = String(reviews.length);
   document.getElementById("hero-risk-level").textContent = riskLevelLabel(analytics.summary.riskLevel);
   document.getElementById("hero-title").textContent = latest ? state.currentHabit.name + ": " + formatReviewDate(latest.createdAt) : "Разбор ещё не сохранён";
   document.getElementById("hero-text").textContent = latest
     ? latest.summary || "Последний ответ ИИ сохранён, но краткое резюме пока не выделилось."
-    : "Сначала вставь в профиль хотя бы один ответ ИИ. После этого здесь появится история, сравнение и живой план недели.";
+    : "Сначала сохрани в профиле хотя бы один ответ ИИ. После этого здесь появятся история, повторяющиеся темы и рабочий план недели.";
   document.getElementById("compare-sub").textContent = comparison.subtitle;
   document.getElementById("compare-repeat").textContent = comparison.repeat;
   document.getElementById("compare-shift").textContent = comparison.shift;
   document.getElementById("compare-note").textContent = comparison.note;
   document.getElementById("save-latest-plan-btn").disabled = !latest;
-  document.getElementById("save-latest-plan-btn").textContent = latest ? "Сделать планом" : "Ждём разбор";
+  document.getElementById("plan-sub").textContent = latest
+    ? "Можно сохранить действия из последнего ИИ-разбора как ориентир на ближайшие 7 дней."
+    : "Сначала нужен один сохранённый разбор. После этого отсюда можно будет собрать рабочий план недели.";
+  document.getElementById("save-latest-plan-btn").textContent = latest ? "Сделать планом" : "Нужен разбор";
 
+  renderBreakdown(latest);
   renderPlan(plan);
   renderImpact(plan, analytics);
   renderHistory(reviews);

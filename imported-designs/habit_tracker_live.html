@@ -98,15 +98,23 @@
   .screen.is-day-phase .ritual-card,
   .screen.is-day-phase .live-event-card,
   .screen.is-day-phase .hero,
-  .screen.is-day-phase .memory-card{margin-bottom:10px;}
+  .screen.is-day-phase .memory-card,
+  .screen.is-morning-phase .ritual-card,
+  .screen.is-morning-phase .hero,
+  .screen.is-morning-phase .memory-card{margin-bottom:10px;}
   .screen.is-evening-phase .ritual-card,
   .screen.is-evening-phase .hero,
   .screen.is-evening-phase .memory-card{margin-bottom:10px;}
-  .screen.is-day-phase .ritual-card{padding:13px 14px 12px;}
-  .screen.is-day-phase .ritual-title{font-size:14px;}
-  .screen.is-day-phase .ritual-copy{font-size:12px;line-height:1.54;}
-  .screen.is-day-phase .ritual-note{margin-top:8px;}
-  .screen.is-day-phase .hero{
+  .screen.is-day-phase .ritual-card,
+  .screen.is-morning-phase .ritual-card{padding:13px 14px 12px;}
+  .screen.is-day-phase .ritual-title,
+  .screen.is-morning-phase .ritual-title{font-size:14px;}
+  .screen.is-day-phase .ritual-copy,
+  .screen.is-morning-phase .ritual-copy{font-size:12px;line-height:1.54;}
+  .screen.is-day-phase .ritual-note,
+  .screen.is-morning-phase .ritual-note{margin-top:8px;}
+  .screen.is-day-phase .hero,
+  .screen.is-morning-phase .hero{
     padding:14px 12px 12px;
     border-radius:22px;
     background:linear-gradient(180deg, #2a251f 0%, #221d18 100%);
@@ -121,21 +129,27 @@
     box-shadow:0 12px 24px rgba(28,22,15,0.18);
   }
   .screen.is-day-phase .hero-top,
+  .screen.is-morning-phase .hero-top,
   .screen.is-day-phase .hero-goal{display:none;}
+  .screen.is-morning-phase .hero-goal{display:none;}
   .screen.is-evening-phase .hero-top,
   .screen.is-evening-phase .hero-goal{display:none;}
-  .screen.is-day-phase .actions{gap:8px;}
-  .screen.is-day-phase .action-meta{margin-top:2px;}
+  .screen.is-day-phase .actions,
+  .screen.is-morning-phase .actions{gap:8px;}
+  .screen.is-day-phase .action-meta,
+  .screen.is-morning-phase .action-meta{margin-top:2px;}
   .screen.is-evening-phase .actions{gap:8px;}
   .screen.is-evening-phase .action-meta{margin-top:2px;}
-  .screen.is-day-phase .big-record-btn{
+  .screen.is-day-phase .big-record-btn,
+  .screen.is-morning-phase .big-record-btn{
     min-height:44px;
     padding:7px 9px;
     border-radius:16px;
     border-color:rgba(255,255,255,0.07);
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
   }
-  .screen.is-day-phase .secondary-btn{
+  .screen.is-day-phase .secondary-btn,
+  .screen.is-morning-phase .secondary-btn{
     min-height:38px;
     padding:7px 9px;
     border-radius:16px;
@@ -156,16 +170,16 @@
     border-color:rgba(255,255,255,0.10);
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
   }
-  .screen.is-day-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
-  .screen.is-day-phase .record-cta-title{font-size:12.5px;}
-  .screen.is-day-phase .record-cta-sub{font-size:10px;}
-  .screen.is-day-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
-  .screen.is-day-phase .record-cta-arrow{font-size:14px;}
-  .screen.is-day-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
-  .screen.is-day-phase .record-cta-title{font-size:12px;}
-  .screen.is-day-phase .record-cta-sub{font-size:9.5px;}
-  .screen.is-day-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
-  .screen.is-day-phase .record-cta-arrow{font-size:14px;}
+  .screen.is-day-phase .record-cta-icon,
+  .screen.is-morning-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
+  .screen.is-day-phase .record-cta-title,
+  .screen.is-morning-phase .record-cta-title{font-size:12px;}
+  .screen.is-day-phase .record-cta-sub,
+  .screen.is-morning-phase .record-cta-sub{font-size:9.5px;}
+  .screen.is-day-phase .record-cta-limit,
+  .screen.is-morning-phase .record-cta-limit{min-width:29px;padding:2px 6px;font-size:9px;}
+  .screen.is-day-phase .record-cta-arrow,
+  .screen.is-morning-phase .record-cta-arrow{font-size:14px;}
   .screen.is-evening-phase .record-cta-icon{width:26px;height:26px;font-size:16px;border-radius:9px;}
   .screen.is-evening-phase .record-cta-title{font-size:12px;}
   .screen.is-evening-phase .record-cta-sub{font-size:9.5px;}
@@ -218,6 +232,23 @@
   .ritual-context-text{font-size:11.5px;line-height:1.48;color:var(--color-text);margin-top:4px;}
 .ritual-input{width:100%;min-height:68px;border-radius:14px;border:1px solid var(--color-border-secondary);background:var(--surface-soft);padding:11px 12px;font:inherit;font-size:12.5px;line-height:1.5;color:var(--color-text);margin-top:10px;resize:vertical;}
 .ritual-input::placeholder{color:var(--color-text-secondary);}
+.ritual-suggestion-wrap{margin-top:10px;}
+.ritual-suggestion-label{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);}
+.ritual-suggestion-btn{margin-top:6px;border:1px solid rgba(29,158,117,.22);border-radius:999px;background:#eef8f4;color:var(--accent-text);padding:8px 12px;font:600 12px/1.3 var(--font-sans);text-align:left;cursor:pointer;max-width:100%;}
+.ritual-suggestion-btn:active{transform:translateY(1px);}
+.ritual-card.preview-focus{
+  box-shadow:0 0 0 2px rgba(29,158,117,.18),0 18px 36px rgba(21,70,56,.12);
+  animation:ritualPreviewFocus 1.2s ease-out 1;
+}
+.ritual-card.preview-focus .ritual-suggestion-btn{
+  background:#e2f6ee;
+  border-color:rgba(29,158,117,.34);
+}
+@keyframes ritualPreviewFocus{
+  0%{transform:translateY(0);box-shadow:0 0 0 0 rgba(29,158,117,0),0 10px 24px rgba(21,70,56,.06);}
+  18%{transform:translateY(-1px);box-shadow:0 0 0 5px rgba(29,158,117,.10),0 20px 38px rgba(21,70,56,.14);}
+  100%{transform:translateY(0);box-shadow:0 0 0 2px rgba(29,158,117,.18),0 18px 36px rgba(21,70,56,.12);}
+}
 .ritual-entry-summary{display:none;margin-top:10px;padding:12px 13px;border-radius:16px;border:1px solid var(--accent-soft-border);background:linear-gradient(180deg,#f6fcf9 0%, #edf9f4 100%);color:var(--color-text);font-size:13px;line-height:1.5;cursor:pointer;box-shadow:var(--shadow-card);}
 .ritual-entry-summary.visible{display:block;}
 .ritual-entry-summary-label{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
@@ -513,6 +544,10 @@
       <div class="ritual-copy" id="ritual-copy">Одна короткая мысль помогает не заходить в день на автопилоте.</div>
       <div class="ritual-entry-block" id="ritual-entry-block">
         <textarea class="ritual-input" id="ritual-input" placeholder="Например: пройти через 14:00 спокойнее и не спорить с собой."></textarea>
+        <div class="ritual-suggestion-wrap" id="ritual-suggestion-wrap" style="display:none;">
+          <div class="ritual-suggestion-label" id="ritual-suggestion-label">Фраза на это утро</div>
+          <button class="ritual-suggestion-btn" id="ritual-suggestion-btn" type="button"></button>
+        </div>
         <div class="ritual-entry-summary" id="ritual-entry-summary" role="button" tabindex="0">
           <div class="ritual-entry-summary-label">Ориентир на сегодня</div>
           <div class="ritual-entry-summary-text" id="ritual-entry-summary-text"></div>
@@ -596,19 +631,19 @@
       </div>
       <div class="week-snapshot-row">
         <div class="week-snapshot-item">
-          <div class="week-snapshot-label">РџРѕРІРµРґРµРЅРёРµ</div>
-          <div class="week-snapshot-value" id="week-snapshot-behavior-value">РРЅРґРµРєСЃ 0</div>
-          <div class="week-snapshot-copy" id="week-snapshot-behavior-copy">РџРѕРєР° С‚РѕР»СЊРєРѕ СЃРѕР±РёСЂР°РµРј СЂРёС‚Рј.</div>
+          <div class="week-snapshot-label">Поведение</div>
+          <div class="week-snapshot-value" id="week-snapshot-behavior-value">Индекс 0</div>
+          <div class="week-snapshot-copy" id="week-snapshot-behavior-copy">Пока только собираем ритм.</div>
         </div>
         <div class="week-snapshot-item">
-          <div class="week-snapshot-label">РЎРѕСЃС‚РѕСЏРЅРёРµ</div>
-          <div class="week-snapshot-value" id="week-snapshot-state-value">РќРµС‚ С„РѕРЅР°</div>
-          <div class="week-snapshot-copy" id="week-snapshot-state-copy">РџРѕСЏРІРёС‚СЃСЏ РїРѕСЃР»Рµ Р·Р°РїРёСЃРµР№ СЃРѕСЃС‚РѕСЏРЅРёСЏ.</div>
+          <div class="week-snapshot-label">Состояние</div>
+          <div class="week-snapshot-value" id="week-snapshot-state-value">Нет фона</div>
+          <div class="week-snapshot-copy" id="week-snapshot-state-copy">Появится после записей состояния.</div>
         </div>
         <div class="week-snapshot-item">
-          <div class="week-snapshot-label">Р—РґРѕСЂРѕРІСЊРµ</div>
+          <div class="week-snapshot-label">Маркеры</div>
           <div class="week-snapshot-value" id="week-snapshot-health-value">0/7</div>
-          <div class="week-snapshot-copy" id="week-snapshot-health-copy">РњРѕР¶РЅРѕ РЅР°С‡Р°С‚СЊ СЃРѕ СЃРЅР°.</div>
+          <div class="week-snapshot-copy" id="week-snapshot-health-copy">Можно начать со сна.</div>
         </div>
       </div>
     </div>
@@ -672,15 +707,15 @@
         <div class="tips-row" id="tips-row">
           <div class="tip-btn" id="tip-btn-1">
             <div class="tip-icon" style="background:#FAEEDA;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="8" width="9" height="2.5" rx="1.25" fill="#854F0B"/><rect x="11" y="8" width="2" height="2.5" rx="1" fill="#854F0B"/><path d="M9 6c0-2 2-2 2-4" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-            <div class="tip-label" style="color:#633806;">РџСЂРё РєСѓСЂРµРЅРёРё</div>
+            <div class="tip-label" style="color:#633806;">При курении</div>
           </div>
           <div class="tip-btn" id="tip-btn-2">
             <div class="tip-icon" style="background:#E6F1FB;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2h4l1 4H4L5 2z" fill="#185FA5"/><path d="M4 6v5a1 1 0 001 1h4a1 1 0 001-1V6" stroke="#185FA5" stroke-width="1.2"/></svg></div>
-            <div class="tip-label" style="color:#0C447C;">РџСЂРё Р°Р»РєРѕРіРѕР»Рµ</div>
+            <div class="tip-label" style="color:#0C447C;">При алкоголе</div>
           </div>
           <div class="tip-btn" id="tip-btn-3">
             <div class="tip-icon" style="background:#EEEDFE;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="tip-label" style="color:#3C3489;">РќРµ Р±СЂРѕСЃР°С‚СЊ</div>
+            <div class="tip-label" style="color:#3C3489;">Не бросать</div>
           </div>
         </div>
       </div>
@@ -707,7 +742,7 @@
             <div class="quick-sub" id="quick-time-sub">на эти эпизоды</div>
           </div>
           <div class="quick-card">
-            <div class="quick-label">Здоровье</div>
+            <div class="quick-label">Маркеры</div>
             <div class="quick-value" id="quick-health">0/7</div>
             <div class="quick-sub" id="quick-health-sub">маркеров заполнено</div>
           </div>
@@ -729,10 +764,10 @@
     </div>
 
     <div class="sticky-bottom">
-      <div class="tab active" data-route="main"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg><span class="tab-label">Р“Р»Р°РІРЅР°СЏ</span></div></div>
-      <div class="tab" data-route="insights"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><span class="tab-label">РРЅСЃР°Р№С‚С‹</span></div></div>
-      <div class="tab" data-route="diary"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="tab-label">Р”РЅРµРІРЅРёРє</span></div></div>
-      <div class="tab" data-route="profile"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-label">РџСЂРѕС„РёР»СЊ</span></div></div>
+      <div class="tab active" data-route="main"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg><span class="tab-label">Главная</span></div></div>
+      <div class="tab" data-route="insights"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 010 8M8 10v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><span class="tab-label">Инсайты</span></div></div>
+      <div class="tab" data-route="diary"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="tab-label">Дневник</span></div></div>
+      <div class="tab" data-route="profile"><div class="tab-chip"><svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 14c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-label">Профиль</span></div></div>
     </div>
 
     <div class="modal-overlay" id="modal" style="display:none;">
@@ -806,6 +841,10 @@ var ritualEveningState = {
 var ritualMorningState = {
   expanded: false
 };
+var ritualPreviewState = {
+  key: "",
+  timer: null
+};
 var slipComposerState = {
   open: false,
   tags: [],
@@ -868,21 +907,21 @@ function formatMoney(value, symbol) {
 function formatMinutes(value) {
   return new Intl.NumberFormat("ru-RU", {
     maximumFractionDigits: value % 1 === 0 ? 0 : 1
-  }).format(Number(value) || 0) + " РјРёРЅ";
+  }).format(Number(value) || 0) + " мин";
 }
 
 function compactWeekTrend(direction) {
-  if (direction === "up") return "С„РѕРЅ С‚СЏР¶РµР»РµРµ";
-  if (direction === "down") return "С„РѕРЅ РјСЏРіС‡Рµ";
-  if (direction === "stable") return "С„РѕРЅ СЂРѕРІРЅРµРµ";
-  return "РґР°РЅРЅС‹С… РјР°Р»Рѕ";
+  if (direction === "up") return "фон тяжелее";
+  if (direction === "down") return "фон мягче";
+  if (direction === "stable") return "фон ровнее";
+  return "данных мало";
 }
 
 function compactHealthTrend(direction) {
-  if (direction === "up") return "РµСЃС‚СЊ СЃРґРІРёРі";
-  if (direction === "down") return "РЅСѓР¶РЅР° РѕРїРѕСЂР°";
-  if (direction === "stable") return "СЂРѕРІРЅРѕ";
-  return "Р±РµР· РґРёРЅР°РјРёРєРё";
+  if (direction === "up") return "есть сдвиг";
+  if (direction === "down") return "нужна опора";
+  if (direction === "stable") return "ровнее";
+  return "без динамики";
 }
 
 function trimSentence(text, limit) {
@@ -900,9 +939,9 @@ function adviceMatchToTipData(match, fallbackLabel) {
       title: match.advice.title,
       sub: match.advice.rationale,
       items: [
-        { t: "Р§С‚Рѕ РїРѕРїСЂРѕР±РѕРІР°С‚СЊ", d: match.advice.body },
-        { t: "РџРѕС‡РµРјСѓ СЌС‚Рѕ РјРѕР¶РµС‚ РїРѕРјРѕС‡СЊ", d: match.advice.rationale },
-        { t: "РћСЃРЅРѕРІР°", d: getAdviceMetaText(match.advice) }
+        { t: "Что попробовать", d: match.advice.body },
+        { t: "Почему это может помочь", d: match.advice.rationale },
+        { t: "Основа", d: getAdviceMetaText(match.advice) }
       ]
     }
   };
@@ -912,32 +951,32 @@ function getAdviceDrivenTips(state) {
   if (!window.HabitAdviceLibrary || !window.HabitAdviceLibrary.buildAdviceBundle) {
     return {
       primary: {
-        label: "РЎРѕРІРµС‚ РЅРµРґРѕСЃС‚СѓРїРµРЅ",
+        label: "Совет недоступен",
         data: {
-          title: "Р‘РёР±Р»РёРѕС‚РµРєР° СЃРѕРІРµС‚РѕРІ РЅРµРґРѕСЃС‚СѓРїРЅР°",
-          sub: "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РµРґРёРЅС‹Р№ РєР°С‚Р°Р»РѕРі СЂРµРєРѕРјРµРЅРґР°С†РёР№",
+          title: "Библиотека советов недоступна",
+          sub: "Не удалось загрузить единый каталог рекомендаций",
           items: [
-            { t: "Р§С‚Рѕ РґРµР»Р°С‚СЊ СЃРµР№С‡Р°СЃ", d: "РћР±РЅРѕРІРё СЌРєСЂР°РЅ. Р•СЃР»Рё РїСЂРѕР±Р»РµРјР° РѕСЃС‚Р°РЅРµС‚СЃСЏ, РїСЂРѕРІРµСЂСЊ РїРѕРґРєР»СЋС‡РµРЅРёРµ РјРѕРґСѓР»СЏ advice-library.js." }
+            { t: "Что делать сейчас", d: "Обнови экран. Если проблема останется, проверь подключение модуля advice-library.js." }
           ]
         }
       },
       secondary: {
-        label: "РќРµС‚ РґР°РЅРЅС‹С…",
+        label: "Нет данных",
         data: {
-          title: "РЎРѕРІРµС‚С‹ РІСЂРµРјРµРЅРЅРѕ РЅРµРґРѕСЃС‚СѓРїРЅС‹",
-          sub: "Р•РґРёРЅС‹Р№ РёСЃС‚РѕС‡РЅРёРє СЃРѕРІРµС‚РѕРІ РЅРµ Р±С‹Р» РЅР°Р№РґРµРЅ",
+          title: "Советы временно недоступны",
+          sub: "Единый источник советов не был найден",
           items: [
-            { t: "РџРѕС‡РµРјСѓ СЌС‚Рѕ РІР°Р¶РЅРѕ", d: "Р“Р»Р°РІРЅР°СЏ С‚РµРїРµСЂСЊ С‡РёС‚Р°РµС‚ СЃРѕРІРµС‚С‹ С‚РѕР»СЊРєРѕ РёР· Р±РёР±Р»РёРѕС‚РµРєРё, Р±РµР· СЃС‚Р°С‚РёС‡РµСЃРєРёС… РґСѓР±Р»РёРєР°С‚РѕРІ РІ РёРЅС‚РµСЂС„РµР№СЃРµ." }
+            { t: "Почему это важно", d: "Главная теперь читает советы только из библиотеки, без статических дублей в интерфейсе." }
           ]
         }
       },
       tertiary: {
-        label: "РџСЂРѕРІРµСЂСЊ РјРѕРґСѓР»СЊ",
+        label: "Проверь модуль",
         data: {
-          title: "РќСѓР¶РЅР° Р±РёР±Р»РёРѕС‚РµРєР° advice-library",
-          sub: "РЎРµР№С‡Р°СЃ РєРѕРЅС‚РµРЅС‚ РЅРµ РїРѕРґРіСЂСѓР·РёР»СЃСЏ",
+          title: "Нужна библиотека advice-library",
+          sub: "Сейчас контент не подгрузился",
           items: [
-            { t: "РЎР»РµРґСѓСЋС‰РёР№ С€Р°Рі", d: "РќСѓР¶РЅРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РїРѕРґРєР»СЋС‡РµРЅРёРµ analytics/advice-library.js, С‡С‚РѕР±С‹ СЃРѕРІРµС‚С‹ СЃРЅРѕРІР° РїРѕСЏРІРёР»РёСЃСЊ." }
+            { t: "Следующий шаг", d: "Нужно восстановить подключение analytics/advice-library.js, чтобы советы снова появились." }
           ]
         }
       }
@@ -1192,6 +1231,13 @@ function renderWeek(state) {
 function renderLogs(state) {
   var root = document.getElementById("log-section");
   var helpers = window.HabitStore.helpers;
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
   var config = helpers.getCurrentHabitConfig ? helpers.getCurrentHabitConfig(state) : ((state.currentHabit && state.currentHabit.config) || state.habitConfig || {});
   var todayKey = helpers.formatDateKey(new Date());
   var todaySlips = (state.slips || []).filter(function (item) { return item.localDate === todayKey; });
@@ -1298,7 +1344,7 @@ function renderQuickStats(state) {
   document.getElementById("quick-time-sub").textContent = "\u041c\u0435\u0441\u044f\u0446: " + (finance.monthHours || 0) + " \u0447";
   document.getElementById("quick-health").textContent = health.filledCount + "/" + health.totalCount;
   document.getElementById("quick-health-sub").textContent = health.filledCount ? "\u0441\u043e\u043d, \u0434\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0438 \u0442\u0435\u043b\u043e \u0432 \u0444\u043e\u043a\u0443\u0441\u0435" : "\u043c\u0430\u0440\u043a\u0435\u0440\u044b \u043f\u043e\u043a\u0430 \u043d\u0435 \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u044b";
-  document.getElementById("day-cost-summary").textContent = formatMoney(todaySpent, finance.currencySymbol || "\u20bd") + " \u00b7 " + formatMinutes(todayMinutes) + " \u00b7 здоровье " + health.filledCount + "/" + health.totalCount;
+document.getElementById("day-cost-summary").textContent = formatMoney(todaySpent, finance.currencySymbol || "\u20bd") + " \u00b7 " + formatMinutes(todayMinutes) + " \u00b7 маркеры " + health.filledCount + "/" + health.totalCount;
 }
 
 function renderWeekSnapshot() {
@@ -1469,55 +1515,55 @@ function getHabitDemoEvents(habitId) {
   var maps = {
     smoking: {
       slips: [
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РЅР°РїСЂСЏР¶РµРЅРёРµ РїРѕСЃР»Рµ Р·Р°РґР°С‡Рё" },
-        { triggerTag: "boredom", triggerTags: ["boredom"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїР°СѓР·Р° Рё РїСЂРёРІС‹С‡РєР° СЂСѓРє" },
-        { triggerTag: "after_food", triggerTags: ["after_food", "ritual"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїРѕСЃР»Рµ РµРґС‹" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СѓСЃС‚Р°Р»РѕСЃС‚СЊ Рє РІРµС‡РµСЂСѓ" }
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · напряжение после задачи" },
+        { triggerTag: "boredom", triggerTags: ["boredom"], note: "Только что · пауза и привычка рук" },
+        { triggerTag: "after_food", triggerTags: ["after_food", "ritual"], note: "Только что · после еды" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · усталость к вечеру" }
       ],
       resisted: { triggerTags: ["stress", "after_food"], cravingLevel: 3, copingTool: "walk" }
     },
     alcohol: {
       slips: [
-        { triggerTag: "company", triggerTags: ["company"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РєРѕРјРїР°РЅРёСЏ РїРѕСЃР»Рµ РґРЅСЏ" },
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· С…РѕС‚РµР»РѕСЃСЊ СЃРЅСЏС‚СЊ РЅР°РїСЂСЏР¶РµРЅРёРµ" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СѓСЃС‚Р°Р»РѕСЃС‚СЊ Рё Р¶РµР»Р°РЅРёРµ СЂР°СЃСЃР»Р°Р±РёС‚СЊСЃСЏ" },
-        { triggerTag: "ritual", triggerTags: ["ritual"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїСЂРёРІС‹С‡РЅС‹Р№ РІРµС‡РµСЂРЅРёР№ СЃС†РµРЅР°СЂРёР№" }
+        { triggerTag: "company", triggerTags: ["company"], note: "Только что · компания после дня" },
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · хотелось снять напряжение" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · усталость и желание расслабиться" },
+        { triggerTag: "ritual", triggerTags: ["ritual"], note: "Только что · привычный вечерний сценарий" }
       ],
       resisted: { triggerTags: ["company", "stress"], cravingLevel: 4, copingTool: "sparkling_water" }
     },
     sweets: {
       slips: [
-        { triggerTag: "after_food", triggerTags: ["after_food"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїРѕСЃР»Рµ РµРґС‹ Р·Р°С…РѕС‚РµР»РѕСЃСЊ СЃР»Р°РґРєРѕРіРѕ" },
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· С‚СЏРіР° РЅР° С„РѕРЅРµ РЅР°РїСЂСЏР¶РµРЅРёСЏ" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїСЂРѕСЃРµР»Р° СЌРЅРµСЂРіРёСЏ" },
-        { triggerTag: "boredom", triggerTags: ["boredom"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїРѕС‚СЏРЅСѓР»Рѕ РЅР° Р°РІС‚РѕРјР°С‚Рµ" }
+        { triggerTag: "after_food", triggerTags: ["after_food"], note: "Только что · после еды захотелось сладкого" },
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · тяга на фоне напряжения" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · просела энергия" },
+        { triggerTag: "boredom", triggerTags: ["boredom"], note: "Только что · потянуло на автомате" }
       ],
       resisted: { triggerTags: ["after_food", "stress"], cravingLevel: 3, copingTool: "tea" }
     },
     social: {
       slips: [
-        { triggerTag: "boredom", triggerTags: ["boredom"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СЂСѓРєР° СЃР°РјР° РїРѕС‚СЏРЅСѓР»Р°СЃСЊ Рє Р»РµРЅС‚Рµ" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· Р·Р°Р»РёРї РЅР° С„РѕРЅРµ СѓСЃС‚Р°Р»РѕСЃС‚Рё" },
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СѓС€С‘Р» РІ СЌРєСЂР°РЅ РїРѕСЃР»Рµ РЅР°РїСЂСЏР¶РµРЅРёСЏ" },
-        { triggerTag: "ritual", triggerTags: ["ritual"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїСЂРёРІС‹С‡РЅС‹Р№ Р·Р°С…РѕРґ РїРµСЂРµРґ СЃРЅРѕРј" }
+        { triggerTag: "boredom", triggerTags: ["boredom"], note: "Только что · рука сама потянулась к ленте" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · залип на фоне усталости" },
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · ушёл в экран после напряжения" },
+        { triggerTag: "ritual", triggerTags: ["ritual"], note: "Только что · привычный заход перед сном" }
       ],
       resisted: { triggerTags: ["fatigue", "boredom"], cravingLevel: 3, copingTool: "timer" }
     },
     overeating: {
       slips: [
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· С…РѕС‚РµР»РѕСЃСЊ СЃРЅСЏС‚СЊ РЅР°РїСЂСЏР¶РµРЅРёРµ РµРґРѕР№" },
-        { triggerTag: "after_food", triggerTags: ["after_food"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· Р·Р°С…РѕС‚РµР»РѕСЃСЊ РїСЂРѕРґРѕР»Р¶РёС‚СЊ РїРѕСЃР»Рµ РµРґС‹" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СѓСЃС‚Р°Р»РѕСЃС‚СЊ Рё РїСѓСЃС‚РѕС‚Р°" },
-        { triggerTag: "boredom", triggerTags: ["boredom"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РµР» РЅР° Р°РІС‚РѕРјР°С‚Рµ" }
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · хотелось снять напряжение едой" },
+        { triggerTag: "after_food", triggerTags: ["after_food"], note: "Только что · захотелось продолжить после еды" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · усталость и пустота" },
+        { triggerTag: "boredom", triggerTags: ["boredom"], note: "Только что · ел на автомате" }
       ],
       resisted: { triggerTags: ["stress", "fatigue"], cravingLevel: 4, copingTool: "water_pause" }
     },
     custom: {
       slips: [
-        { triggerTag: "stress", triggerTags: ["stress"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РЅР°РїСЂСЏР¶РµРЅРёРµ" },
-        { triggerTag: "boredom", triggerTags: ["boredom"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СЃРєСѓРєР°" },
-        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· СѓСЃС‚Р°Р»РѕСЃС‚СЊ" },
-        { triggerTag: "ritual", triggerTags: ["ritual"], note: "РўРѕР»СЊРєРѕ С‡С‚Рѕ В· РїСЂРёРІС‹С‡РЅС‹Р№ СЃС†РµРЅР°СЂРёР№" }
+        { triggerTag: "stress", triggerTags: ["stress"], note: "Только что · напряжение" },
+        { triggerTag: "boredom", triggerTags: ["boredom"], note: "Только что · скука" },
+        { triggerTag: "fatigue", triggerTags: ["fatigue"], note: "Только что · усталость" },
+        { triggerTag: "ritual", triggerTags: ["ritual"], note: "Только что · привычный сценарий" }
       ],
       resisted: { triggerTags: ["stress", "ritual"], cravingLevel: 3, copingTool: "pause" }
     }
@@ -1612,7 +1658,7 @@ function renderSetupBanner(state) {
     document.getElementById("setup-banner-btn").textContent = "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043e\u043f\u0440\u043e\u0441";
   } else {
     document.getElementById("setup-banner-title").textContent = "\u0414\u043e\u0431\u0430\u0432\u044c \u043b\u0438\u0447\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442";
-    document.getElementById("setup-banner-copy").textContent = "\u0426\u0435\u043d\u0430 \u044d\u043f\u0438\u0437\u043e\u0434\u0430, \u0432\u0440\u0435\u043c\u044f \u0438 health markers \u0441\u0434\u0435\u043b\u0430\u044e\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u0437\u0430\u043c\u0435\u0442\u043d\u043e \u043f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u0443\u0436\u0435 \u043d\u0430 \u044d\u0442\u043e\u0439 \u043d\u0435\u0434\u0435\u043b\u0435.";
+  document.getElementById("setup-banner-copy").textContent = "\u0426\u0435\u043d\u0430 \u044d\u043f\u0438\u0437\u043e\u0434\u0430, \u0432\u0440\u0435\u043c\u044f \u0438 \u043c\u0430\u0440\u043a\u0435\u0440\u044b \u0437\u0434\u043e\u0440\u043e\u0432\u044c\u044f \u0441\u0434\u0435\u043b\u0430\u044e\u0442 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443 \u0437\u0430\u043c\u0435\u0442\u043d\u043e \u043f\u043e\u043b\u0435\u0437\u043d\u0435\u0435 \u0443\u0436\u0435 \u043d\u0430 \u044d\u0442\u043e\u0439 \u043d\u0435\u0434\u0435\u043b\u0435.";
     document.getElementById("setup-banner-btn").textContent = "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0443";
   }
 }
@@ -1633,6 +1679,7 @@ function normalizePrimaryFlow() {
   var isEveningPrimary = phase === "evening" && !!ritual && ritual.mode !== "carryover";
 
   if (screen) {
+    screen.classList.toggle("is-morning-phase", !!isMorningPrimary);
     screen.classList.toggle("is-day-phase", !!isDayPrimary);
     screen.classList.toggle("is-evening-phase", !!isEveningPrimary);
   }
@@ -1899,6 +1946,8 @@ function syncRitualMorningUi() {
   var input = document.getElementById("ritual-input");
   var summary = document.getElementById("ritual-entry-summary");
   var summaryText = document.getElementById("ritual-entry-summary-text");
+  var suggestionWrap = document.getElementById("ritual-suggestion-wrap");
+  var ritualCard = document.getElementById("ritual-card");
   var footer = document.querySelector(".ritual-footer");
   if (!input || !summary || !summaryText || !footer) return;
 
@@ -1906,15 +1955,47 @@ function syncRitualMorningUi() {
     ritualMorningState = { expanded: false };
     summary.classList.remove("visible");
     input.style.display = "";
+    if (suggestionWrap) suggestionWrap.style.display = "none";
+    if (ritualCard) ritualCard.classList.remove("preview-focus");
+    if (ritualPreviewState.timer) {
+      clearTimeout(ritualPreviewState.timer);
+      ritualPreviewState.timer = null;
+    }
+    ritualPreviewState.key = "";
     footer.style.display = "flex";
     return;
   }
 
-  var summaryOnly = !!(ritual.hasEntry && !ritualMorningState.expanded);
+  var summaryOnly = !!(ritual.hasEntry && !ritualMorningState.expanded && !ritual.previewSuggestedPhrase);
   summaryText.textContent = ritual.value || "";
   summary.classList.toggle("visible", summaryOnly);
   input.style.display = summaryOnly ? "none" : "";
+  if (suggestionWrap) {
+    suggestionWrap.style.display = summaryOnly || !ritual.suggestedPhrase ? "none" : "block";
+  }
   footer.style.display = summaryOnly ? "none" : "flex";
+
+  if (ritual.previewSuggestedPhrase && ritual.suggestedPhrase && ritualCard) {
+    var previewKey = String(ritual.suggestedPhrase);
+    if (ritualPreviewState.key !== previewKey) {
+      ritualPreviewState.key = previewKey;
+      ritualCard.classList.remove("preview-focus");
+      void ritualCard.offsetWidth;
+      ritualCard.classList.add("preview-focus");
+      if (ritualPreviewState.timer) {
+        clearTimeout(ritualPreviewState.timer);
+      }
+      ritualPreviewState.timer = setTimeout(function () {
+        ritualCard.classList.remove("preview-focus");
+      }, 1600);
+      try {
+        ritualCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {}
+    }
+  } else if (ritualCard) {
+    ritualCard.classList.remove("preview-focus");
+    ritualPreviewState.key = "";
+  }
 }
 
 function syncRitualEveningUi() {
@@ -1961,6 +2042,7 @@ function renderMain(state) {
   syncRitualEveningUi();
   syncRitualEntryAction();
   normalizePrimaryFlow();
+  renderLogs(state);
   renderSlipComposer(state);
   syncRitualCarryoverUi();
 
@@ -2096,6 +2178,16 @@ document.getElementById("ritual-carryover-note").addEventListener("input", funct
   ritualCarryoverState.note = this.value || "";
 });
 document.getElementById("ritual-input").addEventListener("input", function () {
+  syncRitualEntryAction();
+});
+document.getElementById("ritual-suggestion-btn").addEventListener("click", function () {
+  var phrase = String(this.dataset.phrase || "").trim();
+  var input = document.getElementById("ritual-input");
+  if (!phrase || !input) return;
+  input.value = phrase;
+  input.focus();
+  var len = input.value.length;
+  input.setSelectionRange(len, len);
   syncRitualEntryAction();
 });
 document.getElementById("ritual-entry-summary").addEventListener("click", function () {
