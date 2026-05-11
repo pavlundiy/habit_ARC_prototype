@@ -343,6 +343,7 @@ if (window.self !== window.top) {
 }
 var composeMode = "habit";
 var entryFilter = "all";
+var diarySaveFeedbackTimer = null;
 
 function switchTab(tab) {
   document.querySelectorAll(".pill").forEach(function (pill) {
@@ -560,6 +561,7 @@ function renderEntrySummary(state) {
 
 function saveEntry() {
   var input = document.getElementById("compose-text");
+  var saveButton = document.getElementById("save-entry-btn");
   var text = input.value.trim();
   var state = window.HabitStore.getState();
   var ritualAnchor = getCurrentRitualAnchor(state);
@@ -599,9 +601,28 @@ function saveEntry() {
   }
   input.value = "";
   document.querySelectorAll(".tag-chip.sel").forEach(function (chip) { chip.classList.remove("sel"); });
+  document.querySelectorAll(".body-signal-chip.sel").forEach(function (chip) { chip.classList.remove("sel"); });
+  document.querySelectorAll(".state-tag-chip.sel").forEach(function (chip) { chip.classList.remove("sel"); });
   document.getElementById("state-mood").value = "3";
   document.getElementById("state-energy").value = "3";
   document.getElementById("state-stress").value = "3";
+
+  if (entryFilter !== "all") {
+    entryFilter = composeMode === "state" ? "state" : "habit";
+  }
+
+  render(window.HabitStore.getState());
+
+  if (saveButton) {
+    saveButton.textContent = "Сохранено";
+    if (diarySaveFeedbackTimer) {
+      window.clearTimeout(diarySaveFeedbackTimer);
+    }
+    diarySaveFeedbackTimer = window.setTimeout(function () {
+      saveButton.textContent = "Добавить запись";
+      diarySaveFeedbackTimer = null;
+    }, 1100);
+  }
 }
 
 function getCurrentRitualAnchor(state) {
